@@ -9,7 +9,7 @@ namespace ScrapySharp.Extensions
     public static class HtmlAgilityCssQueryExtensions
     {
         private const string PatternId = @"[#](?<id>\w+)";
-        private const string PatternAttribute = @"\[(?<name>\w+)=(?<value>\w+)\]";
+        private const string PatternAttribute = @"\[(?<name>\w+)(\^|\$)?=(?<value>\w+)\]";
         private static readonly Regex regexId = new Regex(PatternId, RegexOptions.Compiled);
         private static readonly Regex regexAttribute = new Regex(PatternAttribute, RegexOptions.Compiled);
 
@@ -113,13 +113,23 @@ namespace ScrapySharp.Extensions
             if (!match.Success || !match.Groups["name"].Success || !match.Groups["value"].Success)
                 throw new FormatException("Invalid css selector: '" + selector + "'");
 
+            var startsWith = selector.Contains("^");
+            var endsWith = selector.Contains("$");
+
             var name = match.Groups["name"].Value;
             var value = match.Groups["value"].Value;
 
             var unlessAttributeSelector = regexAttribute.Replace(selector, string.Empty);
             var nodes = Match(node, unlessAttributeSelector, directDescendants, matchAncestors);
 
-            return nodes.Where(n => n.GetAttributeValue(name, string.Empty) == value);
+
+            return from n in nodes
+                   let attributeValue = n.GetAttributeValue(name, string.Empty)
+                   where
+                       startsWith
+                           ? attributeValue.StartsWith(value)
+                           : endsWith ? attributeValue.EndsWith(value) : attributeValue == value
+                   select n;
         }
 
         private static IEnumerable<HtmlNode> MatchIdSelector(HtmlNode node, string selector, bool directDescendants, bool matchAncestors)

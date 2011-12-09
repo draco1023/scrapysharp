@@ -119,6 +119,30 @@ namespace ScrapySharp.Tests
         {
             Assert.AreEqual(1, html.CssSelect("input[type=text].login").Count());
         }
+
+        [TestMethod]
+        public void When_using_starts_with_attribute_selector()
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(@"<html><body><hr /><hr id='bla123'/><hr id='1nothing'/><hr id='2nothing'/></body></html>");
+            var node = doc.DocumentNode;
+
+            var result = node.CssSelect("hr[id^=bla]").ToArray();
+
+            Assert.AreEqual(result.Length, 1);
+        }
+
+        [TestMethod]
+        public void When_using_ends_with_attribute_selector()
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(@"<html><body><hr /><hr id='bla123'/><hr id='1nothing'/><hr id='2nothing'/></body></html>");
+            var node = doc.DocumentNode;
+
+            var result = node.CssSelect("hr[id$=ing]").ToArray();
+
+            Assert.AreEqual(result.Length, 2);
+        }
     }
 }
 
