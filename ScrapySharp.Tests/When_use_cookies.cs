@@ -1,6 +1,8 @@
 using System;
+using System.Globalization;
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScrapySharp.Network;
 
 namespace ScrapySharp.Tests
 {
@@ -17,6 +19,18 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(1, cookieContainer.Count);
 
             var cookieHeader = cookieContainer.GetCookieHeader(new Uri("http://www.popo.com"));
+        }
+
+        [TestMethod]
+        public void When_forcing_anguage()
+        {
+            var browser1 = new ScrapingBrowser();
+            var html1 = browser1.DownloadString(new Uri("http://www.lastminute.com"));
+
+            var browser2 = new ScrapingBrowser {Language = CultureInfo.CreateSpecificCulture("fr-FR")};
+            var html2 = browser2.DownloadString(new Uri("http://www.lastminute.com"));
+
+            Assert.AreNotEqual(html1, html2);
         }
     }
 }

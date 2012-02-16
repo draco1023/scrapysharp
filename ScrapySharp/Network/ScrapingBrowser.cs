@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -12,12 +13,13 @@ namespace ScrapySharp.Network
         private CookieContainer cookieContainer;
         private Uri referer;
         private FakeUserAgent userAgent;
-
+        
         public ScrapingBrowser()
         {
             InitCookieContainer();
             userAgent = FakeUserAgents.Chrome;
             AllowAutoRedirect = true;
+            Language = CultureInfo.CreateSpecificCulture("EN-US");
         }
 
         public void ClearCookies()
@@ -44,6 +46,7 @@ namespace ScrapySharp.Network
             request.Method = ToMethod(verb);
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
+            request.Headers["Accept-Language"] = Language.Name;
 
             return request;
         }
@@ -56,6 +59,7 @@ namespace ScrapySharp.Network
             var headers = response.Headers;
 
             var cookiesExpression = headers["Set-Cookie"];
+            
 
             if (!string.IsNullOrEmpty(cookiesExpression))
                 cookieContainer.SetCookies(new Uri(string.Format("{0}://{1}:{2}/", url.Scheme, url.Host, url.Port)), cookiesExpression);
@@ -134,5 +138,8 @@ namespace ScrapySharp.Network
         }
 
         public bool AllowAutoRedirect { get; set; }
+
+        public CultureInfo Language { get; set; }
+
     }
 }
