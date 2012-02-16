@@ -7,7 +7,7 @@ using ScrapySharp.Network;
 namespace ScrapySharp.Tests
 {
     [TestClass]
-    public class When_use_cookies
+    public class When_use_browser
     {
         [TestMethod]
         public void When_parses_cookies()
@@ -25,10 +25,10 @@ namespace ScrapySharp.Tests
         public void When_forcing_anguage()
         {
             var browser1 = new ScrapingBrowser();
-            var html1 = browser1.DownloadString(new Uri("http://www.lastminute.com"));
+            var html1 = browser1.DownloadString(new Uri("http://www.google.com"));
 
             var browser2 = new ScrapingBrowser {Language = CultureInfo.CreateSpecificCulture("fr-FR")};
-            var html2 = browser2.DownloadString(new Uri("http://www.lastminute.com"));
+            var html2 = browser2.DownloadString(new Uri("http://www.google.com"));
 
             Assert.AreNotEqual(html1, html2);
         }

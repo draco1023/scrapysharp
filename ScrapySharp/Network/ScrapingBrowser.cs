@@ -12,12 +12,11 @@ namespace ScrapySharp.Network
     {
         private CookieContainer cookieContainer;
         private Uri referer;
-        private FakeUserAgent userAgent;
-        
+
         public ScrapingBrowser()
         {
             InitCookieContainer();
-            userAgent = FakeUserAgents.Chrome;
+            UserAgent = FakeUserAgents.Chrome;
             AllowAutoRedirect = true;
             Language = CultureInfo.CreateSpecificCulture("EN-US");
         }
@@ -59,10 +58,11 @@ namespace ScrapySharp.Network
             var headers = response.Headers;
 
             var cookiesExpression = headers["Set-Cookie"];
-            
-
             if (!string.IsNullOrEmpty(cookiesExpression))
-                cookieContainer.SetCookies(new Uri(string.Format("{0}://{1}:{2}/", url.Scheme, url.Host, url.Port)), cookiesExpression);
+            {
+                var cookieUrl = new Uri(string.Format("{0}://{1}:{2}/", response.ResponseUri.Scheme, response.ResponseUri.Host, response.ResponseUri.Port));
+                cookieContainer.SetCookies(cookieUrl, cookiesExpression);
+            }
 
             var responseStream = response.GetResponseStream();
             if (responseStream == null)
@@ -74,8 +74,7 @@ namespace ScrapySharp.Network
         public string NavigateTo(Uri url, HttpVerb verb, string data)
         {
             var path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url, data) : url.ToString();
-
-            HttpWebRequest request = CreateRequest(new Uri(path), verb);
+            var request = CreateRequest(new Uri(path), verb);
 
             if (verb == HttpVerb.Post)
                 request.ContentType = "application/x-www-form-urlencoded";
@@ -131,11 +130,7 @@ namespace ScrapySharp.Network
             return builder.ToString();
         }
 
-        public FakeUserAgent UserAgent
-        {
-            get { return userAgent; }
-            set { userAgent = value; }
-        }
+        public FakeUserAgent UserAgent { get; set; }
 
         public bool AllowAutoRedirect { get; set; }
 
