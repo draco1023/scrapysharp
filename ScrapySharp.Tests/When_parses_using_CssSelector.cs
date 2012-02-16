@@ -1,30 +1,12 @@
 // ReSharper disable InconsistentNaming
 
-using System;
 using System.Linq;
-using System.Net;
 using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScrapySharp.Extensions;
 
 namespace ScrapySharp.Tests
 {
-    [TestClass]
-    public class When_use_cookies
-    {
-        [TestMethod]
-        public void When_parses_cookies()
-        {
-            var exp1 = @"FBXSID=""8KgAN7h4ZQsvn9OWXy1fvBlrNuRdIr4J0bkguqR5AIdL7clHgA+NQ5URtThL10od""; Max-Age=86400; HTTPOnly";
-            var cookieContainer = new CookieContainer();
-            cookieContainer.SetCookies(new Uri("http://www.popo.com"), exp1);
-
-            Assert.AreEqual(1, cookieContainer.Count);
-
-            var cookieHeader = cookieContainer.GetCookieHeader(new Uri("http://www.popo.com"));
-        }
-    }
-
     [TestClass]
     public class When_parses_using_CssSelector
     {
@@ -112,6 +94,10 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(1, html.CssSelect("input[type=button]").Count());
             
             Assert.AreEqual(2, html.CssSelect("input[type=text]").Count());
+
+            Assert.AreEqual(10, html.CssSelect("script[type=text/javascript]").Count());
+
+            Assert.AreEqual(2, html.CssSelect("link[type=application/rdf+xml]").Count());
         }
 
         [TestMethod]

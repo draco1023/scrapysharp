@@ -9,7 +9,7 @@ namespace ScrapySharp.Extensions
     public static class HtmlAgilityCssQueryExtensions
     {
         private const string PatternId = @"[#](?<id>\w+)";
-        private const string PatternAttribute = @"\[(?<name>\w+)(\^|\$)?=(?<value>\w+)\]";
+        private const string PatternAttribute = @"\[(?<name>\w+)(\^|\$)?=(?<value>[\w/-\\+]+)\]";
         private static readonly Regex regexId = new Regex(PatternId, RegexOptions.Compiled);
         private static readonly Regex regexAttribute = new Regex(PatternAttribute, RegexOptions.Compiled);
 
