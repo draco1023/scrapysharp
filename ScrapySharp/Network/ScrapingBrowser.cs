@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace ScrapySharp.Network
@@ -13,12 +14,16 @@ namespace ScrapySharp.Network
         private CookieContainer cookieContainer;
         private Uri referer;
 
+        private static readonly Regex changeCookiesDomainRegex = new Regex("Domain=([^;]+);", RegexOptions.Compiled);
+        private static readonly Regex splitCookiesRegex = new Regex("(?<name>[^=]+)=(?<val>[^;]+)[^,]+,?", RegexOptions.Compiled);
+
         public ScrapingBrowser()
         {
             InitCookieContainer();
             UserAgent = FakeUserAgents.Chrome;
             AllowAutoRedirect = true;
             Language = CultureInfo.CreateSpecificCulture("EN-US");
+            UseDefaultCookiesParser = true;
         }
 
         public void ClearCookies()
@@ -61,7 +66,10 @@ namespace ScrapySharp.Network
             if (!string.IsNullOrEmpty(cookiesExpression))
             {
                 var cookieUrl = new Uri(string.Format("{0}://{1}:{2}/", response.ResponseUri.Scheme, response.ResponseUri.Host, response.ResponseUri.Port));
-                cookieContainer.SetCookies(cookieUrl, cookiesExpression);
+                if (UseDefaultCookiesParser)
+                    cookieContainer.SetCookies(cookieUrl, cookiesExpression);
+                else
+                    SetCookies(cookieUrl, cookiesExpression);
             }
 
             var responseStream = response.GetResponseStream();
@@ -70,7 +78,21 @@ namespace ScrapySharp.Network
             using (var reader = new StreamReader(responseStream))
                 return reader.ReadToEnd();
         }
-        
+
+        public void SetCookies(Uri cookieUrl, string cookiesExpression)
+        {
+            var match = splitCookiesRegex.Match(cookiesExpression);
+            
+            while (match.Success)
+            {
+                if (match.Groups["name"].Success && match.Groups["val"].Success)
+                {
+                    cookieContainer.Add(new Cookie(match.Groups["name"].Value, match.Groups["val"].Value, "/", cookieUrl.Host));
+                }
+                match = match.NextMatch();
+            }
+        }
+
         public string NavigateTo(Uri url, HttpVerb verb, string data)
         {
             var path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url, data) : url.ToString();
@@ -133,8 +155,16 @@ namespace ScrapySharp.Network
         public FakeUserAgent UserAgent { get; set; }
 
         public bool AllowAutoRedirect { get; set; }
+        
+        public bool UseDefaultCookiesParser { get; set; }
 
         public CultureInfo Language { get; set; }
 
+        public Cookie GetCookie(Uri url, string name)
+        {
+            var collection = cookieContainer.GetCookies(url);
+
+            return collection[name];
+        }
     }
 }

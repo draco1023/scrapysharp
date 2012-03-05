@@ -20,6 +20,26 @@ namespace ScrapySharp.Tests
 
             var cookieHeader = cookieContainer.GetCookieHeader(new Uri("http://www.popo.com"));
         }
+        
+        [TestMethod]
+        public void When_parses_cookies2()
+        {
+            var exp1 = @"JSESSIONID=8811CD44E7B62E1F29347088E89E4318.p0580; Path=/merchandising,Service=LMN; Domain= www.lastminute.com; Path=/,SID=T000V00000X120305033255169934019722775; Domain= www.lastminute.com; Path=/,Devteam=snappy; Domain= www.lastminute.com; Path=/";
+            //var exp1 = @"Path=/merchandising,toto=popeofezfez; Domain= www.lastminute.com; Path=/merchandising,Service=LMN; Domain= www.lastminute.com; Path=/,SID=T000V00000X120305033255169934019722775; Domain= www.lastminute.com; Path=/,Devteam=snappy; Domain= www.lastminute.com; Path=/";
+            //var exp1 = @"Path=/merchandising,toto=popeofezfez; Domain= www.lastminute.com; Path=/merchandising,Service=LMN; Domain= www.lastminute.com;";
+            //var cookieContainer = new CookieContainer();
+            //cookieContainer.SetCookies(new Uri("http://www.lastminute.com"), exp1);
+
+            //Assert.AreEqual(1, cookieContainer.Count);
+
+            //var cookieHeader = cookieContainer.GetCookieHeader(new Uri("http://www.lastminute.com"));
+
+            var browser = new ScrapingBrowser();
+            var url = new Uri("http://www.lastminute.com");
+            browser.SetCookies(url, exp1);
+
+            Assert.AreEqual("LMN", browser.GetCookie(url, "Service").Value);
+        }
 
         [TestMethod]
         public void When_forcing_anguage()
@@ -31,6 +51,14 @@ namespace ScrapySharp.Tests
             var html2 = browser2.DownloadString(new Uri("http://www.google.com"));
 
             Assert.AreNotEqual(html1, html2);
+        }
+
+        [TestMethod]
+        public void When_downloading_page_with_a_different_cookie_domain()
+        {
+            var url = new Uri("http://www.lastminute.com/hotels-d110-united-kingdom-hotels");
+            var browser = new ScrapingBrowser();
+            browser.DownloadString(url);
         }
     }
 }
