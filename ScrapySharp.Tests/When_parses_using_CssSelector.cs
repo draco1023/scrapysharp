@@ -20,6 +20,22 @@ namespace ScrapySharp.Tests
         }
 
         [TestMethod]
+        public void When_css_class_contains_no_alpha_numerics()
+        {
+            var spans = html.CssSelect("span.login-box").ToArray();
+
+            Assert.AreEqual(1, spans.Length);
+        }
+
+        [TestMethod]
+        public void When_id_contains_no_alpha_numerics()
+        {
+            var spans = html.CssSelect("span#pass-box").ToArray();
+
+            Assert.AreEqual(1, spans.Length);
+        }
+
+        [TestMethod]
         public void When_uses_simple_tagName()
         {
             var divs = html.CssSelect("div").ToArray();
