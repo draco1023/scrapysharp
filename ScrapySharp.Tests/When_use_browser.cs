@@ -1,15 +1,15 @@
 using System;
 using System.Globalization;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ScrapySharp.Network;
 
 namespace ScrapySharp.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class When_use_browser
     {
-        [TestMethod]
+        [Test]
         public void When_parses_cookies()
         {
             var exp1 = @"FBXSID=""8KgAN7h4ZQsvn9OWXy1fvBlrNuRdIr4J0bkguqR5AIdL7clHgA+NQ5URtThL10od""; Max-Age=86400; HTTPOnly";
@@ -20,8 +20,8 @@ namespace ScrapySharp.Tests
 
             var cookieHeader = cookieContainer.GetCookieHeader(new Uri("http://www.popo.com"));
         }
-        
-        [TestMethod]
+
+        [Test]
         public void When_parses_cookies2()
         {
             var exp1 = @"JSESSIONID=8811CD44E7B62E1F29347088E89E4318.p0580; Path=/merchandising,Service=LMN; Domain= www.lastminute.com; Path=/,SID=T000V00000X120305033255169934019722775; Domain= www.lastminute.com; Path=/,Devteam=snappy; Domain= www.lastminute.com; Path=/";
@@ -41,7 +41,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual("LMN", browser.GetCookie(url, "Service").Value);
         }
 
-        [TestMethod]
+        [Test]
         public void When_forcing_anguage()
         {
             var browser1 = new ScrapingBrowser();
@@ -53,7 +53,7 @@ namespace ScrapySharp.Tests
             Assert.AreNotEqual(html1, html2);
         }
 
-        [TestMethod]
+        [Test]
         public void When_downloading_page_with_a_different_cookie_domain()
         {
             var url = new Uri("http://www.lastminute.com/hotels-d110-united-kingdom-hotels");
