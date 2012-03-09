@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text;
-using System.Web;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ScrapySharp.Utilities;
 
@@ -68,6 +68,38 @@ namespace ScrapySharp.Tests
         public void When_detecting_encoded_string_2()
         {
             Assert.IsFalse(UrlUtility.IsEncoded("%22Aardvarks%20lurk%2C%20OK%3F%22%0"));
+        }
+
+        [Test]
+        public void When_serializing_query_values()
+        {
+            var values = new Dictionary<string, string>{ {"a", "b"}, {"c", "d"} };
+
+            var serialized = UrlUtility.SerializeQuery(values);
+
+            Assert.That(serialized, Is.EqualTo("a=b&c=d"));
+        }
+
+        [Test]
+        public void When_deserializing_query_values()
+        {
+            var deserialized = UrlUtility.DeserializeQuery("a=b&c=d").ToArray();
+
+            Assert.That(deserialized.Length, Is.EqualTo(2));
+            Assert.That(deserialized[0].Key, Is.EqualTo("a"));
+            Assert.That(deserialized[0].Value, Is.EqualTo("b"));
+            Assert.That(deserialized[1].Key, Is.EqualTo("c"));
+            Assert.That(deserialized[1].Value, Is.EqualTo("d"));
+        }
+
+        [Test]
+        public void When_encoding_uri_query_values()
+        {
+            var uri = new Uri("http://www.abc.com/a/b?q=123&r=1 2");
+
+            var encoded = UrlUtility.UrlEncodeQueryStringValues(uri);
+
+            Assert.That(encoded.AbsoluteUri, Is.EqualTo("http://www.abc.com/a/b?q=123&r=1%202"));
         }
     }
 }

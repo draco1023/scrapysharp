@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ScrapySharp.Utilities
@@ -62,6 +64,36 @@ namespace ScrapySharp.Utilities
             }
 
             return Encoding.UTF8.GetString(decoded.Select(c => (byte)c).ToArray());
+        }
+
+        public static Uri UrlEncodeQueryStringValues(Uri uri)
+        {
+            if (uri.Query.Length == 0)
+                return uri;
+
+            var values =
+                DeserializeQuery(uri.Query[0] == '?' ? uri.Query.Substring(1) : uri.Query).Select(
+                    kvp => IsEncoded(kvp.Value) ? kvp : new KeyValuePair<string, string>(kvp.Key, Encode(kvp.Value)));
+
+
+            return
+                new Uri(string.Format("{0}://{1}{2}{3}?{4}", uri.Scheme, uri.Host,
+                                      uri.Scheme == "http" && uri.Port == 80 || uri.Scheme == "https" && uri.Port == 443
+                                          ? ""
+                                          : ":" + uri.Port, uri.AbsolutePath, SerializeQuery(values)));
+        }
+
+        public static string SerializeQuery(IEnumerable<KeyValuePair<string, string>> values)
+        {
+            return values.Aggregate(string.Empty,
+                                    (acc, cur) => acc + (acc.Length == 0 ? "" : "&") + cur.Key + '=' + cur.Value);
+        }
+
+        public static IEnumerable<KeyValuePair<string, string>> DeserializeQuery(string value)
+        {
+            return (from split in value.Split(new[] {'&'}, StringSplitOptions.RemoveEmptyEntries)
+                    let kvp = split.Split(new[] {'='}, 2, StringSplitOptions.RemoveEmptyEntries).ToArray()
+                    select new KeyValuePair<string, string>(kvp[0], kvp[1]));
         }
     }
 }
