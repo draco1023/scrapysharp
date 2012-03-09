@@ -24,6 +24,7 @@ namespace ScrapySharp.Network
             AllowAutoRedirect = true;
             Language = CultureInfo.CreateSpecificCulture("EN-US");
             UseDefaultCookiesParser = true;
+            IgnoreCookies = false;
         }
 
         public void ClearCookies()
@@ -62,14 +63,19 @@ namespace ScrapySharp.Network
             var response = request.GetResponse();
             var headers = response.Headers;
 
-            var cookiesExpression = headers["Set-Cookie"];
-            if (!string.IsNullOrEmpty(cookiesExpression))
+            if (!IgnoreCookies)
             {
-                var cookieUrl = new Uri(string.Format("{0}://{1}:{2}/", response.ResponseUri.Scheme, response.ResponseUri.Host, response.ResponseUri.Port));
-                if (UseDefaultCookiesParser)
-                    cookieContainer.SetCookies(cookieUrl, cookiesExpression);
-                else
-                    SetCookies(cookieUrl, cookiesExpression);
+                var cookiesExpression = headers["Set-Cookie"];
+                if (!string.IsNullOrEmpty(cookiesExpression))
+                {
+                    var cookieUrl =
+                        new Uri(string.Format("{0}://{1}:{2}/", response.ResponseUri.Scheme, response.ResponseUri.Host,
+                                              response.ResponseUri.Port));
+                    if (UseDefaultCookiesParser)
+                        cookieContainer.SetCookies(cookieUrl, cookiesExpression);
+                    else
+                        SetCookies(cookieUrl, cookiesExpression);
+                }
             }
 
             var responseStream = response.GetResponseStream();
@@ -157,6 +163,8 @@ namespace ScrapySharp.Network
         public bool AllowAutoRedirect { get; set; }
         
         public bool UseDefaultCookiesParser { get; set; }
+        
+        public bool IgnoreCookies { get; set; }
 
         public CultureInfo Language { get; set; }
 
