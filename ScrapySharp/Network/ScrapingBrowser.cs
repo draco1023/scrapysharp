@@ -46,8 +46,8 @@ namespace ScrapySharp.Network
 
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Referer = referer != null ? referer.ToString() : url.ToString();
+            var request = (HttpWebRequest)WebRequest.Create(url.AbsoluteUri);
+            request.Referer = referer != null ? referer.AbsoluteUri : url.AbsoluteUri;
             request.Method = ToMethod(verb);
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
@@ -101,7 +101,17 @@ namespace ScrapySharp.Network
 
         public string NavigateTo(Uri url, HttpVerb verb, string data)
         {
-            var path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url, data) : url.ToString();
+            string path = "";
+            if (String.IsNullOrEmpty(data))
+            {
+                path = url.AbsoluteUri;               
+            }
+            else
+            {
+                path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri;
+            }
+
+            //var path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri;
             var request = CreateRequest(new Uri(path), verb);
 
             if (verb == HttpVerb.Post)
