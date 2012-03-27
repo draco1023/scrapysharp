@@ -110,8 +110,7 @@ namespace ScrapySharp.Network
             {
                 path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri;
             }
-
-            //var path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri;
+         
             var request = CreateRequest(new Uri(path), verb);
 
             if (verb == HttpVerb.Post)
