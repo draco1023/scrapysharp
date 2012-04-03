@@ -48,7 +48,7 @@ namespace ScrapySharp.Network
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
         {
             var request = (HttpWebRequest)WebRequest.Create(url.AbsoluteUri);
-            request.Referer = referer != null ? referer.AbsoluteUri : url.AbsoluteUri;
+            request.Referer = referer != null ? referer.AbsoluteUri : null;
             request.Method = ToMethod(verb);
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
