@@ -14,7 +14,6 @@ namespace ScrapySharp.Network
         private CookieContainer cookieContainer;
         private Uri referer;
 
-        private static readonly Regex changeCookiesDomainRegex = new Regex("Domain=([^;]+);", RegexOptions.Compiled);
         private static readonly Regex splitCookiesRegex = new Regex("(?<name>[^=]+)=(?<val>[^;]+)[^,]+,?", RegexOptions.Compiled);
 
         public ScrapingBrowser()
@@ -25,6 +24,8 @@ namespace ScrapySharp.Network
             Language = CultureInfo.CreateSpecificCulture("EN-US");
             UseDefaultCookiesParser = true;
             IgnoreCookies = false;
+            ProtocolVersion = HttpVersion.Version10;
+            KeepAlive = false;
         }
 
         public void ClearCookies()
@@ -52,6 +53,12 @@ namespace ScrapySharp.Network
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
             request.Headers["Accept-Language"] = Language.Name;
+
+            if (Timeout > TimeSpan.Zero)
+                request.Timeout = (int) Timeout.TotalMilliseconds;
+
+            request.KeepAlive = KeepAlive;
+            request.ProtocolVersion = ProtocolVersion;
 
             return request;
         }
@@ -101,16 +108,10 @@ namespace ScrapySharp.Network
 
         public string NavigateTo(Uri url, HttpVerb verb, string data)
         {
-            string path = "";
-            if (String.IsNullOrEmpty(data))
-            {
-                path = url.AbsoluteUri;               
-            }
-            else
-            {
-                path = verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri;
-            }
-         
+            var path = string.IsNullOrEmpty(data)
+                              ? url.AbsoluteUri
+                              : (verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri);
+
             var request = CreateRequest(new Uri(path), verb);
 
             if (verb == HttpVerb.Post)
@@ -175,7 +176,13 @@ namespace ScrapySharp.Network
         
         public bool IgnoreCookies { get; set; }
 
+        public TimeSpan Timeout { get; set; }
+
         public CultureInfo Language { get; set; }
+
+        public Version ProtocolVersion { get; set; }
+
+        public bool KeepAlive { get; set; }
 
         public Cookie GetCookie(Uri url, string name)
         {
