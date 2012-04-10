@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using ScrapySharp.Network;
@@ -72,5 +73,6 @@ namespace ScrapySharp.Tests
             var html = browser.DownloadString(url);
         }
 
+        
     }
 }

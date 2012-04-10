@@ -65,6 +65,17 @@ namespace ScrapySharp.Network
 
         private string GetResponse(Uri url, HttpWebRequest request)
         {
+            var response = GetWebResponse(url, request);
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+                return string.Empty;
+            using (var reader = new StreamReader(responseStream))
+                return reader.ReadToEnd();
+        }
+
+        private WebResponse GetWebResponse(Uri url, HttpWebRequest request)
+        {
             referer = url;
             request.AllowAutoRedirect = AllowAutoRedirect;
             var response = request.GetResponse();
@@ -84,12 +95,7 @@ namespace ScrapySharp.Network
                         SetCookies(cookieUrl, cookiesExpression);
                 }
             }
-
-            var responseStream = response.GetResponseStream();
-            if (responseStream == null)
-                return string.Empty;
-            using (var reader = new StreamReader(responseStream))
-                return reader.ReadToEnd();
+            return response;
         }
 
         public void SetCookies(Uri cookieUrl, string cookiesExpression)
@@ -100,10 +106,41 @@ namespace ScrapySharp.Network
             {
                 if (match.Groups["name"].Success && match.Groups["val"].Success)
                 {
-                    cookieContainer.Add(new Cookie(match.Groups["name"].Value, match.Groups["val"].Value, "/", cookieUrl.Host));
+                    cookieContainer.Add(new Cookie((match.Groups["name"].Value), (match.Groups["val"].Value), "/", cookieUrl.Host));
                 }
                 match = match.NextMatch();
             }
+        }
+
+        public WebResponse ExecuteRequest(Uri url, HttpVerb verb, NameValueCollection data)
+        {
+            return ExecuteRequest(url, verb, GetHttpPostVars(data));
+        }
+
+        public WebResponse ExecuteRequest(Uri url, HttpVerb verb, string data)
+        {
+            var path = string.IsNullOrEmpty(data)
+                              ? url.AbsoluteUri
+                              : (verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri);
+
+            var request = CreateRequest(new Uri(path), verb);
+
+            if (verb == HttpVerb.Post)
+                request.ContentType = "application/x-www-form-urlencoded";
+
+            request.CookieContainer = cookieContainer;
+
+            if (verb == HttpVerb.Post)
+            {
+                var stream = request.GetRequestStream();
+                using (var writer = new StreamWriter(stream))
+                {
+                    writer.Write(data);
+                    writer.Flush();
+                }
+            }
+
+            return GetWebResponse(url, request);
         }
 
         public string NavigateTo(Uri url, HttpVerb verb, string data)

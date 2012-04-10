@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Web;
@@ -67,6 +69,28 @@ namespace ScrapySharp.Extensions
         {
             var document = new HtmlDocument();
             document.LoadHtml(content);
+
+            return document.DocumentNode;
+        }
+
+        /// <summary>
+        /// Convert WebResponse content to HTML node.
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <returns></returns>
+        public static HtmlNode ToHtmlNode(this WebResponse response)
+        {
+            var document = new HtmlDocument();
+            string html;
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+                html = string.Empty;
+            else
+                using (var reader = new StreamReader(responseStream))
+                    html = reader.ReadToEnd();
+
+            document.LoadHtml(html);
 
             return document.DocumentNode;
         }
