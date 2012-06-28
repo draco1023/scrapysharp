@@ -10,6 +10,38 @@ namespace ScrapySharp.Tests
     public class When_use_code_reader
     {
         [Test]
+        public void When_read_a_simple_tag_with_missing_quote_in_attibute()
+        {
+            var sourceCode = "<div class=\"login id=\"lol\">test</div>";
+            var codeReader = new CodeReader(sourceCode);
+
+            var word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("div", word.Value);
+            
+            word = codeReader.ReadWord();
+            Assert.IsTrue(word.IsWhiteSpace);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("class", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("=", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("login id=", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("lol", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
+
+        }
+
+        [Test]
         public void When_read_a_simple_tag()
         {
             var sourceCode = "<div class=\"login box1\">login: \n\t romcy</div>";

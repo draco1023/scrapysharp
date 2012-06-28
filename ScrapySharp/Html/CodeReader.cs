@@ -68,7 +68,16 @@ namespace ScrapySharp.Html
             {
                 if (c == Tokens.Quote)
                     break;
+
+                var nextChar = GetNextChar();
+                if (nextChar == Tokens.TagBegin || nextChar == Tokens.TagEnd)
+                    break;
+
                 buffer.Append(c);
+
+                if (c == Tokens.TagBegin || c == Tokens.TagEnd)
+                    break;
+
                 c = ReadChar();
             }
 

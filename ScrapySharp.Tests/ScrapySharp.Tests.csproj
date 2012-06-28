@@ -57,6 +57,9 @@
     <Compile Include="When_use_code_reader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Html\InvalidPage1.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Html\Page1.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
