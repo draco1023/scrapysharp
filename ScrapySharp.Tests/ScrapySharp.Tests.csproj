@@ -54,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="When_parses_using_CssSelector.cs" />
     <Compile Include="When_use_browser.cs" />
+    <Compile Include="When_use_code_reader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Html\Page1.htm">

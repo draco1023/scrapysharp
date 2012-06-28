@@ -52,6 +52,10 @@
     <Compile Include="Extensions\NodeValueComparer.cs" />
     <Compile Include="Extensions\NodeValueComparison.cs" />
     <Compile Include="Extensions\UrlHelper.cs" />
+    <Compile Include="Html\CodeReader.cs" />
+    <Compile Include="Html\CodeReadingContext.cs" />
+    <Compile Include="Html\Tokens.cs" />
+    <Compile Include="Html\Word.cs" />
     <Compile Include="Network\FakeUserAgent.cs" />
     <Compile Include="Network\FakeUserAgents.cs" />
     <Compile Include="Network\HttpVerb.cs" />
