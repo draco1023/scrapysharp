@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace ScrapySharp.Html
+namespace ScrapySharp.Html.Parsing
 {
     public class CodeReader
     {

@@ -1,8 +1,7 @@
 // ReSharper disable InconsistentNaming
 
-using System.Diagnostics;
 using NUnit.Framework;
-using ScrapySharp.Html;
+using ScrapySharp.Html.Parsing;
 
 namespace ScrapySharp.Tests
 {
@@ -39,6 +38,19 @@ namespace ScrapySharp.Tests
             word = codeReader.ReadWord();
             Assert.AreEqual(">", word.Value);
 
+            word = codeReader.ReadWord();
+            Assert.AreEqual("test", word.Value);
+
+
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("</", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("div", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
         }
 
         [Test]

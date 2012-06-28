@@ -55,6 +55,7 @@
     <Compile Include="When_parses_using_CssSelector.cs" />
     <Compile Include="When_use_browser.cs" />
     <Compile Include="When_use_code_reader.cs" />
+    <Compile Include="When_use_dombuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Html\InvalidPage1.htm">

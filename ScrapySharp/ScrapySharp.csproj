@@ -52,10 +52,12 @@
     <Compile Include="Extensions\NodeValueComparer.cs" />
     <Compile Include="Extensions\NodeValueComparison.cs" />
     <Compile Include="Extensions\UrlHelper.cs" />
-    <Compile Include="Html\CodeReader.cs" />
-    <Compile Include="Html\CodeReadingContext.cs" />
-    <Compile Include="Html\Tokens.cs" />
-    <Compile Include="Html\Word.cs" />
+    <Compile Include="Html\Parsing\CodeReader.cs" />
+    <Compile Include="Html\Parsing\CodeReadingContext.cs" />
+    <Compile Include="Html\Parsing\HtmlDomBuilder.cs" />
+    <Compile Include="Html\Dom\HtmlElement.cs" />
+    <Compile Include="Html\Parsing\Tokens.cs" />
+    <Compile Include="Html\Parsing\Word.cs" />
     <Compile Include="Network\FakeUserAgent.cs" />
     <Compile Include="Network\FakeUserAgents.cs" />
     <Compile Include="Network\HttpVerb.cs" />
@@ -65,6 +67,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

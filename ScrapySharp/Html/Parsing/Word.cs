@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace ScrapySharp.Html
+namespace ScrapySharp.Html.Parsing
 {
     public class Word
     {
@@ -49,5 +49,19 @@ namespace ScrapySharp.Html
         {
             get { return isWhiteSpace; }
         }
+
+        public static implicit operator string(Word word)
+        {
+            return word.Value;
+        }
+
+        public static implicit operator char(Word word)
+        {
+            if (string.IsNullOrEmpty(word.Value))
+                return default(char);
+
+            return word.Value.FirstOrDefault();
+        }
+
     }
 }

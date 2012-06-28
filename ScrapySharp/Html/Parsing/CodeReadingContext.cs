@@ -1,4 +1,4 @@
-namespace ScrapySharp.Html
+namespace ScrapySharp.Html.Parsing
 {
     public enum CodeReadingContext
     {
