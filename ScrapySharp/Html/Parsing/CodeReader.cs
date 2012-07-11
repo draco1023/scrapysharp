@@ -43,9 +43,9 @@ namespace ScrapySharp.Html.Parsing
 
             buffer.Append(c);
 
-            var letterOrDigit = char.IsLetterOrDigit(c);
+            var letterOrDigit = IsLetterOrDigit(c);
 
-            while (char.IsLetterOrDigit(GetNextChar()) == letterOrDigit && !char.IsWhiteSpace(GetNextChar()))
+            while (IsLetterOrDigit(GetNextChar()) == letterOrDigit && !char.IsWhiteSpace(GetNextChar()))
             {
                 c = ReadChar();
                 if (c == Tokens.Quote)
@@ -130,6 +130,12 @@ namespace ScrapySharp.Html.Parsing
         public int LinePosition
         {
             get { return linePosition; }
+        }
+
+
+        public bool IsLetterOrDigit(char c)
+        {
+            return char.IsLetterOrDigit(c) || c == '-' || c == '_';
         }
     }
 }

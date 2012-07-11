@@ -121,7 +121,7 @@ namespace ScrapySharp.Html.Parsing
                            Type = DeclarationType.TextElement
                        };
         }
-
+        
         private bool IsTagDeclarationEnd(Word w)
         {
             return End || w == Tokens.TagBegin || w == Tokens.TagEnd;
