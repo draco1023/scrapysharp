@@ -1,18 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
+using ScrapySharp.Extensions;
 using ScrapySharp.Html.Dom;
 using System.Linq;
 
 namespace ScrapySharp.Html.Parsing
 {
-    public class HtmlDomBuilder
+    public class HtmlDeclarationReader
     {
         private CodeReadingContext context;
-        private List<Word> words;
+        private readonly List<Word> words;
         private int position = 0;
 
-        public HtmlDomBuilder(CodeReader reader)
+        public HtmlDeclarationReader(CodeReader reader)
         {
             context = CodeReadingContext.None;
             words = new List<Word>();
@@ -35,30 +35,43 @@ namespace ScrapySharp.Html.Parsing
         {
             var w = ReadWord();
 
-            if (Istoken(w) && w == Tokens.TagBegin && !GetNextWord().IsWhiteSpace)
+            if (w.IsToken() && (w == Tokens.TagBegin || w == Tokens.CloseTagDeclarator) && !GetNextWord().IsWhiteSpace)
             {
                 var element = new TagDeclaration
                 {
                     Words = new List<Word> {w},
-                    Name = ReadWord(),
                     Attributes = new Dictionary<string, string>()
                 };
+
+                w = ReadWord();
+                element.Words.Add(w);
+                element.Name = w;
+
+                if (element.Name == Tokens.CloseTag)
+                {
+                    w = ReadWord();
+                    element.Words.Add(w);
+                    element.Name = w;
+                }
 
                 do
                 {
                     SkipSpaces = true;
-                    element.Words.Add(w);
+                    //element.Words.Add(w);
                     
                     w = ReadWord();
+                    element.Words.Add(w);
                     if (IsTagDeclarationEnd(w))
                         break;
                     var attributeName = w.Value;
                     w = ReadWord();
+                    element.Words.Add(w);
                     if (IsTagDeclarationEnd(w))
                         break;
                     if (w.Value == Tokens.Assign)
                     {
                         w = ReadWord();
+                        element.Words.Add(w);
                         if (IsTagDeclarationEnd(w))
                             break;
                         element.Attributes.Add(attributeName, w.Value);
@@ -68,8 +81,7 @@ namespace ScrapySharp.Html.Parsing
 
                 SkipSpaces = false;
 
-                element.Words.Add(w);
-
+                //element.Words.Add(w);
                 element.Type = GetDeclarationType(element.Words);
 
                 return element;
@@ -86,6 +98,9 @@ namespace ScrapySharp.Html.Parsing
             if (wordList.Last() != Tokens.TagEnd)
                 return DeclarationType.TextElement;
 
+            if (wordList[0] == Tokens.CloseTagDeclarator)
+                return DeclarationType.CloseTag;
+            
             if (wordList[0] == Tokens.TagBegin)
             {
                 if (wordList[1] == Tokens.CloseTag)
@@ -125,17 +140,6 @@ namespace ScrapySharp.Html.Parsing
         private bool IsTagDeclarationEnd(Word w)
         {
             return End || w == Tokens.TagBegin || w == Tokens.TagEnd;
-        }
-
-        private bool Istoken(Word word)
-        {
-            return word.Value == Tokens.CloseTag ||
-                   word.Value == Tokens.CommentBegin ||
-                   word.Value == Tokens.CommentEnd ||
-                   word.Value == Tokens.Quote.ToString(CultureInfo.InvariantCulture) ||
-                   word.Value == Tokens.SimpleQuote.ToString(CultureInfo.InvariantCulture) ||
-                   word.Value == Tokens.TagBegin.ToString(CultureInfo.InvariantCulture) ||
-                   word.Value == Tokens.TagEnd.ToString(CultureInfo.InvariantCulture);
         }
 
         public Word GetNextWord()

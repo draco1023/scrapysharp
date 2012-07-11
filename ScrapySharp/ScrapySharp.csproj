@@ -51,10 +51,11 @@
     <Compile Include="Extensions\HtmlValue.cs" />
     <Compile Include="Extensions\NodeValueComparer.cs" />
     <Compile Include="Extensions\NodeValueComparison.cs" />
+    <Compile Include="Extensions\TokenHelper.cs" />
     <Compile Include="Extensions\UrlHelper.cs" />
     <Compile Include="Html\Parsing\CodeReader.cs" />
     <Compile Include="Html\Parsing\CodeReadingContext.cs" />
-    <Compile Include="Html\Parsing\HtmlDomBuilder.cs" />
+    <Compile Include="Html\Parsing\HtmlDeclarationReader.cs" />
     <Compile Include="Html\Dom\TagDeclaration.cs" />
     <Compile Include="Html\Parsing\Tokens.cs" />
     <Compile Include="Html\Parsing\Word.cs" />

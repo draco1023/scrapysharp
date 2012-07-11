@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using ScrapySharp.Extensions;
 
 namespace ScrapySharp.Html.Parsing
 {
@@ -45,7 +46,7 @@ namespace ScrapySharp.Html.Parsing
 
             var letterOrDigit = IsLetterOrDigit(c);
 
-            while (IsLetterOrDigit(GetNextChar()) == letterOrDigit && !char.IsWhiteSpace(GetNextChar()))
+            while (IsLetterOrDigit(GetNextChar()) == letterOrDigit && !char.IsWhiteSpace(GetNextChar()) && !GetNextChar().IsToken())
             {
                 c = ReadChar();
                 if (c == Tokens.Quote)
@@ -55,6 +56,9 @@ namespace ScrapySharp.Html.Parsing
                 }
 
                 buffer.Append(c);
+
+                //if (c.IsToken() && GetNextChar().IsToken())
+                //    break;
             }
 
             return new Word(buffer.ToString(), lineNumber, linePosition, false);

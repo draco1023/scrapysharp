@@ -9,6 +9,44 @@ namespace ScrapySharp.Tests
     public class When_use_code_reader
     {
         [Test]
+        public void When_reading_2_colapsed_spans()
+        {
+            var sourceCode = "<span>text 1</span><span>text 2</span>";
+            var codeReader = new CodeReader(sourceCode);
+
+            var word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("span", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("text", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("1", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("/", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("span", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
+
+        }
+
+        [Test]
         public void When_read_a_simple_tag_with_missing_quote_in_attibute()
         {
             var sourceCode = "<div class=\"login id=\"lol\">test</div>";
@@ -41,10 +79,11 @@ namespace ScrapySharp.Tests
             word = codeReader.ReadWord();
             Assert.AreEqual("test", word.Value);
 
-
+            word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
 
             word = codeReader.ReadWord();
-            Assert.AreEqual("</", word.Value);
+            Assert.AreEqual("/", word.Value);
 
             word = codeReader.ReadWord();
             Assert.AreEqual("div", word.Value);
@@ -105,7 +144,10 @@ namespace ScrapySharp.Tests
 
 
             word = codeReader.ReadWord();
-            Assert.AreEqual("</", word.Value);
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("/", word.Value);
 
             word = codeReader.ReadWord();
             Assert.AreEqual("div", word.Value);

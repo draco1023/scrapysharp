@@ -12,9 +12,11 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_read_a_simple_tag()
         {
-            var sourceCode = " dada\n<div class=\"login box1\" id=\"div1\" data-tooltip=\"salut, ça va?\">login: \n\t romcy</div>";
+            var sourceCode = " dada\n<div class=\"login box1\" id=\"div1\" data-tooltip=\"salut, ça va?\">login: \n\t romcy</div>"
+                + "<img src=\"http://popo.fr/titi.gif\" />";
+
             var codeReader = new CodeReader(sourceCode);
-            var domBuilder = new HtmlDomBuilder(codeReader);
+            var domBuilder = new HtmlDeclarationReader(codeReader);
 
             var element = domBuilder.ReadTagDeclaration();
             Assert.AreEqual(" dada\n", element.InnerText);
@@ -33,7 +35,14 @@ namespace ScrapySharp.Tests
             Assert.AreEqual("login: \n\t romcy", element.InnerText);
             Assert.AreEqual(DeclarationType.TextElement, element.Type);
 
+            element = domBuilder.ReadTagDeclaration();
+            Assert.AreEqual("div", element.Name);
+            Assert.AreEqual(DeclarationType.CloseTag, element.Type);
 
+            element = domBuilder.ReadTagDeclaration();
+            Assert.AreEqual("img", element.Name);
+            Assert.AreEqual(DeclarationType.SelfClosedTag, element.Type);
+            Assert.AreEqual("http://popo.fr/titi.gif", element.Attributes["src"]);
         }
     }
 }

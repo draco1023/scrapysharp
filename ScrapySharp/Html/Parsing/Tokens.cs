@@ -14,6 +14,7 @@
         public const string CommentEnd = "--";
         
         public const string Assign = "=";
-        
+
+        public const string CloseTagDeclarator = "</";
     }
 }
