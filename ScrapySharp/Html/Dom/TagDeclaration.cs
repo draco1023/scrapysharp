@@ -3,7 +3,7 @@ using ScrapySharp.Html.Parsing;
 
 namespace ScrapySharp.Html.Dom
 {
-    public class HtmlElement
+    public class TagDeclaration
     {
         public string InnerText { get; set; }
 
@@ -12,5 +12,15 @@ namespace ScrapySharp.Html.Dom
         public Dictionary<string, string> Attributes { get; set; }
 
         public List<Word> Words { get; set; }
+
+        public DeclarationType Type { get; set; }
+    }
+
+    public enum DeclarationType
+    {
+        TextElement,
+        OpenTag,
+        CloseTag,
+        SelfClosedTag,
     }
 }

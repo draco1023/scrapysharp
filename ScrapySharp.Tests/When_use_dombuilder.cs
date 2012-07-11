@@ -1,6 +1,7 @@
 // ReSharper disable InconsistentNaming
 
 using NUnit.Framework;
+using ScrapySharp.Html.Dom;
 using ScrapySharp.Html.Parsing;
 
 namespace ScrapySharp.Tests
@@ -15,17 +16,18 @@ namespace ScrapySharp.Tests
             var codeReader = new CodeReader(sourceCode);
             var domBuilder = new HtmlDomBuilder(codeReader);
 
-            var element = domBuilder.ReadHtmlElement();
-            Assert.AreEqual(" ", element.InnerText);
+            var element = domBuilder.ReadTagDeclaration();
+            Assert.AreEqual(" dada\n", element.InnerText);
+            Assert.AreEqual(DeclarationType.TextElement, element.Type);
             
-            element = domBuilder.ReadHtmlElement();
-            Assert.AreEqual("dada", element.InnerText);
-
-            element = domBuilder.ReadHtmlElement();
-            Assert.AreEqual("\n", element.InnerText);
-
-            element = domBuilder.ReadHtmlElement();
+            element = domBuilder.ReadTagDeclaration();
             Assert.AreEqual("div", element.Name);
+            Assert.AreEqual(DeclarationType.OpenTag, element.Type);
+
+            element = domBuilder.ReadTagDeclaration();
+            Assert.IsNull(element.Name);
+            Assert.AreEqual("login: \n\t romcy", element.InnerText);
+            Assert.AreEqual(DeclarationType.TextElement, element.Type);
 
 
         }

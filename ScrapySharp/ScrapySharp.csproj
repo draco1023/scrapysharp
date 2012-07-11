@@ -55,7 +55,7 @@
     <Compile Include="Html\Parsing\CodeReader.cs" />
     <Compile Include="Html\Parsing\CodeReadingContext.cs" />
     <Compile Include="Html\Parsing\HtmlDomBuilder.cs" />
-    <Compile Include="Html\Dom\HtmlElement.cs" />
+    <Compile Include="Html\Dom\TagDeclaration.cs" />
     <Compile Include="Html\Parsing\Tokens.cs" />
     <Compile Include="Html\Parsing\Word.cs" />
     <Compile Include="Network\FakeUserAgent.cs" />
