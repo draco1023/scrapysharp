@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
 using ScrapySharp.Extensions;
 using ScrapySharp.Html.Dom;
 using System.Linq;
@@ -8,13 +7,11 @@ namespace ScrapySharp.Html.Parsing
 {
     public class HtmlDeclarationReader
     {
-        private CodeReadingContext context;
         private readonly List<Word> words;
-        private int position = 0;
+        private int position;
 
         public HtmlDeclarationReader(CodeReader reader)
         {
-            context = CodeReadingContext.None;
             words = new List<Word>();
 
             SkipSpaces = false;
@@ -34,6 +31,8 @@ namespace ScrapySharp.Html.Parsing
         public TagDeclaration ReadTagDeclaration()
         {
             var w = ReadWord();
+            if (w == null)
+                return null;
 
             if (w.IsToken() && (w == Tokens.TagBegin || w == Tokens.CloseTagDeclarator) && !GetNextWord().IsWhiteSpace)
             {
@@ -57,7 +56,6 @@ namespace ScrapySharp.Html.Parsing
                 do
                 {
                     SkipSpaces = true;
-                    //element.Words.Add(w);
                     
                     w = ReadWord();
                     element.Words.Add(w);
@@ -80,8 +78,6 @@ namespace ScrapySharp.Html.Parsing
                 } while (!End && w != Tokens.TagBegin && w != Tokens.TagEnd);
 
                 SkipSpaces = false;
-
-                //element.Words.Add(w);
                 element.Type = GetDeclarationType(element.Words);
 
                 return element;

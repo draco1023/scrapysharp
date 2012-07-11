@@ -15,12 +15,4 @@ namespace ScrapySharp.Html.Dom
 
         public DeclarationType Type { get; set; }
     }
-
-    public enum DeclarationType
-    {
-        TextElement,
-        OpenTag,
-        CloseTag,
-        SelfClosedTag,
-    }
 }
