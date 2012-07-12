@@ -33,6 +33,8 @@ namespace ScrapySharp.Html.Parsing
 
                     while (closing < openning && i < declarations.Count)
                     {
+                        if (i >= declarations.Count - 1)
+                            break;
                         var current = declarations[++i];
                         if (current.Type == DeclarationType.CloseTag && current.Name == declaration.Name)
                             closing++;
@@ -44,12 +46,12 @@ namespace ScrapySharp.Html.Parsing
                             var childrenTags = declarations.Skip(start+1).Take(i - start - 1).ToList();
 
                             yield return new HElement
-                                             {
-                                                 Name = declaration.Name,
-                                                 Attributes = declaration.Attributes,
-                                                 InnerText = declaration.InnerText,
-                                                 Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
-                                             };
+                                                {
+                                                    Name = declaration.Name,
+                                                    Attributes = declaration.Attributes,
+                                                    InnerText = declaration.InnerText,
+                                                    Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
+                                                };
                             break;
                         }
                     }

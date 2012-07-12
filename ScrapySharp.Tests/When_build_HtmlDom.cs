@@ -1,6 +1,8 @@
 // ReSharper disable InconsistentNaming
 
+using System.IO;
 using NUnit.Framework;
+using ScrapySharp.Html.Dom;
 using ScrapySharp.Html.Parsing;
 using System.Linq;
 
@@ -42,6 +44,120 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(1, elements[2].Attributes.Count);
             Assert.AreEqual("http://popo.fr/titi.gif", elements[2].Attributes["src"]);
             Assert.AreEqual(0, elements[2].Children.Count);
+        }
+
+        [Test]
+        public void When_parsing_InvalidPage1()
+        {
+            var source = File.ReadAllText("Html/InvalidPage1.htm");
+            
+            TestWordsReading(source);
+
+            var codeReader = new CodeReader(source);
+            var declarationReader = new HtmlDeclarationReader(codeReader);
+            
+            var tag = declarationReader.ReadTagDeclaration();
+            Assert.AreEqual("html", tag.Name);
+            Assert.AreEqual(DeclarationType.OpenTag, tag.Type);
+
+            tag = declarationReader.ReadTagDeclaration();
+            Assert.AreEqual(null, tag.Name);
+            Assert.AreEqual(DeclarationType.TextElement, tag.Type);
+            Assert.AreEqual("\r\n    ", tag.InnerText);
+
+            tag = declarationReader.ReadTagDeclaration();
+            Assert.AreEqual("div", tag.Name);
+            Assert.AreEqual(DeclarationType.OpenTag, tag.Type);
+
+            tag = declarationReader.ReadTagDeclaration();
+            Assert.AreEqual(null, tag.Name);
+            Assert.AreEqual(DeclarationType.TextElement, tag.Type);
+            Assert.AreEqual("test", tag.InnerText);
+
+            tag = declarationReader.ReadTagDeclaration();
+            Assert.AreEqual("div", tag.Name);
+            Assert.AreEqual(DeclarationType.CloseTag, tag.Type);
+
+
+            var document = HDocument.Parse(source);
+
+
+
+        }
+
+        private static void TestWordsReading(string source)
+        {
+            var codeReader = new CodeReader(source);
+
+            var word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("html", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("\r", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("\n", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("div", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("class", word.Value);
+            word = codeReader.ReadWord();
+            Assert.AreEqual("=", word.Value);
+            word = codeReader.ReadWord();
+            Assert.AreEqual("login", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(" ", word.Value);
+            word = codeReader.ReadWord();
+            Assert.AreEqual("id", word.Value);
+            word = codeReader.ReadWord();
+            Assert.AreEqual("=", word.Value);
+            word = codeReader.ReadWord();
+            Assert.AreEqual("lol", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("test", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("<", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("/", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual("div", word.Value);
+
+            word = codeReader.ReadWord();
+            Assert.AreEqual(">", word.Value);
         }
     }
 }
