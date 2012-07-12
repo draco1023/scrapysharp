@@ -21,22 +21,19 @@ namespace ScrapySharp.Html.Parsing
 
         public IEnumerable<HElement> BuildDom(List<TagDeclaration> declarations)
         {
-            int openning = 0;
-            int closing = 0;
-
-            for (int i = 0; i < declarations.Count; i++)
+            for (var i = 0; i < declarations.Count; i++)
             {
                 var declaration = declarations[i];
 
                 if (declaration.Type == DeclarationType.OpenTag)
                 {
-                    openning = 1;
-                    closing = 0;
-                    var start = i++;
+                    var openning = 1;
+                    var closing = 0;
+                    var start = i;
 
                     while (closing < openning && i < declarations.Count)
                     {
-                        var current = declarations[i++];
+                        var current = declarations[++i];
                         if (current.Type == DeclarationType.CloseTag && current.Name == declaration.Name)
                             closing++;
                         if (current.Type == DeclarationType.OpenTag && current.Name == declaration.Name)
@@ -44,15 +41,16 @@ namespace ScrapySharp.Html.Parsing
 
                         if (openning == closing)
                         {
-                            var childrenTags = declarations.Skip(start).Take(i - start).ToList();
+                            var childrenTags = declarations.Skip(start+1).Take(i - start - 1).ToList();
 
                             yield return new HElement
                                              {
                                                  Name = declaration.Name,
                                                  Attributes = declaration.Attributes,
                                                  InnerText = declaration.InnerText,
-                                                 //Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
+                                                 Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
                                              };
+                            break;
                         }
                     }
                 }

@@ -22,6 +22,26 @@ namespace ScrapySharp.Tests
             var elements = domBuilder.BuildDom().ToList();
 
             Assert.AreEqual(3, elements.Count);
+
+            Assert.AreEqual(" dada\n", elements[0].InnerText);
+            Assert.IsNull(elements[0].Name);
+
+            Assert.AreEqual("div", elements[1].Name);
+            Assert.AreEqual(3, elements[1].Attributes.Count);
+            Assert.AreEqual("login box1", elements[1].Attributes["class"]);
+            Assert.AreEqual("div1", elements[1].Attributes["id"]);
+            Assert.AreEqual("salut, ça va?", elements[1].Attributes["data-tooltip"]);
+            
+            Assert.AreEqual("login: \n\t romcy", elements[1].InnerText);
+            
+            Assert.AreEqual(1, elements[1].Children.Count);
+            Assert.IsNull(elements[1].Children[0].Name);
+            Assert.AreEqual("login: \n\t romcy", elements[1].Children[0].InnerText);
+
+            Assert.AreEqual("img", elements[2].Name);
+            Assert.AreEqual(1, elements[2].Attributes.Count);
+            Assert.AreEqual("http://popo.fr/titi.gif", elements[2].Attributes["src"]);
+            Assert.AreEqual(0, elements[2].Children.Count);
         }
     }
 }
