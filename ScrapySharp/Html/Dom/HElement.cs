@@ -3,8 +3,9 @@ using System.Text;
 
 namespace ScrapySharp.Html.Dom
 {
-    public class HElement
+    public class HElement : HContainer
     {
+        private string name;
         private string innerText;
 
         public HElement()
@@ -13,7 +14,16 @@ namespace ScrapySharp.Html.Dom
             Attributes = new Dictionary<string, string>();
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                if (name == null)
+                    return string.Empty;
+                return name;
+            }
+            set { name = value; }
+        }
 
         public Dictionary<string, string> Attributes { get; set; }
 
@@ -37,6 +47,5 @@ namespace ScrapySharp.Html.Dom
             set { innerText = value; }
         }
 
-        public List<HElement> Children { get; set; }
     }
 }

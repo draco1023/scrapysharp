@@ -26,7 +26,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(3, elements.Count);
 
             Assert.AreEqual(" dada\n", elements[0].InnerText);
-            Assert.IsNull(elements[0].Name);
+            Assert.IsEmpty(elements[0].Name);
 
             Assert.AreEqual("div", elements[1].Name);
             Assert.AreEqual(3, elements[1].Attributes.Count);
@@ -37,7 +37,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual("login: \n\t romcy", elements[1].InnerText);
             
             Assert.AreEqual(1, elements[1].Children.Count);
-            Assert.IsNull(elements[1].Children[0].Name);
+            Assert.IsEmpty(elements[1].Children[0].Name);
             Assert.AreEqual("login: \n\t romcy", elements[1].Children[0].InnerText);
 
             Assert.AreEqual("img", elements[2].Name);
@@ -47,15 +47,15 @@ namespace ScrapySharp.Tests
         }
 
         [Test]
-        public void When_parsing_InvalidPage1()
+        public void When_parsing_ValidPage1()
         {
-            var source = File.ReadAllText("Html/InvalidPage1.htm");
-            
+            var source = File.ReadAllText("Html/ValidPage1.htm");
+
             TestWordsReading(source);
 
             var codeReader = new CodeReader(source);
             var declarationReader = new HtmlDeclarationReader(codeReader);
-            
+
             var tag = declarationReader.ReadTagDeclaration();
             Assert.AreEqual("html", tag.Name);
             Assert.AreEqual(DeclarationType.OpenTag, tag.Type);
@@ -81,7 +81,46 @@ namespace ScrapySharp.Tests
 
             var document = HDocument.Parse(source);
 
+            Assert.AreEqual(1, document.Elements("html").Count());
+            Assert.AreEqual(2, document.Elements("html").Elements("div").Count());
 
+            Assert.AreEqual("test", document.Elements("html").Elements("div").ElementAt(0).InnerText);
+
+            Assert.AreEqual(2, document.Elements("html").Elements("div").ElementAt(1).Elements("span").Count());
+            Assert.AreEqual("Welcome", document.Elements("html").Elements("div").ElementAt(1).Elements("span").ElementAt(0).InnerText);
+            Assert.AreEqual(" toto", document.Elements("html").Elements("div").ElementAt(1).Elements("span").ElementAt(1).InnerText);
+
+            Assert.AreEqual(2, document.Descendants("div").Count());
+            Assert.AreEqual(2, document.Descendants("span").Count());
+        }
+
+        [Test]
+        public void When_parsing_InvalidPage1()
+        {
+            var source = File.ReadAllText("Html/InvalidPage1.htm");
+            
+            var document = HDocument.Parse(source);
+
+            Assert.AreEqual(1, document.Elements("html").Count());
+            Assert.AreEqual(2, document.Elements("html").Elements("div").Count());
+
+            var firstDiv = document.Elements("html").Elements("div").First();
+            Assert.AreEqual("test", firstDiv.InnerText);
+            Assert.AreEqual("login id=", firstDiv.Attributes["class"]);
+
+            Assert.AreEqual(2, document.Elements("html").Elements("div").ElementAt(1).Elements("span").Count());
+            Assert.AreEqual("Welcome", document.Elements("html").Elements("div").ElementAt(1).Elements("span").ElementAt(0).InnerText);
+            Assert.AreEqual(" toto", document.Elements("html").Elements("div").ElementAt(1).Elements("span").ElementAt(1).InnerText);
+
+            Assert.AreEqual(2, document.Descendants("div").Count());
+            Assert.AreEqual(2, document.Descendants("span").Count());
+
+            Assert.AreEqual(1, document.Descendants("table").Count());
+            Assert.AreEqual(1, document.Descendants("thead").Count());
+            Assert.AreEqual(1, document.Descendants("tbody").Count());
+            
+            Assert.AreEqual(3, document.Descendants("tr").Count());
+            Assert.AreEqual(3, document.Descendants("td").Count());
 
         }
 

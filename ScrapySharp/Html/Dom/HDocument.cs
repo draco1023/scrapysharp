@@ -4,7 +4,7 @@ using ScrapySharp.Html.Parsing;
 
 namespace ScrapySharp.Html.Dom
 {
-    public class HDocument
+    public class HDocument : HContainer
     {
         public HDocument()
         {
@@ -23,6 +23,5 @@ namespace ScrapySharp.Html.Dom
                        };
         }
 
-        public List<HElement> Children { get; set; }
     }
 }
