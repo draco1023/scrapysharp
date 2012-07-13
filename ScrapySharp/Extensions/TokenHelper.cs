@@ -24,6 +24,7 @@ namespace ScrapySharp.Extensions
                    value == Tokens.SimpleQuote.ToString(CultureInfo.InvariantCulture) ||
                    value == Tokens.TagBegin.ToString(CultureInfo.InvariantCulture) ||
                    value == Tokens.TagEnd.ToString(CultureInfo.InvariantCulture) ||
+                   value == Tokens.Doctype ||
                    value == Tokens.CloseTagDeclarator;
         }
     }

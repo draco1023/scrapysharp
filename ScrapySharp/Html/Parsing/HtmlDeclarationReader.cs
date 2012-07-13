@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ScrapySharp.Extensions;
 using ScrapySharp.Html.Dom;
@@ -36,6 +37,9 @@ namespace ScrapySharp.Html.Parsing
 
             if (w.IsToken() && (w == Tokens.TagBegin || w == Tokens.CloseTagDeclarator) && !GetNextWord().IsWhiteSpace)
             {
+                if (w == Tokens.Doctype)
+                    return ReadDoctype(w);
+
                 var element = new TagDeclaration
                 {
                     Words = new List<Word> {w},
@@ -109,6 +113,35 @@ namespace ScrapySharp.Html.Parsing
             }
 
             return DeclarationType.TextElement;
+        }
+
+        private TagDeclaration ReadDoctype(Word word)
+        {
+            var wordList = new List<Word>();
+            var w = word;
+
+            wordList.Add(w);
+
+            SkipSpaces = true;
+
+            while (!End && GetNextWord() != Tokens.TagBegin && w != Tokens.TagEnd)
+            {
+                w = ReadWord();
+                wordList.Add(w);
+
+                if (w.Value.Equals("DOCTYPE", StringComparison.InvariantCultureIgnoreCase))
+                    SkipSpaces = false;
+            }
+
+            SkipSpaces = false;
+
+            return new TagDeclaration
+            {
+                InnerText = string.Join(string.Empty, wordList.Select(i => i.Value)),
+                Words = wordList,
+                Type = DeclarationType.SelfClosedTag,
+                Name = "DOCTYPE"
+            };
         }
 
         private TagDeclaration ReadTextElement(Word word)

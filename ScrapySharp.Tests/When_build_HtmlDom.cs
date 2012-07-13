@@ -101,6 +101,8 @@ namespace ScrapySharp.Tests
             
             var document = HDocument.Parse(source);
 
+            var doctype = document.Elements("DOCTYPE");
+
             Assert.AreEqual(1, document.Elements("html").Count());
             Assert.AreEqual(2, document.Elements("html").Elements("div").Count());
 
@@ -120,7 +122,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(1, document.Descendants("tbody").Count());
             
             Assert.AreEqual(3, document.Descendants("tr").Count());
-            Assert.AreEqual(3, document.Descendants("td").Count());
+            Assert.AreEqual(4, document.Descendants("td").Count());
 
         }
 

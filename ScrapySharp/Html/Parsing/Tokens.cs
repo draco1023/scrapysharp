@@ -16,5 +16,7 @@
         public const string Assign = "=";
 
         public const string CloseTagDeclarator = "</";
+
+        public const string Doctype = "<!";
     }
 }
