@@ -9,13 +9,6 @@ using System.Linq;
 namespace ScrapySharp.Tests
 {
     [TestFixture]
-    public class When_parse_real_html_pages
-    {
-
-
-    }
-
-    [TestFixture]
     public class When_build_HtmlDom
     {
         [Test]
