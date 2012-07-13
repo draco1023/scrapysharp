@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ScrapySharp.Html.Dom;
 using System.Linq;
@@ -54,6 +55,21 @@ namespace ScrapySharp.Html.Parsing
                                                 };
                             break;
                         }
+                    }
+
+                    if (openning != closing)
+                    {
+                        //throw new Exception("Invalid tag: " + declaration.Name);
+
+                        var childrenTags = declarations.Skip(start + 1).Take(i - start - 1).ToList();
+
+                        yield return new HElement
+                        {
+                            Name = declaration.Name,
+                            Attributes = declaration.Attributes,
+                            InnerText = declaration.InnerText,
+                            Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
+                        };
                     }
                 }
 
