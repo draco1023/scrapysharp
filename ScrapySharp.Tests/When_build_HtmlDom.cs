@@ -101,7 +101,7 @@ namespace ScrapySharp.Tests
             
             var document = HDocument.Parse(source);
 
-            var doctype = document.Elements("DOCTYPE");
+            var doctype = document.Elements("DOCTYPE").Single();
 
             Assert.AreEqual(1, document.Elements("html").Count());
             Assert.AreEqual(2, document.Elements("html").Elements("div").Count());

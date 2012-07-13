@@ -22,7 +22,13 @@ namespace ScrapySharp.Html.Parsing
 
         public string Value
         {
-            get { return value; }
+            get
+            {
+                if (IsQuoted)
+                    return '"' + value + '"';
+
+                return value;
+            }
         }
 
         public int LineNumber
