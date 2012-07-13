@@ -9,6 +9,13 @@ using System.Linq;
 namespace ScrapySharp.Tests
 {
     [TestFixture]
+    public class When_parse_real_html_pages
+    {
+
+
+    }
+
+    [TestFixture]
     public class When_build_HtmlDom
     {
         [Test]
@@ -102,6 +109,9 @@ namespace ScrapySharp.Tests
             var document = HDocument.Parse(source);
 
             var doctype = document.Elements("DOCTYPE").Single();
+
+            Assert.AreEqual("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+                doctype.InnerText);
 
             Assert.AreEqual(1, document.Elements("html").Count());
             Assert.AreEqual(2, document.Elements("html").Elements("div").Count());

@@ -24,6 +24,14 @@ namespace ScrapySharp.Html.Parsing
         {
             get
             {
+                return value;
+            }
+        }
+
+        public string QuotedValue
+        {
+            get
+            {
                 if (IsQuoted)
                     return '"' + value + '"';
 

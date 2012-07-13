@@ -137,7 +137,7 @@ namespace ScrapySharp.Html.Parsing
 
             return new TagDeclaration
             {
-                InnerText = string.Join(string.Empty, wordList.Select(i => i.Value)),
+                InnerText = string.Join(string.Empty, wordList.Select(i => i.QuotedValue)),
                 Words = wordList,
                 Type = DeclarationType.SelfClosedTag,
                 Name = "DOCTYPE"
@@ -163,7 +163,7 @@ namespace ScrapySharp.Html.Parsing
 
             return new TagDeclaration
                        {
-                           InnerText = string.Join(string.Empty, wordList.Select(i => i.Value)),
+                           InnerText = string.Join(string.Empty, wordList.Select(i => i.QuotedValue)),
                            Words = wordList,
                            Type = DeclarationType.TextElement
                        };
