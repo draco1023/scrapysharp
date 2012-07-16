@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ScrapingException.cs" />
+    <Compile Include="Extensions\HDocumentCssQueryExtensions.cs" />
     <Compile Include="Extensions\HtmlAgilityCssQueryExtensions.cs" />
     <Compile Include="Extensions\HtmlCreationHelper.cs" />
     <Compile Include="Extensions\HtmlParsingHelper.cs" />

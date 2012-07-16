@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using ScrapySharp.Html.Parsing;
 
 namespace ScrapySharp.Html.Dom
@@ -9,7 +10,7 @@ namespace ScrapySharp.Html.Dom
 
         public string Name { get; set; }
 
-        public Dictionary<string, string> Attributes { get; set; }
+        public NameValueCollection Attributes { get; set; }
 
         public List<Word> Words { get; set; }
 

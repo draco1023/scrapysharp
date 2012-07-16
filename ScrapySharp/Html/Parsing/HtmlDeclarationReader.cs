@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using ScrapySharp.Extensions;
 using ScrapySharp.Html.Dom;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace ScrapySharp.Html.Parsing
                 var element = new TagDeclaration
                 {
                     Words = new List<Word> {w},
-                    Attributes = new Dictionary<string, string>()
+                    Attributes = new NameValueCollection()
                 };
 
                 w = ReadWord();

@@ -21,6 +21,22 @@ namespace ScrapySharp.Html.Dom
                 }
             }
         }
+        
+        public static IEnumerable<HElement> Descendants(this HContainer container)
+        {
+            foreach (var element in container.Children)
+            {
+                yield return element;
+            }
+
+            foreach (var child in container.Children)
+            {
+                foreach (var element in child.Descendants())
+                {
+                    yield return element;
+                }
+            }
+        }
 
         public static IEnumerable<HElement> Elements(this IEnumerable<HContainer> containers, string name)
         {

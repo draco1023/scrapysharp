@@ -20,7 +20,7 @@ namespace ScrapySharp.Html.Parsing
             }
         }
 
-        public IEnumerable<HElement> BuildDom(List<TagDeclaration> declarations)
+        public IEnumerable<HElement> BuildDom(List<TagDeclaration> declarations, HElement parent)
         {
             for (var i = 0; i < declarations.Count; i++)
             {
@@ -46,13 +46,18 @@ namespace ScrapySharp.Html.Parsing
                         {
                             var childrenTags = declarations.Skip(start+1).Take(i - start - 1).ToList();
 
-                            yield return new HElement
-                                                {
-                                                    Name = declaration.Name,
-                                                    Attributes = declaration.Attributes,
-                                                    InnerText = declaration.InnerText,
-                                                    Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
-                                                };
+                            var element = new HElement
+                            {
+                                Name = declaration.Name,
+                                Attributes = declaration.Attributes,
+                                InnerText = declaration.InnerText,
+                                ParentNode = parent
+                            };
+                            var children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags, element).ToList() : new List<HElement>();
+
+                            element.Children = children;
+
+                            yield return element;
                             break;
                         }
                     }
@@ -68,7 +73,7 @@ namespace ScrapySharp.Html.Parsing
                             Name = declaration.Name,
                             Attributes = declaration.Attributes,
                             InnerText = declaration.InnerText,
-                            Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags).ToList() : new List<HElement>()
+                            Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags, parent).ToList() : new List<HElement>()
                         };
                     }
                 }
@@ -85,7 +90,7 @@ namespace ScrapySharp.Html.Parsing
 
         public IEnumerable<HElement> BuildDom()
         {
-            return BuildDom(tags);
+            return BuildDom(tags, null);
         }
     }
 }

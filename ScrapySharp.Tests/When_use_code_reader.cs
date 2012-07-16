@@ -122,10 +122,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(">", word.Value);
 
             word = codeReader.ReadWord();
-            Assert.AreEqual("login", word.Value);
-
-            word = codeReader.ReadWord();
-            Assert.AreEqual(":", word.Value);
+            Assert.AreEqual("login:", word.Value);
 
             word = codeReader.ReadWord();
             Assert.AreEqual(" ", word.Value);
