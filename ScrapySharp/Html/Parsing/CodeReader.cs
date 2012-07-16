@@ -36,10 +36,10 @@ namespace ScrapySharp.Html.Parsing
             if (char.IsWhiteSpace(c))
                 return new Word(c.ToString(CultureInfo.InvariantCulture), lineNumber, linePosition, false);
 
-            if (context != CodeReadingContext.InQuotes && c == Tokens.Quote)
+            if (context != CodeReadingContext.InQuotes && (c == Tokens.Quote || c == Tokens.SimpleQuote))
             {
                 context = CodeReadingContext.InQuotes;
-                return ReadQuotedString();
+                return ReadQuotedString(c);
             }
 
             buffer.Append(c);
@@ -64,13 +64,13 @@ namespace ScrapySharp.Html.Parsing
             return new Word(buffer.ToString(), lineNumber, linePosition, false);
         }
 
-        private Word ReadQuotedString()
+        private Word ReadQuotedString(char quoteChar)
         {
             var c = ReadChar();
             
             while (!End && context == CodeReadingContext.InQuotes)
             {
-                if (c == Tokens.Quote)
+                if (c == quoteChar)
                     break;
 
                 var nextChar = GetNextChar();

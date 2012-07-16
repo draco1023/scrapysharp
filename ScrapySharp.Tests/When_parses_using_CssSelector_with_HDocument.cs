@@ -134,7 +134,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_using_ends_with_attribute_selector()
         {
-            var source = "<html><body><hr /><hr id=\"bla123\"'/><hr id=\"'1nothing\"'/><hr id=\"'2nothing\"'/></body></html>";
+            var source = "<html><body><hr /><hr id='bla123'/><hr id=\"1nothing\"/><hr id='2nothing'/></body></html>";
             var doc = HDocument.Parse(source);
 
             var result = doc.CssSelect("hr[id$=ing]").ToArray();
