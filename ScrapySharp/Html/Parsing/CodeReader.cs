@@ -139,7 +139,8 @@ namespace ScrapySharp.Html.Parsing
 
         public bool IsLetterOrDigit(char c)
         {
-            return char.IsLetterOrDigit(c) || c == '-' || c == '_';
+            return char.IsLetterOrDigit(c) || c == '-' || c == '_'
+                || c == ':' || c == ';' || c == '+';
         }
     }
 }
