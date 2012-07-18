@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace ScrapySharp.Html.Dom
 {
     public abstract class HContainer
     {
         private string name;
-        private string innerText;
+        protected string innerText;
 
 
         protected HContainer()
@@ -15,6 +16,11 @@ namespace ScrapySharp.Html.Dom
         }
 
         public List<HElement> Children { get; set; }
+        
+        public bool HasChildren
+        {
+            get { return Children != null && Children.Any(); }
+        }
 
         public string Name
         {

@@ -1,18 +1,59 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Text;
 
 namespace ScrapySharp.Html.Dom
 {
     public class HElement : HContainer
     {
-
         public HElement()
         {
             Children = new List<HElement>();
             Attributes = new NameValueCollection();
         }
         
+        public string OuterHtml
+        {
+            get
+            {
+                var builder = new StringBuilder();
+
+                var selfClosing = !HasChildren && !string.IsNullOrEmpty(innerText);
+
+                if (!string.IsNullOrEmpty(Name))
+                {
+                    builder.Append('<');
+                    builder.Append(Name);
+                    
+                    if (HasAttributes)
+                        foreach (var key in Attributes.AllKeys)
+                            builder.AppendFormat(" {0}=\"{1}\"", key, Attributes[key]);
+
+                    if (!selfClosing)
+                        builder.Append('>');
+                    else
+                        builder.Append(" />");
+                }
+
+                if (!selfClosing)
+                {
+                    
+                    if (HasChildren)
+                        foreach (var child in Children)
+                            builder.Append(child.OuterHtml);
+
+                    builder.AppendFormat("</{0}>", Name);
+                }
+
+                if (!string.IsNullOrEmpty(innerText))
+                    builder.Append(innerText);
+
+                return builder.ToString();
+            }
+        }
+
+
         public string Id
         {
             get

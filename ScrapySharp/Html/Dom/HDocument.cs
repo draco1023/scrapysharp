@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using ScrapySharp.Html.Parsing;
 
 namespace ScrapySharp.Html.Dom
@@ -22,6 +23,26 @@ namespace ScrapySharp.Html.Dom
                            Children = domBuilder.BuildDom().ToList()
                        };
         }
+        
+        public string OuterHtml
+        {
+            get
+            {
+                var builder = new StringBuilder();
 
+                var selfClosing = !HasChildren && !string.IsNullOrEmpty(innerText);
+
+                if (!selfClosing)
+                {
+                    if (!string.IsNullOrEmpty(innerText))
+                        builder.Append(innerText);
+                    if (HasChildren)
+                        foreach (var child in Children)
+                            builder.Append(child.OuterHtml);
+                }
+
+                return builder.ToString();
+            }
+        }
     }
 }
