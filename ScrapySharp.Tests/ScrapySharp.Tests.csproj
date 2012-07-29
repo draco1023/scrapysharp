@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="When_parses_using_CssSelector.cs" />
+    <Compile Include="When_parses_using_CssSelector_with_fsharp_tokenizer.cs" />
+    <Compile Include="When_tokenize_CssSelector.cs" />
     <Compile Include="When_use_browser.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +63,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ScrapySharp.Core\ScrapySharp.Core.fsproj">
+      <Project>{CE27016B-2755-4B44-8A0E-574914B9256F}</Project>
+      <Name>ScrapySharp.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScrapySharp\ScrapySharp.csproj">
       <Project>{19858AEA-E842-4633-AF1B-110ED4FE3770}</Project>
       <Name>ScrapySharp</Name>
