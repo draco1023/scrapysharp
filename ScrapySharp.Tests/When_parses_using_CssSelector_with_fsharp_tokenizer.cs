@@ -33,6 +33,32 @@ namespace ScrapySharp.Tests
 
             Assert.AreEqual(3, tokens.Length);
         }
+
+        [Test]
+        public void When_execute_css_selector1()
+        {
+            var tokenizer = new CssSelectorTokenizer();
+            var tokens = tokenizer.Tokenize("span.login-box");
+            Assert.AreEqual(3, tokens.Length);
+
+            var executor = new CssSelectorExecutor(html.ChildNodes.ToList(), tokens.ToList());
+            HtmlNode[] htmlNodes = executor.GetElements();
+
+            Assert.AreEqual(1, htmlNodes.Length);
+        }
+
+        [Test]
+        public void When_execute_css_selector2()
+        {
+            var tokenizer = new CssSelectorTokenizer();
+            var tokens = tokenizer.Tokenize("div.widget.monthlist");
+            Assert.AreEqual(5, tokens.Length);
+
+            var executor = new CssSelectorExecutor(html.ChildNodes.ToList(), tokens.ToList());
+            HtmlNode[] htmlNodes = executor.GetElements();
+
+            Assert.AreEqual(1, htmlNodes.Length);
+        }
     }
 }
 

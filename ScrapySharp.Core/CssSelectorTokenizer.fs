@@ -1,34 +1,11 @@
-﻿// Learn more about F# at http://fsharp.net
-
-namespace ScrapySharp.Core
+﻿namespace ScrapySharp.Core
 
     open System
     open System.IO
     open System.Net
     open System.Runtime.Serialization.Formatters.Binary
     open System.Text
-
-    type Token =
-        | ClassPrefix of int
-        | IdPrefix of int
-        | TagName of int * string
-        | CssClass of int * string
-        | CssId of int * string
-        | AllChildren of int
-        | OpenAttribute of int | CloseAttribute of int
-        | AttributeName of int * string
-        | AttributeValue of int * string
-        | Assign of int
-        | DirectChildren of int | Ancestor of int
-
-    type TokenContainer(token:Token, offset:int) =
-        member t.Offset = offset
-        member t.Token = token
-
-    type CharContainer(c:char, offset:int) =
-        member t.Offset = offset
-        member t.Char = c
-
+    
     type CssSelectorTokenizer() =
         let mutable charCount:int = 0
         let mutable source = List<char>.Empty
@@ -44,11 +21,11 @@ namespace ScrapySharp.Core
             charCount <- source.Length
             x.tokenize() |> List.toArray
             
-
         member private x.tokenize() = 
             let rec readString acc = function
-                | c :: t when Char.IsLetterOrDigit(c) || c.Equals('-') || c.Equals('_') -> 
-                    readString (acc + (c.ToString())) t
+                | c :: t when Char.IsLetterOrDigit(c) || c.Equals('-') || c.Equals('_') 
+                    || c.Equals('+') || c.Equals('/')
+                     -> readString (acc + (c.ToString())) t
                 | '\'' :: t -> 
                     if inQuotes then
                         inQuotes <- false
@@ -68,8 +45,6 @@ namespace ScrapySharp.Core
                 | _ ->
                     failwith "Invalid css selector syntax"
         
-        
-
             let rec tokenize' acc sourceChars = 
                 match sourceChars with
                 | w :: t when Char.IsWhiteSpace(w) -> 
@@ -94,6 +69,14 @@ namespace ScrapySharp.Core
                 | '=' :: t ->
                     let s, t' = readString "" t
                     tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.Assign(getOffset(t)) :: acc) t'
+        
+                | '$' :: '=' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.EndWith(getOffset(t)) :: acc) t'
+        
+                | '^' :: '=' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.StartWith(getOffset(t)) :: acc) t'
         
                 | '>' :: t ->
                     let seqtoken = (acc |> List.toSeq |> Seq.skip(1) |> Seq.toList)
@@ -120,4 +103,3 @@ namespace ScrapySharp.Core
                 | _ ->
                     failwith "Invalid css selector syntax"
             tokenize' [] source
-
