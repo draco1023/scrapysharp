@@ -7,12 +7,12 @@ namespace ScrapySharp.Extensions
 {
     public static class CssQueryExtensions
     {
-        public static IEnumerable<HtmlNode> CssSelect2(this IEnumerable<HtmlNode> nodes, string expression)
+        public static IEnumerable<HtmlNode> CssSelect(this IEnumerable<HtmlNode> nodes, string expression)
         {
-            return nodes.SelectMany(node => CssSelect2(node, expression));
+            return nodes.SelectMany(node => CssSelect(node, expression));
         }
 
-        public static IEnumerable<HtmlNode> CssSelect2(this HtmlNode node, string expression)
+        public static IEnumerable<HtmlNode> CssSelect(this HtmlNode node, string expression)
         {
             var tokenizer = new CssSelectorTokenizer();
             var tokens = tokenizer.Tokenize(expression);
@@ -21,13 +21,13 @@ namespace ScrapySharp.Extensions
             return executor.GetElements();
         }
 
-        public static IEnumerable<HtmlNode> CssSelectAncestors2(this IEnumerable<HtmlNode> nodes, string expression)
+        public static IEnumerable<HtmlNode> CssSelectAncestors(this IEnumerable<HtmlNode> nodes, string expression)
         {
-            var htmlNodes = nodes.SelectMany(node => CssSelectAncestors2(node, expression)).ToArray();
+            var htmlNodes = nodes.SelectMany(node => CssSelectAncestors(node, expression)).ToArray();
             return htmlNodes.Distinct();
         }
 
-        public static IEnumerable<HtmlNode> CssSelectAncestors2(this HtmlNode node, string expression)
+        public static IEnumerable<HtmlNode> CssSelectAncestors(this HtmlNode node, string expression)
         {
             var tokenizer = new CssSelectorTokenizer();
             var tokens = tokenizer.Tokenize(expression);
