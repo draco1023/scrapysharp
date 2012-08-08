@@ -40,7 +40,7 @@ namespace ScrapySharp.Tests
         {
             var divs = html.CssSelect("div").ToArray();
 
-            Assert.AreEqual(28, divs.Length);
+            Assert.AreEqual(29, divs.Length);
         }
 
         [Test]
