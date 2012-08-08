@@ -6,6 +6,7 @@ using HtmlAgilityPack;
 
 namespace ScrapySharp.Extensions
 {
+    [Obsolete("Use CssQueryExtensions instead of HtmlAgilityCssQueryExtensions")]
     public static class HtmlAgilityCssQueryExtensions
     {
         private const string PatternId = @"[#](?<id>[\w-_]+)";
@@ -13,16 +14,19 @@ namespace ScrapySharp.Extensions
         private static readonly Regex regexId = new Regex(PatternId, RegexOptions.Compiled);
         private static readonly Regex regexAttribute = new Regex(PatternAttribute, RegexOptions.Compiled);
 
+        [Obsolete("Use CssQueryExtensions instead of HtmlAgilityCssQueryExtensions")]
         public static IEnumerable<HtmlNode> CssSelect(this IEnumerable<HtmlNode> nodes, string expression)
         {
             return nodes.SelectMany(node => CssSelect(node, expression));
         }
 
+        [Obsolete("Use CssQueryExtensions instead of HtmlAgilityCssQueryExtensions")]
         public static IEnumerable<HtmlNode> CssSelectAncestors(this IEnumerable<HtmlNode> nodes, string expression)
         {
             return nodes.SelectMany(node => CssSelectAncestors(node, expression)).Distinct();
         }
 
+        [Obsolete("Use CssQueryExtensions instead of HtmlAgilityCssQueryExtensions")]
         public static IEnumerable<HtmlNode> CssSelectAncestors(this HtmlNode node, string expression)
         {
             if (string.IsNullOrEmpty(expression))
@@ -36,6 +40,7 @@ namespace ScrapySharp.Extensions
             return CssSelect(node, expression, false, true);
         }
 
+        [Obsolete("Use CssQueryExtensions instead of HtmlAgilityCssQueryExtensions")]
         public static IEnumerable<HtmlNode> CssSelect(this HtmlNode node, string expression)
         {
             if (string.IsNullOrEmpty(expression))
@@ -173,6 +178,7 @@ namespace ScrapySharp.Extensions
             return GetElementsByClasses(node, unlessIdSelector, directAncestor, true);
         }
 
+        [Obsolete("Use CssQueryExtensions instead of HtmlAgilityCssQueryExtensions")]
         public static IEnumerable<HtmlNode> GetDescendantsById(this HtmlNode node, string id)
         {
             return from n in node.Descendants()

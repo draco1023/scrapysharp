@@ -96,7 +96,6 @@ namespace ScrapySharp.Tests
 
             Assert.AreEqual("tototata", nodes[0].InnerText);
             Assert.AreEqual("tata", nodes[1].InnerText);
-
         }
 
         [Test]
@@ -113,6 +112,7 @@ namespace ScrapySharp.Tests
         public void When_uses_tagName_with_css_class_using_direct_inheritance()
         {
             Assert.AreEqual(1, html.CssSelect2("div.content > p.para").Count());
+            Assert.AreEqual(2, html.CssSelect2("div.content p.para").Count());
         }
 
         [Test]
@@ -137,8 +137,7 @@ namespace ScrapySharp.Tests
             var ancestors2 = html.CssSelect2("p.para").CssSelectAncestors("div.content > div.widget").ToArray();
             Assert.AreEqual(1, ancestors2.Count());
         }
-
-
+        
         [Test]
         public void When_uses_attribute_selector()
         {

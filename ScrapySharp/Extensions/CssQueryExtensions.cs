@@ -7,6 +7,11 @@ namespace ScrapySharp.Extensions
 {
     public static class CssQueryExtensions
     {
+        public static IEnumerable<HtmlNode> CssSelect2(this IEnumerable<HtmlNode> nodes, string expression)
+        {
+            return nodes.SelectMany(node => CssSelect2(node, expression));
+        }
+
         public static IEnumerable<HtmlNode> CssSelect2(this HtmlNode node, string expression)
         {
             var tokenizer = new CssSelectorTokenizer();
