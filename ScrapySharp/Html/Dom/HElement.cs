@@ -2,11 +2,56 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
+using System.Linq;
 
 namespace ScrapySharp.Html.Dom
 {
-    public class HElement : HContainer
+    //public class HTextElement : IHSubContainer
+    //{
+    //    public string Value { get; set; }
+
+    //    public HTextElement(string value)
+    //    {
+    //        Value = value;
+    //    }
+
+    //}
+
+    public class HAttribute : IHSubContainer
     {
+        public HAttribute(string name, string value)
+        {
+            Name = name;
+            Value = value;
+        }
+
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class HElement : HContainer, IHSubContainer
+    {
+        public HElement(string name) : this()
+        {
+            Name = name;
+        }
+
+        public HElement(string name, string text, params IHSubContainer[] elements) : this(name, elements)
+        {
+            InnerText = text;
+        }
+
+        public HElement(string name, params IHSubContainer[] elements)
+        {
+            Name = name;
+            Children = elements.OfType<HElement>().ToList();
+            
+            Attributes = new NameValueCollection();
+
+            elements.OfType<HAttribute>().ToList()
+                .ForEach(h => Attributes.Add(h.Name, h.Value));
+        }
+
         public HElement()
         {
             Children = new List<HElement>();
@@ -19,7 +64,7 @@ namespace ScrapySharp.Html.Dom
             {
                 var builder = new StringBuilder();
 
-                var selfClosing = !HasChildren && !string.IsNullOrEmpty(innerText);
+                var selfClosing = !HasChildren && string.IsNullOrEmpty(innerText);
 
                 if (!string.IsNullOrEmpty(Name))
                 {
@@ -43,11 +88,16 @@ namespace ScrapySharp.Html.Dom
                         foreach (var child in Children)
                             builder.Append(child.OuterHtml);
 
-                    builder.AppendFormat("</{0}>", Name);
+                    if (string.IsNullOrEmpty(innerText))
+                        builder.AppendFormat("</{0}>", Name);
                 }
 
                 if (!string.IsNullOrEmpty(innerText))
+                {
                     builder.Append(innerText);
+                    if (!selfClosing)
+                        builder.AppendFormat("</{0}>", Name);
+                }
 
                 return builder.ToString();
             }

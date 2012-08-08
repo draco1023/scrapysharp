@@ -7,6 +7,11 @@ namespace ScrapySharp.Html.Dom
 {
     public class HDocument : HContainer
     {
+        public HDocument(params HElement[] children)
+        {
+            Children = children.ToList();
+        }
+
         public HDocument()
         {
             Children = new List<HElement>();

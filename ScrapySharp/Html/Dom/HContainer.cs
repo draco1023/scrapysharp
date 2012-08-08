@@ -4,6 +4,11 @@ using System.Linq;
 
 namespace ScrapySharp.Html.Dom
 {
+    public interface IHSubContainer
+    {
+        
+    }
+
     public abstract class HContainer
     {
         private string name;
