@@ -111,8 +111,11 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_tagName_with_css_class_using_direct_inheritance()
         {
-            Assert.AreEqual(1, html.CssSelect2("div.content > p.para").Count());
-            Assert.AreEqual(2, html.CssSelect2("div.content p.para").Count());
+            var cssSelect1 = html.CssSelect2("div.content > p.para").ToArray();
+            var cssSelect2 = html.CssSelect2("div.content p.para").ToArray();
+
+            Assert.AreEqual(1, cssSelect1.Count());
+            Assert.AreEqual(2, cssSelect2.Count());
         }
 
         [Test]
@@ -124,17 +127,20 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_ancestor()
         {
-            var ancestors = html.CssSelect2("p.para").CssSelectAncestors("div div.menu").ToArray();
+            var cssSelect1 = html.CssSelect2("p.para");
+
+            var ancestors = cssSelect1.CssSelectAncestors2("div div.menu").ToArray();
+            
             Assert.AreEqual(1, ancestors.Count());
         }
 
         [Test]
         public void When_uses_direct_ancestor()
         {
-            var ancestors1 = html.CssSelect2("p.para").CssSelectAncestors("div.content > div.menu").ToArray();
+            var ancestors1 = html.CssSelect2("p.para").CssSelectAncestors2("div.content > div.menu").ToArray();
             Assert.AreEqual(0, ancestors1.Count());
 
-            var ancestors2 = html.CssSelect2("p.para").CssSelectAncestors("div.content > div.widget").ToArray();
+            var ancestors2 = html.CssSelect2("p.para").CssSelectAncestors2("div.content > div.widget").ToArray();
             Assert.AreEqual(1, ancestors2.Count());
         }
         
