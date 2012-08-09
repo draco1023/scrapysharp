@@ -6,5 +6,6 @@ namespace ScrapySharp.Html.Dom
         OpenTag,
         CloseTag,
         SelfClosedTag,
+        Comment,
     }
 }

@@ -26,6 +26,15 @@ namespace ScrapySharp.Html.Parsing
             {
                 var declaration = declarations[i];
 
+                if (declaration.Type == DeclarationType.Comment)
+                {
+                    yield return new HComment
+                                     {
+                                         Name = "--",
+                                         InnerText = declaration.InnerText
+                                     };
+                }
+
                 if (declaration.Type == DeclarationType.OpenTag)
                 {
                     var openning = 1;
@@ -64,8 +73,6 @@ namespace ScrapySharp.Html.Parsing
 
                     if (openning != closing)
                     {
-                        //throw new Exception("Invalid tag: " + declaration.Name);
-
                         var childrenTags = declarations.Skip(start + 1).Take(i - start - 1).ToList();
 
                         yield return new HElement

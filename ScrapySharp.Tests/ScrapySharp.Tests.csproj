@@ -62,6 +62,9 @@
     <Compile Include="When_build_HtmlDom.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Html\InvalidPage3.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Html\InvalidPage2.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

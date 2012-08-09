@@ -39,7 +39,12 @@ namespace ScrapySharp.Html.Parsing
             if (w.IsToken() && (w == Tokens.TagBegin || w == Tokens.CloseTagDeclarator) && !GetNextWord().IsWhiteSpace)
             {
                 if (w == Tokens.Doctype)
-                    return ReadDoctype(w);
+                {
+                    if (char.IsLetterOrDigit(GetNextWord(), 0))
+                        return ReadDoctype(w);
+                    if (GetNextWord().Value != null && GetNextWord().Value.StartsWith("--"))
+                        return ReadComment(w);
+                }
 
                 var element = new TagDeclaration
                 {
@@ -89,6 +94,35 @@ namespace ScrapySharp.Html.Parsing
             }
             
             return ReadTextElement(w);
+        }
+
+        private TagDeclaration ReadComment(Word word)
+        {
+            var wordList = new List<Word>();
+            var w = word;
+
+            wordList.Add(w);
+
+            while (!End)
+            {
+                w = ReadWord();
+                wordList.Add(w);
+
+                if (GetNextWord().Value != null && GetNextWord().Value.StartsWith("--") && GetNextWord(2) == Tokens.TagEnd)
+                {
+                    w = ReadWord();
+                    w = ReadWord();
+                    break;
+                }
+            }
+
+            return new TagDeclaration
+            {
+                InnerText = string.Join(string.Empty, wordList.Skip(2).Select(i => i.QuotedValue)),
+                Words = wordList,
+                Type = DeclarationType.Comment,
+                Name = "--"
+            };
         }
 
         private DeclarationType GetDeclarationType(List<Word> wordList)

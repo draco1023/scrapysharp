@@ -55,6 +55,8 @@
     <Compile Include="Extensions\TokenHelper.cs" />
     <Compile Include="Extensions\UrlHelper.cs" />
     <Compile Include="Html\Dom\DeclarationType.cs" />
+    <Compile Include="Html\Dom\HAttribute.cs" />
+    <Compile Include="Html\Dom\HComment.cs" />
     <Compile Include="Html\Dom\HContainer.cs" />
     <Compile Include="Html\Dom\HDocument.cs" />
     <Compile Include="Html\Dom\HElement.cs" />

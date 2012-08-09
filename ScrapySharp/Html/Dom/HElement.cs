@@ -6,29 +6,6 @@ using System.Linq;
 
 namespace ScrapySharp.Html.Dom
 {
-    //public class HTextElement : IHSubContainer
-    //{
-    //    public string Value { get; set; }
-
-    //    public HTextElement(string value)
-    //    {
-    //        Value = value;
-    //    }
-
-    //}
-
-    public class HAttribute : IHSubContainer
-    {
-        public HAttribute(string name, string value)
-        {
-            Name = name;
-            Value = value;
-        }
-
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
-
     public class HElement : HContainer, IHSubContainer
     {
         public HElement(string name) : this()
@@ -58,7 +35,7 @@ namespace ScrapySharp.Html.Dom
             Attributes = new NameValueCollection();
         }
         
-        public string OuterHtml
+        public virtual string OuterHtml
         {
             get
             {
@@ -95,7 +72,7 @@ namespace ScrapySharp.Html.Dom
                 if (!string.IsNullOrEmpty(innerText))
                 {
                     builder.Append(innerText);
-                    if (!selfClosing)
+                    if (!selfClosing && !string.IsNullOrEmpty(Name))
                         builder.AppendFormat("</{0}>", Name);
                 }
 
