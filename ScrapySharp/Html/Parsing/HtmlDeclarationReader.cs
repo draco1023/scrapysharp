@@ -106,14 +106,19 @@ namespace ScrapySharp.Html.Parsing
             while (!End)
             {
                 w = ReadWord();
+            
+                if (w == "--" && GetNextWord() == Tokens.TagEnd)
+                    break;
+                
                 wordList.Add(w);
 
-                if (GetNextWord().Value != null && GetNextWord().Value.StartsWith("--") && GetNextWord(2) == Tokens.TagEnd)
-                {
-                    w = ReadWord();
-                    w = ReadWord();
-                    break;
-                }
+                //if (GetNextWord().Value != null && GetNextWord().Value.StartsWith("--") && GetNextWord(2) == Tokens.TagEnd)
+                //{
+                //    w = ReadWord();
+                //    w = ReadWord();
+                //    break;
+                //}
+
             }
 
             return new TagDeclaration
@@ -186,15 +191,11 @@ namespace ScrapySharp.Html.Parsing
 
             wordList.Add(w);
 
-            while (!End && GetNextWord() != Tokens.TagBegin 
-                && GetNextWord() != Tokens.TagEnd && GetNextWord() != Tokens.TagBegin/* && !GetNextWord(2).IsWhiteSpace*/)
+            while (!End && GetNextWord() != Tokens.TagBegin && GetNextWord() != Tokens.TagEnd && GetNextWord() != Tokens.TagBegin)
             {
                 w = ReadWord();
                 wordList.Add(w);
             }
-
-            //wordList.Add(w);
-
 
             return new TagDeclaration
                        {

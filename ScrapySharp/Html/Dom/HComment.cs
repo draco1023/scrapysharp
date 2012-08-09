@@ -4,7 +4,7 @@ namespace ScrapySharp.Html.Dom
     {
         public override string OuterHtml
         {
-            get { return "<--" + InnerText + "-->"; }
+            get { return string.Format("<!--{0}-->", innerText); }
         }
     }
 }

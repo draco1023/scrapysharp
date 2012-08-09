@@ -25,6 +25,11 @@ namespace ScrapySharp.Html.Parsing
             context = CodeReadingContext.None;
         }
 
+        public int MaxWordCount
+        {
+            get { return sourceCode.Length; }
+        }
+
         public Word ReadWord()
         {
             buffer.Remove(0, buffer.Length);

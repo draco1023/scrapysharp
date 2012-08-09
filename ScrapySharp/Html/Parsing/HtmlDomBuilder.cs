@@ -30,7 +30,7 @@ namespace ScrapySharp.Html.Parsing
                 {
                     yield return new HComment
                                      {
-                                         Name = "--",
+                                         Name = "!--",
                                          InnerText = declaration.InnerText
                                      };
                 }

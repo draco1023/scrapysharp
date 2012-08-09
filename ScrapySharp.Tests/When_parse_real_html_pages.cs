@@ -44,26 +44,20 @@ namespace ScrapySharp.Tests
         }
 
         [Test]
-        public void When_parsing_InvalidPage3()
+        public void When_parsing_Comments()
         {
             var source = File.ReadAllText("Html/InvalidPage3.htm");
             var document = HDocument.Parse(source);
 
-            Assert.AreEqual(1, document.CssSelect("div.login").Count());
-            
-            Assert.AreEqual(4, document.CssSelect("div").Count());
-
-            Assert.AreEqual(1, document.CssSelect("div#footer").Count());
-
             var body = document.CssSelect("body").Single();
             var children = body.Children.ToArray();
 
-            //var comment = children.OfType<HComment>().Single().OuterHtml;
+            Assert.AreEqual(1, children.OfType<HComment>().Count());
 
-            var outerHtml = body.OuterHtml;
+            var comment = children.OfType<HComment>().Single();
 
-            //var t = comment + outerHtml;
-            var t = outerHtml;
+            var text = comment.OuterHtml;
+            Assert.AreEqual("<!-- comment #1 -->", text);
         }
     }
 }
