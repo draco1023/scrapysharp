@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
-      <HintPath>..\ScrapySharp\packages\HtmlAgilityPack.1.4.3\lib\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\ScrapySharp\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\ScrapySharp\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>

@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
-      <HintPath>packages\HtmlAgilityPack.1.4.3\lib\HtmlAgilityPack.dll</HintPath>
+      <HintPath>packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ScrapySharp.Core">
       <HintPath>..\ScrapySharp.Core\bin\Debug\ScrapySharp.Core.dll</HintPath>
@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="Exceptions\ScrapingException.cs" />
     <Compile Include="Extensions\CssQueryExtensions.cs" />
-    <Compile Include="Extensions\HtmlAgilityCssQueryExtensions.cs" />
     <Compile Include="Extensions\HtmlCreationHelper.cs" />
     <Compile Include="Extensions\HtmlParsingHelper.cs" />
     <Compile Include="Extensions\HtmlValue.cs" />
