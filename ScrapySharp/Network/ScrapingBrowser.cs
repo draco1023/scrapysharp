@@ -106,7 +106,11 @@ namespace ScrapySharp.Network
             {
                 if (match.Groups["name"].Success && match.Groups["val"].Success)
                 {
-                    cookieContainer.Add(new Cookie((match.Groups["name"].Value), (match.Groups["val"].Value), "/", cookieUrl.Host));
+                    try
+                    {
+                        cookieContainer.Add(new Cookie((match.Groups["name"].Value), (match.Groups["val"].Value), "/", cookieUrl.Host));
+                    }
+                    catch (CookieException) { }
                 }
                 match = match.NextMatch();
             }
