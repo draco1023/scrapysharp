@@ -16,7 +16,7 @@ namespace ScrapySharp.Extensions
         {
             var tokenizer = new CssSelectorTokenizer();
             var tokens = tokenizer.Tokenize(expression);
-            var executor = new CssSelectorExecutor(node.ChildNodes.ToList(), tokens.ToList());
+            var executor = new CssSelectorExecutor(new List<HtmlNode>{node}, tokens.ToList());
             
             return executor.GetElements();
         }

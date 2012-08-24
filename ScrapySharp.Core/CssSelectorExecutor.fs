@@ -49,7 +49,8 @@
             let rec selectElements' (acc:List<HtmlNode>) source =
                 match source with
                 | Token.TagName(o, name) :: t -> 
-                    let selectedNodes = acc |> getTargets |> Seq.filter(fun x -> x.Name = name) |> Seq.toList
+                    let children = acc |> getTargets |> Seq.toList
+                    let selectedNodes = children |> Seq.filter(fun x -> x.Name = name) |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
                 

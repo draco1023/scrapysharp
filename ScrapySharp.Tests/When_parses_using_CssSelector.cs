@@ -145,6 +145,27 @@ namespace ScrapySharp.Tests
 
             Assert.AreEqual(result.Length, 2);
         }
+
+        [Test]
+        public void When_chain_methods()
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(@"<html><body><table>"
+                + "<tr><td>Case 1</td><td>Case 2</td><td>Case 3</td></tr>"
+                + "<tr><td>Case 4</td><td>Case 5</td><td>Case 6</td></tr>"
+                +"</table></body></html>");
+            var node = doc.DocumentNode;
+
+            var trs1 = node.CssSelect("tr").ToArray();
+            Assert.AreEqual(2, trs1.Length);
+
+            var tds1 = node.CssSelect("td").ToArray();
+            Assert.AreEqual(6, tds1.Length);
+
+            
+            var tds2 = trs1[1].CssSelect("td").ToArray();
+            Assert.AreEqual(3, tds2.Length);
+        }
     }
 }
 
