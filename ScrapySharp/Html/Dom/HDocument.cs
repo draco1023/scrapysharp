@@ -28,26 +28,23 @@ namespace ScrapySharp.Html.Dom
                            Children = domBuilder.BuildDom().ToList()
                        };
         }
-        
-        public string OuterHtml
+
+        public string GetOuterHtml(HtmlGenerationStyle generationStyle = HtmlGenerationStyle.None)
         {
-            get
+            var builder = new StringBuilder();
+
+            var selfClosing = !HasChildren && !string.IsNullOrEmpty(innerText);
+
+            if (!selfClosing)
             {
-                var builder = new StringBuilder();
-
-                var selfClosing = !HasChildren && !string.IsNullOrEmpty(innerText);
-
-                if (!selfClosing)
-                {
-                    if (!string.IsNullOrEmpty(innerText))
-                        builder.Append(innerText);
-                    if (HasChildren)
-                        foreach (var child in Children)
-                            builder.Append(child.OuterHtml);
-                }
-
-                return builder.ToString();
+                if (!string.IsNullOrEmpty(innerText))
+                    builder.Append(innerText);
+                if (HasChildren)
+                    foreach (var child in Children)
+                        builder.Append(child.GetOuterHtml(generationStyle));
             }
+
+            return builder.ToString();
         }
     }
 }

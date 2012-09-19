@@ -1,3 +1,4 @@
+using System.IO;
 using NUnit.Framework;
 using ScrapySharp.Html.Dom;
 
@@ -20,7 +21,11 @@ namespace ScrapySharp.Tests
                                                        new HElement("td", "case1"))))
                 ));
 
-            var html = doc.OuterHtml;
+            var html = doc.GetOuterHtml(HtmlGenerationStyle.Indent);
+
+            var html2 = File.ReadAllText("Html/GeneratedHtml1.htm");
+
+            Assert.AreEqual(html2, html);
         }
     }
 }

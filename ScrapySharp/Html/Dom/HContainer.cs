@@ -27,6 +27,8 @@ namespace ScrapySharp.Html.Dom
             get { return Children != null && Children.Any(); }
         }
 
+        public int IndentLevel { get; set; }
+
         public string Name
         {
             get

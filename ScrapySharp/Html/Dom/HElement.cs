@@ -34,50 +34,63 @@ namespace ScrapySharp.Html.Dom
             Children = new List<HElement>();
             Attributes = new NameValueCollection();
         }
-        
-        public virtual string OuterHtml
+
+        public virtual string GetOuterHtml(HtmlGenerationStyle generationStyle = HtmlGenerationStyle.None)
         {
-            get
+            var builder = new StringBuilder();
+
+            var selfClosing = !HasChildren && string.IsNullOrEmpty(innerText);
+
+            if (generationStyle == HtmlGenerationStyle.Indent)
+                builder.Append(string.Empty.PadLeft(IndentLevel, '\t'));
+
+            if (!string.IsNullOrEmpty(Name))
             {
-                var builder = new StringBuilder();
-
-                var selfClosing = !HasChildren && string.IsNullOrEmpty(innerText);
-
-                if (!string.IsNullOrEmpty(Name))
-                {
-                    builder.Append('<');
-                    builder.Append(Name);
-                    
-                    if (HasAttributes)
-                        foreach (var key in Attributes.AllKeys)
-                            builder.AppendFormat(" {0}=\"{1}\"", key, Attributes[key]);
-
-                    if (!selfClosing)
-                        builder.Append('>');
-                    else
-                        builder.Append(" />");
-                }
+                builder.Append('<');
+                builder.Append(Name);
+                
+                if (HasAttributes)
+                    foreach (var key in Attributes.AllKeys)
+                        builder.AppendFormat(" {0}=\"{1}\"", key, Attributes[key]);
 
                 if (!selfClosing)
-                {
-                    
-                    if (HasChildren)
-                        foreach (var child in Children)
-                            builder.Append(child.OuterHtml);
-
-                    if (string.IsNullOrEmpty(innerText))
-                        builder.AppendFormat("</{0}>", Name);
-                }
-
-                if (!string.IsNullOrEmpty(innerText))
-                {
-                    builder.Append(innerText);
-                    if (!selfClosing && !string.IsNullOrEmpty(Name))
-                        builder.AppendFormat("</{0}>", Name);
-                }
-
-                return builder.ToString();
+                    builder.Append('>');
+                else
+                    builder.Append(" />");
             }
+
+            if (!selfClosing)
+            {
+                if (HasChildren)
+                {
+                    if (generationStyle == HtmlGenerationStyle.Indent)
+                        builder.AppendLine();
+                    foreach (var child in Children)
+                    {
+                        child.IndentLevel = IndentLevel + 1;
+                        builder.Append(child.GetOuterHtml(generationStyle));
+                    }
+                    
+                    if (generationStyle == HtmlGenerationStyle.Indent)
+                        builder.Append(string.Empty.PadLeft(IndentLevel, '\t'));
+                }
+
+                if (string.IsNullOrEmpty(innerText))
+                    builder.AppendFormat("</{0}>", Name);
+
+            }
+
+            if (!string.IsNullOrEmpty(innerText))
+            {
+                builder.Append(innerText);
+                if (!selfClosing && !string.IsNullOrEmpty(Name))
+                    builder.AppendFormat("</{0}>", Name);
+            }
+
+            if (generationStyle == HtmlGenerationStyle.Indent)
+                builder.AppendLine();
+
+            return builder.ToString();
         }
 
 
@@ -165,5 +178,11 @@ namespace ScrapySharp.Html.Dom
                 return def;
             }
         }
+    }
+
+    public enum HtmlGenerationStyle
+    {
+        None,
+        Indent
     }
 }
