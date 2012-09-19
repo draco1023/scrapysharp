@@ -2,9 +2,9 @@ namespace ScrapySharp.Html.Dom
 {
     public class HComment : HElement
     {
-        public override string OuterHtml
+        public override string GetOuterHtml(HtmlGenerationStyle generationStyle = HtmlGenerationStyle.None)
         {
-            get { return string.Format("<!--{0}-->", innerText); }
+            return string.Format("<!--{0}-->", innerText);
         }
     }
 }

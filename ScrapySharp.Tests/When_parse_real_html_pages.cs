@@ -40,7 +40,7 @@ namespace ScrapySharp.Tests
 
             Assert.AreEqual(1, document.CssSelect("div#footer").Count());
 
-            var outerHtml = document.OuterHtml;
+            var outerHtml = document.GetOuterHtml();
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace ScrapySharp.Tests
 
             var comment = children.OfType<HComment>().Single();
 
-            var text = comment.OuterHtml;
+            var text = comment.GetOuterHtml();
             Assert.AreEqual("<!-- comment #1 -->", text);
         }
     }
