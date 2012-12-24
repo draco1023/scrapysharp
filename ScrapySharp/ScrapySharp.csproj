@@ -51,13 +51,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ScrapingException.cs" />
+    <Compile Include="Extensions\HDocumentCssQueryExtensions.cs" />
     <Compile Include="Extensions\CssQueryExtensions.cs" />
     <Compile Include="Extensions\HtmlCreationHelper.cs" />
     <Compile Include="Extensions\HtmlParsingHelper.cs" />
     <Compile Include="Extensions\HtmlValue.cs" />
     <Compile Include="Extensions\NodeValueComparer.cs" />
     <Compile Include="Extensions\NodeValueComparison.cs" />
+    <Compile Include="Extensions\TokenHelper.cs" />
     <Compile Include="Extensions\UrlHelper.cs" />
+    <Compile Include="Html\Dom\DeclarationType.cs" />
+    <Compile Include="Html\Dom\HAttribute.cs" />
+    <Compile Include="Html\Dom\HComment.cs" />
+    <Compile Include="Html\Dom\HContainer.cs" />
+    <Compile Include="Html\Dom\HDocument.cs" />
+    <Compile Include="Html\Dom\HElement.cs" />
+    <Compile Include="Html\Dom\HtmlLinqExtensions.cs" />
+    <Compile Include="Html\Parsing\CodeReader.cs" />
+    <Compile Include="Html\Parsing\CodeReadingContext.cs" />
+    <Compile Include="Html\Parsing\HtmlDeclarationReader.cs" />
+    <Compile Include="Html\Dom\TagDeclaration.cs" />
+    <Compile Include="Html\Parsing\HtmlDomBuilder.cs" />
+    <Compile Include="Html\Parsing\Tokens.cs" />
+    <Compile Include="Html\Parsing\Word.cs" />
     <Compile Include="Network\FakeUserAgent.cs" />
     <Compile Include="Network\FakeUserAgents.cs" />
     <Compile Include="Network\HttpVerb.cs" />
@@ -71,6 +87,7 @@
   <ItemGroup>
     <Content Include="Notes.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
