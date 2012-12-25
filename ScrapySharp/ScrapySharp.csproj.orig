@@ -71,13 +71,17 @@
   <ItemGroup>
     <Content Include="Notes.txt" />
   </ItemGroup>
+<<<<<<< local
   <ItemGroup>
     <ProjectReference Include="..\ScrapySharp.Core\ScrapySharp.Core.fsproj">
       <Project>{ce27016b-2755-4b44-8a0e-574914b9256f}</Project>
       <Name>ScrapySharp.Core</Name>
     </ProjectReference>
   </ItemGroup>
+=======
+>>>>>>> other
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+<<<<<<< local
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -85,5 +89,13 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
+=======
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+>>>>>>> other
   -->
 </Project>
