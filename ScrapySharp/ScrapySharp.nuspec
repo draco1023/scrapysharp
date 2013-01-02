@@ -35,7 +35,7 @@
             <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework4.0" />
         </frameworkAssemblies>
     </metadata>
-    <files>
+    <!--<files>
         <file src="bin\release\FSharp.Core.dll" target="lib\net40" />
         <file src="bin\release\FSharp.Core.xml" target="lib\net40" />
         <file src="bin\release\HtmlAgilityPack.dll" target="lib\net40" />
@@ -46,5 +46,18 @@
         <file src="bin\release\ScrapySharp.Core.xml" target="lib\net40" />
         <file src="bin\release\ScrapySharp.dll" target="lib\net40" />
         <file src="bin\release\ScrapySharp.pdb" target="lib\net40" />
-    </files>
+    </files>-->
+
+  <files>
+    <file src="FSharp.Core.dll" target="lib\net40" />
+    <file src="FSharp.Core.xml" target="lib\net40" />
+    <file src="HtmlAgilityPack.dll" target="lib\net40" />
+    <file src="HtmlAgilityPack.pdb" target="lib\net40" />
+    <file src="HtmlAgilityPack.xml" target="lib\net40" />
+    <file src="ScrapySharp.Core.dll" target="lib\net40" />
+    <file src="ScrapySharp.Core.pdb" target="lib\net40" />
+    <file src="ScrapySharp.Core.xml" target="lib\net40" />
+    <file src="ScrapySharp.dll" target="lib\net40" />
+    <file src="ScrapySharp.pdb" target="lib\net40" />
+  </files>
 </package>
