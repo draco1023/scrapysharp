@@ -54,6 +54,7 @@
     <Compile Include="Exceptions\ScrapingException.cs" />
     <Compile Include="Extensions\HDocumentCssQueryExtensions.cs" />
     <Compile Include="Extensions\CssQueryExtensions.cs" />
+    <Compile Include="Extensions\HElementNavigationProvider.cs" />
     <Compile Include="Extensions\HtmlCreationHelper.cs" />
     <Compile Include="Extensions\HtmlParsingHelper.cs" />
     <Compile Include="Extensions\HtmlValue.cs" />
