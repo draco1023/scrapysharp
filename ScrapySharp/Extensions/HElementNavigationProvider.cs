@@ -26,5 +26,20 @@ namespace ScrapySharp.Extensions
         {
             return nodes.SelectMany(n => n.Ancestors()).Concat(nodes).ToList();
         }
+
+        public string GetName(HElement node)
+        {
+            return node.Name;
+        }
+
+        public string GetAttributeValue(HElement node, string name, string defaultValue)
+        {
+            return node.GetAttributeValue(name, defaultValue);
+        }
+
+        public string GetId(HElement node)
+        {
+            return node.Id;
+        }
     }
 }

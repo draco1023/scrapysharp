@@ -41,7 +41,7 @@ namespace ScrapySharp.Tests
             var tokens = tokenizer.Tokenize("span.login-box");
             Assert.AreEqual(3, tokens.Length);
 
-            var executor = new CssSelectorExecutor(html.ChildNodes.ToList(), tokens.ToList());
+            var executor = new CssSelectorExecutor<HtmlNode>(html.ChildNodes.ToList(), tokens.ToList(), new AgilityNavigationProvider());
             HtmlNode[] htmlNodes = executor.GetElements();
 
             Assert.AreEqual(1, htmlNodes.Length);
@@ -54,7 +54,7 @@ namespace ScrapySharp.Tests
             var tokens = tokenizer.Tokenize("div.widget.monthlist");
             Assert.AreEqual(5, tokens.Length);
 
-            var executor = new CssSelectorExecutor(html.ChildNodes.ToList(), tokens.ToList());
+            var executor = new CssSelectorExecutor<HtmlNode>(html.ChildNodes.ToList(), tokens.ToList(), new AgilityNavigationProvider());
             HtmlNode[] htmlNodes = executor.GetElements();
 
             Assert.AreEqual(1, htmlNodes.Length);
