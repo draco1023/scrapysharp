@@ -68,6 +68,11 @@
     <Compile Include="Html\Dom\HDocument.cs" />
     <Compile Include="Html\Dom\HElement.cs" />
     <Compile Include="Html\Dom\HtmlLinqExtensions.cs" />
+    <Compile Include="Html\Forms\AgilityFormParser.cs" />
+    <Compile Include="Html\Forms\FormField.cs" />
+    <Compile Include="Html\Forms\HDocumentFormParser.cs" />
+    <Compile Include="Html\Forms\HElementFormParser.cs" />
+    <Compile Include="Html\Forms\WebForm.cs" />
     <Compile Include="Html\Parsing\CodeReader.cs" />
     <Compile Include="Html\Parsing\CodeReadingContext.cs" />
     <Compile Include="Html\Parsing\HtmlDeclarationReader.cs" />
@@ -85,6 +90,7 @@
     <None Include="packages.config" />
     <None Include="ScrapySharp.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
