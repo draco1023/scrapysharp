@@ -5,7 +5,7 @@
     open System.Net
     open System.Runtime.Serialization.Formatters.Binary
     open System.Text
-    open HtmlAgilityPack
+//    open HtmlAgilityPack
     open System.Linq
 
     type FilterLevel = 
@@ -15,7 +15,8 @@
         | Parents
         | Ancestors
 
-    type CssSelectorExecutor(nodes:System.Collections.Generic.List<HtmlNode>, tokens:System.Collections.Generic.List<Token>) = 
+    type CssSelectorExecutor<'n>(nodes:System.Collections.Generic.List<'n>, tokens:System.Collections.Generic.List<Token>, navigator:INavigationProvider<'n>) = 
+        let mutable navigator = navigator
         let mutable nodes = Array.toList(nodes.ToArray())
         let mutable tokens = Array.toList(tokens.ToArray())
         let mutable level = FilterLevel.Descendants
@@ -34,57 +35,57 @@
 
         member private x.selectElements() = 
             
-            let getTargets (acc:List<HtmlNode>) = 
+            let getTargets (acc:List<'n>) = 
                 if level = FilterLevel.Children then
-                    acc |> List.map (fun x -> x.ChildNodes) |> Seq.collect (fun x -> x)
+                    navigator.ChildNodes(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
                 elif level = FilterLevel.Descendants then
-                    acc |> List.map (fun x -> x.Descendants()) |> Seq.collect (fun x -> x)
+                    navigator.Descendants(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
                 elif level = FilterLevel.Parents then
-                    acc |> List.map (fun x -> x.ParentNode) |> Seq.ofList
+                    navigator.ParentNodes(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
                 elif level = FilterLevel.Ancestors then
-                    acc |> List.map (fun x -> x.AncestorsAndSelf()) |> Seq.collect (fun x -> x)
+                    navigator.AncestorsAndSelf(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
                 else
-                    acc |> Seq.ofList
+                    acc// |> Seq.ofList
 
-            let rec selectElements' (acc:List<HtmlNode>) source =
+            let rec selectElements' (acc:List<'n>) source =
                 match source with
                 | Token.TagName(o, name) :: t -> 
                     let children = acc |> getTargets |> Seq.toList
-                    let selectedNodes = children |> Seq.filter(fun x -> x.Name = name) |> Seq.toList
+                    let selectedNodes = children |> Seq.filter(fun x -> navigator.GetName(x) = name) |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
                 
                 | Token.ClassPrefix(o) :: Token.CssClass(o2, className) :: t -> 
                     let selectedNodes = acc |> getTargets 
-                                        |> Seq.filter (fun x -> x.GetAttributeValue("class", String.Empty).Split([|' '; '\t'; '\r'; '\n'|]).Contains(className))
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x "class" String.Empty).Split([|' '; '\t'; '\r'; '\n'|]).Contains(className)                                                      )
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
 
                 | Token.IdPrefix(o) :: Token.CssId(o2, id) :: t ->
                     let selectedNodes = acc |> getTargets 
-                                        |> Seq.filter (fun x -> x.Id = id)
+                                        |> Seq.filter (fun x -> (navigator.GetId x) = id)
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
 
                 | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.Assign(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
                     let selectedNodes = acc |> getTargets 
-                                        |> Seq.filter (fun x -> x.GetAttributeValue(name, String.Empty) = value)
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty) = value)
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
 
                 | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.EndWith(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
                     let selectedNodes = acc |> getTargets 
-                                        |> Seq.filter (fun x -> x.GetAttributeValue(name, String.Empty).EndsWith(value))
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty).EndsWith(value))
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
 
                 | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.StartWith(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
                     let selectedNodes = acc |> getTargets 
-                                        |> Seq.filter (fun x -> x.GetAttributeValue(name, String.Empty).StartsWith(value))
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty).StartsWith(value))
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t

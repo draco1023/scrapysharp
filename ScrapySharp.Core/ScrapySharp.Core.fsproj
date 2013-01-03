@@ -41,10 +41,10 @@
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="(!Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')) And (!Exists('$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets')) And (Exists('$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets'))" />
   <ItemGroup>
     <Compile Include="Models.fs" />
+    <Compile Include="NavigationProvider.fs" />
     <Compile Include="CssSelectorTokenizer.fs" />
     <Compile Include="CssSelectorExecutor.fs" />
     <None Include="packages.config" />
-    <Compile Include="NavigationProvider.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">

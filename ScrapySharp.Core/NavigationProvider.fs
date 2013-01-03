@@ -11,6 +11,10 @@
         abstract member Descendants : System.Collections.Generic.List<'t> -> System.Collections.Generic.List<'t>
         abstract member ParentNodes : System.Collections.Generic.List<'t> -> System.Collections.Generic.List<'t>
         abstract member AncestorsAndSelf : System.Collections.Generic.List<'t> -> System.Collections.Generic.List<'t>
+        abstract member GetName : 't -> string
+        abstract member GetAttributeValue : 't -> string -> string -> string
+        abstract member GetId : 't -> string
+
 
     type AgilityNavigationProvider() = 
         interface INavigationProvider<HtmlAgilityPack.HtmlNode> with
@@ -26,4 +30,9 @@
             member this.AncestorsAndSelf(nodes) = 
                 let results = nodes |> Seq.map (fun x -> x.AncestorsAndSelf()) |> Seq.collect (fun x -> x)
                 new System.Collections.Generic.List<'t>(results)
-
+            member this.GetName(node) =
+                node.Name
+            member this.GetAttributeValue node name defaultValue =
+                node.GetAttributeValue(name, defaultValue)
+            member this.GetId(node) =
+                node.Id
