@@ -5,7 +5,6 @@
     open System.Net
     open System.Runtime.Serialization.Formatters.Binary
     open System.Text
-//    open HtmlAgilityPack
     open System.Linq
 
     type FilterLevel = 
@@ -45,7 +44,7 @@
                 elif level = FilterLevel.Ancestors then
                     navigator.AncestorsAndSelf(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
                 else
-                    acc// |> Seq.ofList
+                    acc
 
             let rec selectElements' (acc:List<'n>) source =
                 match source with
