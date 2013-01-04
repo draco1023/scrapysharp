@@ -13,13 +13,19 @@
         | CssClass of int * string
         | CssId of int * string
         | AllChildren of int
-        | OpenAttribute of int | CloseAttribute of int
+        | OpenAttribute of int 
+        | CloseAttribute of int
         | AttributeName of int * string
         | AttributeValue of int * string
         | Assign of int
         | EndWith of int
         | StartWith of int
-        | DirectChildren of int | Ancestor of int
+        | DirectChildren of int 
+        | Ancestor of int
+        | AttributeContainsPrefix of int
+        | AttributeContains of int
+        | AttributeContainsWord of int
+
 
     type TokenContainer(token:Token, offset:int) =
         member t.Offset = offset
