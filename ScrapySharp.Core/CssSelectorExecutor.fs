@@ -142,6 +142,13 @@
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
 
+                | Token.Enabled(o) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> (navigator.Attributes x).AllKeys.Contains("disabled") = false)
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
+
                 | Token.AllChildren(o) :: t -> 
                     level <- if matchAncestors then FilterLevel.Ancestors else FilterLevel.Descendants
                     selectElements' acc t

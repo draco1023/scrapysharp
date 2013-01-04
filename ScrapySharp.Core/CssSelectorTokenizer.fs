@@ -113,6 +113,10 @@
                     let s, t' = readString "" t
                     tokenize' (Token.Disabled(getOffset(t)+1) :: acc) t'
 
+                | TokenStr ":enabled" t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.Enabled(getOffset(t)+1) :: acc) t'
+
                 | '>' :: t ->
                     let seqtoken = (acc |> List.toSeq |> Seq.skip(1) |> Seq.toList)
                     match acc.Head with
