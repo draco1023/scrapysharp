@@ -251,5 +251,31 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(2, doc.CssSelect("input:checked").Count());
             Assert.AreEqual(2, doc.CssSelect(":checked").Count());
         }
+
+        [Test]
+        public void When_using_disabled_selector()
+        {
+            // http://api.jquery.com/disabled-selector/
+
+            var source = @"<html>
+<body>
+  <input name=""man-news"" />
+
+  <input name=""milk man"" />
+  <input name=""letterman2"" />
+  <input name=""newmilk"" />
+
+  <input type=""checkbox"" disabled />
+  <input type=""checkbox"" />
+  <input type=""checkbox"" disabled=""disabled"" />
+  <input type=""file"" />
+  <input type=""hidden"" />
+</body>
+</html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(2, doc.CssSelect("input:disabled").Count());
+            Assert.AreEqual(2, doc.CssSelect(":disabled").Count());
+        }
     }
 }

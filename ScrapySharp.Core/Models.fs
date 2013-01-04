@@ -28,6 +28,7 @@
         | AttributeNotEqual of int
         | Checkbox of int
         | Checked of int
+        | Disabled of int
 
 
     type TokenContainer(token:Token, offset:int) =
