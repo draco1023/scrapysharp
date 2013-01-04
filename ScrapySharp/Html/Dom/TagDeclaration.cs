@@ -10,7 +10,7 @@ namespace ScrapySharp.Html.Dom
 
         public string Name { get; set; }
 
-        public NameValueCollection Attributes { get; set; }
+        public HAttibutesCollection Attributes { get; set; }
 
         public List<Word> Words { get; set; }
 

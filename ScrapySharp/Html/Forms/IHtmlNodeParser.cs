@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using ScrapySharp.Html.Dom;
 
 namespace ScrapySharp.Html.Forms
 {
@@ -7,7 +7,7 @@ namespace ScrapySharp.Html.Forms
     {
         IEnumerable<IHtmlNodeParser<TNode>> CssSelect(string selector);
         string GetAttributeValue(string name);
-        NameValueCollection Attributes { get; }
+        HAttibutesCollection Attributes { get; }
         string InnerText { get; }
     }
 }

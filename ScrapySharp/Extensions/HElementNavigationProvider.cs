@@ -45,9 +45,16 @@ namespace ScrapySharp.Extensions
 
         public NameValueCollection Attributes(HElement node)
         {
+            var nameValueCollection = new NameValueCollection();
             if (node.Attributes == null)
-                return new NameValueCollection();
-            return node.Attributes;
+                return nameValueCollection;
+
+            foreach (var attribute in node.Attributes)
+            {
+                nameValueCollection.Add(attribute.Name, attribute.Value);
+            }
+
+            return nameValueCollection;
         }
     }
 }

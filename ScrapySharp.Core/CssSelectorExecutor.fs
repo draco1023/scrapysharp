@@ -38,13 +38,13 @@
 
             let getTargets (acc:List<'n>) = 
                 if level = FilterLevel.Children then
-                    navigator.ChildNodes(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
+                    navigator.ChildNodes(new System.Collections.Generic.List<'n>(acc)) |> Seq.toList //.ToArray() |> Array.toList
                 elif level = FilterLevel.Descendants then
-                    navigator.Descendants(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
+                    navigator.Descendants(new System.Collections.Generic.List<'n>(acc)) |> Seq.toList //.ToArray() |> Array.toList
                 elif level = FilterLevel.Parents then
-                    navigator.ParentNodes(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
+                    navigator.ParentNodes(new System.Collections.Generic.List<'n>(acc)) |> Seq.toList //.ToArray() |> Array.toList
                 elif level = FilterLevel.Ancestors then
-                    navigator.AncestorsAndSelf(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
+                    navigator.AncestorsAndSelf(new System.Collections.Generic.List<'n>(acc)) |> Seq.toList //.ToArray() |> Array.toList
                 else
                     acc
 

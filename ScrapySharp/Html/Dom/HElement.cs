@@ -22,8 +22,8 @@ namespace ScrapySharp.Html.Dom
         {
             Name = name;
             Children = elements.OfType<HElement>().ToList();
-            
-            Attributes = new NameValueCollection();
+
+            Attributes = new HAttibutesCollection();
 
             elements.OfType<HAttribute>().ToList()
                 .ForEach(h => Attributes.Add(h.Name, h.Value));
@@ -32,7 +32,7 @@ namespace ScrapySharp.Html.Dom
         public HElement()
         {
             Children = new List<HElement>();
-            Attributes = new NameValueCollection();
+            Attributes = new HAttibutesCollection();
         }
 
         public virtual string GetOuterHtml(HtmlGenerationStyle generationStyle = HtmlGenerationStyle.None)
@@ -109,7 +109,7 @@ namespace ScrapySharp.Html.Dom
             }
         }
 
-        public NameValueCollection Attributes { get; internal set; }
+        public HAttibutesCollection Attributes { get; internal set; }
 
         public bool HasAttributes
         {

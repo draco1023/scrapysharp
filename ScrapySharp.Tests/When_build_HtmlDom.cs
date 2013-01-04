@@ -192,10 +192,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual("test", word.Value);
 
             word = codeReader.ReadWord();
-            Assert.AreEqual("<", word.Value);
-
-            word = codeReader.ReadWord();
-            Assert.AreEqual("/", word.Value);
+            Assert.AreEqual("</", word.Value);
 
             word = codeReader.ReadWord();
             Assert.AreEqual("div", word.Value);

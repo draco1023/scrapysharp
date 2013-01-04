@@ -26,7 +26,7 @@ namespace ScrapySharp.Html.Forms
             return node.GetAttributeValue(name, string.Empty);
         }
 
-        public NameValueCollection Attributes { get; private set; }
+        public HAttibutesCollection Attributes { get; private set; }
 
         public string InnerText
         {
