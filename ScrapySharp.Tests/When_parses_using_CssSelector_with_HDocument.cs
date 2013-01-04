@@ -253,7 +253,7 @@ namespace ScrapySharp.Tests
         }
 
         [Test]
-        public void When_using_disabled_selector()
+        public void When_using_disabled_and_enabled_selector()
         {
             // http://api.jquery.com/disabled-selector/
 
@@ -276,6 +276,8 @@ namespace ScrapySharp.Tests
 
             Assert.AreEqual(2, doc.CssSelect("input:disabled").Count());
             Assert.AreEqual(2, doc.CssSelect(":disabled").Count());
+
+            Assert.AreEqual(7, doc.CssSelect("input:enabled").Count());
         }
     }
 }
