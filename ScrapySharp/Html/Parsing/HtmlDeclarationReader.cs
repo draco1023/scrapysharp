@@ -76,6 +76,7 @@ namespace ScrapySharp.Html.Parsing
                     element.Words.Add(w);
                     if (IsTagDeclarationEnd(w))
                         break;
+                    
                     if (w.Value == Tokens.Assign)
                     {
                         w = ReadWord();
@@ -84,6 +85,8 @@ namespace ScrapySharp.Html.Parsing
                             break;
                         element.Attributes.Add(attributeName, w.Value);
                     }
+                    else
+                        element.Attributes.Add(attributeName, attributeName);
 
                 } while (!End && w != Tokens.TagBegin && w != Tokens.TagEnd);
 
@@ -111,14 +114,6 @@ namespace ScrapySharp.Html.Parsing
                     break;
                 
                 wordList.Add(w);
-
-                //if (GetNextWord().Value != null && GetNextWord().Value.StartsWith("--") && GetNextWord(2) == Tokens.TagEnd)
-                //{
-                //    w = ReadWord();
-                //    w = ReadWord();
-                //    break;
-                //}
-
             }
 
             return new TagDeclaration

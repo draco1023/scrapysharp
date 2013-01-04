@@ -33,7 +33,7 @@ namespace ScrapySharp.Tests
             Assert.AreEqual("LMN", browser.GetCookie(url, "Service").Value);
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("Integration")]
         public void When_forcing_anguage()
         {
@@ -46,7 +46,7 @@ namespace ScrapySharp.Tests
             Assert.AreNotEqual(html1, html2);
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("Integration")]
         public void When_downloading_page_with_a_different_cookie_domain()
         {
@@ -56,7 +56,7 @@ namespace ScrapySharp.Tests
             browser.DownloadString(url);
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("Integration")]
         public void When_downloading_page_without_referer()
         {

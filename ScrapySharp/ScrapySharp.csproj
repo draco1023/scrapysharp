@@ -54,6 +54,7 @@
     <Compile Include="Exceptions\ScrapingException.cs" />
     <Compile Include="Extensions\HDocumentCssQueryExtensions.cs" />
     <Compile Include="Extensions\CssQueryExtensions.cs" />
+    <Compile Include="Extensions\HElementNavigationProvider.cs" />
     <Compile Include="Extensions\HtmlCreationHelper.cs" />
     <Compile Include="Extensions\HtmlParsingHelper.cs" />
     <Compile Include="Extensions\HtmlValue.cs" />
@@ -68,6 +69,12 @@
     <Compile Include="Html\Dom\HDocument.cs" />
     <Compile Include="Html\Dom\HElement.cs" />
     <Compile Include="Html\Dom\HtmlLinqExtensions.cs" />
+    <Compile Include="Html\Forms\AgilityNodeParser.cs" />
+    <Compile Include="Html\Forms\FormField.cs" />
+    <Compile Include="Html\Forms\HElementFormParser.cs" />
+    <Compile Include="Html\Forms\HElementNodeParser.cs" />
+    <Compile Include="Html\Forms\IHtmlNodeParser.cs" />
+    <Compile Include="Html\Forms\WebForm.cs" />
     <Compile Include="Html\Parsing\CodeReader.cs" />
     <Compile Include="Html\Parsing\CodeReadingContext.cs" />
     <Compile Include="Html\Parsing\HtmlDeclarationReader.cs" />
@@ -85,6 +92,7 @@
     <None Include="packages.config" />
     <None Include="ScrapySharp.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
