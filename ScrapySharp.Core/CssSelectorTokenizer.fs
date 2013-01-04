@@ -1,5 +1,6 @@
 ﻿namespace ScrapySharp.Core
 
+    
     open System
     open System.IO
     open System.Net
@@ -45,6 +46,17 @@
                 | _ ->
                     failwith "Invalid css selector syntax"
         
+            let (|TokenStr|_|) (s:string) x  =
+                let chars = Seq.toList s
+
+                let rec equal x s =
+                    match x, s with
+                    | x, [] -> Some(x)
+                    | xh :: xt, sh :: st when xh = sh -> equal xt st
+                    | _ -> None
+
+                equal x chars
+
             let rec tokenize' acc sourceChars = 
                 match sourceChars with
                 | w :: t when Char.IsWhiteSpace(w) -> 
@@ -88,6 +100,14 @@
                 | '!' :: '=' :: t ->
                     let s, t' = readString "" t
                     tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.AttributeNotEqual(getOffset(t)) :: acc) t'
+ 
+                |  TokenStr ":checkbox" t  ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.Checkbox(getOffset(t)+1) :: acc) t'
+
+                | TokenStr ":checked" t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.Checked(getOffset(t)+1) :: acc) t'
 
                 | '>' :: t ->
                     let seqtoken = (acc |> List.toSeq |> Seq.skip(1) |> Seq.toList)

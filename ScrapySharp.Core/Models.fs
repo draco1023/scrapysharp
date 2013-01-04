@@ -26,6 +26,8 @@
         | AttributeContains of int
         | AttributeContainsWord of int
         | AttributeNotEqual of int
+        | Checkbox of int
+        | Checked of int
 
 
     type TokenContainer(token:Token, offset:int) =
