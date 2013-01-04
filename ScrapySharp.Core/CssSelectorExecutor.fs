@@ -109,8 +109,7 @@
                     let selectedNodes = acc |> getTargets 
                                         |> Seq.filter (fun x -> 
                                                             let attr = (navigator.GetAttributeValue x name String.Empty)
-                                                            attr.Split(whiteSpaces).Any(fun s -> s.Equals(value, StringComparison.InvariantCultureIgnoreCase))
-                                                      )
+                                                            attr.Split(whiteSpaces).Any(fun s -> s.Equals(value, StringComparison.InvariantCultureIgnoreCase))                                                      )
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
@@ -121,7 +120,20 @@
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
-                    
+                
+                | Token.Checkbox(o) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x "type" String.Empty) = "checkbox")
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
+
+                | Token.Checked(o) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> (navigator.Attributes x).AllKeys.Contains("checked"))
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
 
                 | Token.AllChildren(o) :: t -> 
                     level <- if matchAncestors then FilterLevel.Ancestors else FilterLevel.Descendants

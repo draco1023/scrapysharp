@@ -10,7 +10,7 @@ namespace ScrapySharp.Tests
     public class When_parses_using_CssSelector_with_HDocument
     {
         private HDocument html;
-        
+
         public When_parses_using_CssSelector_with_HDocument()
         {
             var source = File.ReadAllText("Html/Page1.htm");
@@ -147,9 +147,10 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_using_selector_attribute_equals_with_spaces()
         {
-            var source = "<html><body><hr /><hr id='bla123'/><hr id=\"1nothing\"/><hr id='2nothing' class=\"toto tata\"/></body></html>";
+            var source =
+                "<html><body><hr /><hr id='bla123'/><hr id=\"1nothing\"/><hr id='2nothing' class=\"toto tata\"/></body></html>";
             var doc = HDocument.Parse(source);
-            
+
             Assert.AreEqual(1, doc.CssSelect("hr.toto.tata").Count());
             Assert.AreEqual(1, doc.CssSelect("hr[class='toto tata']").Count());
         }
@@ -199,6 +200,56 @@ namespace ScrapySharp.Tests
             var doc = HDocument.Parse(source);
 
             Assert.AreEqual(3, doc.CssSelect("input[name!=man-news]").Count());
+        }
+
+        [Test]
+        public void When_using_checkbox_selector()
+        {
+            // http://api.jquery.com/checkbox-selector/
+
+            var source = @"<html>
+<body>
+  <input name=""man-news"" />
+
+  <input name=""milk man"" />
+  <input name=""letterman2"" />
+  <input name=""newmilk"" />
+
+  <input type=""checkbox"" />
+  <input type=""file"" />
+  <input type=""hidden"" />
+</body>
+</html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(1, doc.CssSelect("input:checkbox").Count());
+            Assert.AreEqual(1, doc.CssSelect(":checkbox").Count());
+        }
+
+        [Test]
+        public void When_using_checked_selector()
+        {
+            // http://api.jquery.com/checkbox-selector/
+
+            var source = @"<html>
+<body>
+  <input name=""man-news"" />
+
+  <input name=""milk man"" />
+  <input name=""letterman2"" />
+  <input name=""newmilk"" />
+
+  <input type=""checkbox"" checked />
+  <input type=""checkbox"" />
+  <input type=""checkbox"" checked=""checked"" />
+  <input type=""file"" />
+  <input type=""hidden"" />
+</body>
+</html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(2, doc.CssSelect("input:checked").Count());
+            Assert.AreEqual(2, doc.CssSelect(":checked").Count());
         }
     }
 }

@@ -14,6 +14,7 @@
         abstract member GetName : 't -> string
         abstract member GetAttributeValue : 't -> string -> string -> string
         abstract member GetId : 't -> string
+        abstract member Attributes : 't -> System.Collections.Specialized.NameValueCollection
 
 
     type AgilityNavigationProvider() = 
@@ -36,3 +37,8 @@
                 node.GetAttributeValue(name, defaultValue)
             member this.GetId(node) =
                 node.Id
+            member this.Attributes(node) =
+                let attrs = new System.Collections.Specialized.NameValueCollection()
+                for attr in node.Attributes do
+                    attrs.Add(attr.Name, attr.Value)
+                attrs

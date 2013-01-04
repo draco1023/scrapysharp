@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using ScrapySharp.Core;
 using ScrapySharp.Html.Dom;
@@ -40,6 +41,13 @@ namespace ScrapySharp.Extensions
         public string GetId(HElement node)
         {
             return node.Id;
+        }
+
+        public NameValueCollection Attributes(HElement node)
+        {
+            if (node.Attributes == null)
+                return new NameValueCollection();
+            return node.Attributes;
         }
     }
 }
