@@ -129,6 +129,8 @@ namespace ScrapySharp.Tests
             var result = doc.CssSelect("hr[id^=bla]").ToArray();
 
             Assert.AreEqual(result.Length, 1);
+
+            Assert.AreEqual(1, doc.CssSelect("hr[id|=bla]").Count());
         }
 
         [Test]
@@ -140,6 +142,44 @@ namespace ScrapySharp.Tests
             var result = doc.CssSelect("hr[id$=ing]").ToArray();
 
             Assert.AreEqual(result.Length, 2);
+        }
+
+        [Test]
+        public void When_using_selector_attribute_equals_with_spaces()
+        {
+            var source = "<html><body><hr /><hr id='bla123'/><hr id=\"1nothing\"/><hr id='2nothing' class=\"toto tata\"/></body></html>";
+            var doc = HDocument.Parse(source);
+            
+            Assert.AreEqual(1, doc.CssSelect("hr.toto.tata").Count());
+            Assert.AreEqual(1, doc.CssSelect("hr[class='toto tata']").Count());
+        }
+
+        [Test]
+        public void When_using_attributeContains_selector()
+        {
+            var source = "<html><body><hr /><hr id=\"bla123\"/><hr id=\"1nothing\"/><hr id=\"2nothing\"/></body></html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(2, doc.CssSelect("hr[id*=thi]").Count());
+        }
+
+        [Test]
+        public void When_using_attributeContainsWord_selector()
+        {
+            // http://api.jquery.com/attribute-contains-word-selector/
+
+            var source = @"<html>
+<body>
+  <input name=""man-news"" />
+
+  <input name=""milk man"" />
+  <input name=""letterman2"" />
+  <input name=""newmilk"" />
+</body>
+</html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(1, doc.CssSelect("input[name~='man']").Count());
         }
     }
 }

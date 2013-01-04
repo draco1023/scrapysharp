@@ -34,6 +34,8 @@
 
         member private x.selectElements() = 
             
+            let whiteSpaces = [|' '; '\t'; '\r'; '\n'|]
+
             let getTargets (acc:List<'n>) = 
                 if level = FilterLevel.Children then
                     navigator.ChildNodes(new System.Collections.Generic.List<'n>(acc)).ToArray() |> Array.toList
@@ -56,7 +58,7 @@
                 
                 | Token.ClassPrefix(o) :: Token.CssClass(o2, className) :: t -> 
                     let selectedNodes = acc |> getTargets 
-                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x "class" String.Empty).Split([|' '; '\t'; '\r'; '\n'|]).Contains(className)                                                      )
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x "class" String.Empty).Split(whiteSpaces).Contains(className)                                                      )
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
@@ -85,6 +87,30 @@
                 | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.StartWith(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
                     let selectedNodes = acc |> getTargets 
                                         |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty).StartsWith(value))
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
+
+                | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.AttributeContainsPrefix(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty).StartsWith(value))
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
+
+                | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.AttributeContains(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty).ToLowerInvariant().Contains(value.ToLowerInvariant()))
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
+                
+                | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.AttributeContainsWord(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> 
+                                                            let attr = (navigator.GetAttributeValue x name String.Empty)
+                                                            attr.Split(whiteSpaces).Any(fun s -> s.Equals(value, StringComparison.InvariantCultureIgnoreCase))
+                                                      )
                                         |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t

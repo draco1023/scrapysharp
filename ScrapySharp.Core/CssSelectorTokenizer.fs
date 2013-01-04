@@ -54,7 +54,6 @@
                         | Token.AllChildren(o) -> tokenize' (Token.AllChildren(getOffset(t)) :: seqtoken) t
                         | Token.DirectChildren(o) -> tokenize' (Token.DirectChildren(getOffset(t)) :: seqtoken) t
                         | _ -> tokenize' (Token.AllChildren(getOffset(t)) :: acc) t
-
                 | '.' :: t -> 
                     let s, t' = readString "" t
                     tokenize' (Token.CssClass(getOffset(t)+1, s) :: Token.ClassPrefix(getOffset(t)) :: acc) t'
@@ -69,37 +68,41 @@
                 | '=' :: t ->
                     let s, t' = readString "" t
                     tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.Assign(getOffset(t)) :: acc) t'
-        
                 | '$' :: '=' :: t ->
                     let s, t' = readString "" t
                     tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.EndWith(getOffset(t)) :: acc) t'
-        
                 | '^' :: '=' :: t ->
                     let s, t' = readString "" t
                     tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.StartWith(getOffset(t)) :: acc) t'
-        
+                | '|' :: '=' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.AttributeContainsPrefix(getOffset(t)) :: acc) t'
+                | '*' :: '=' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.AttributeContains(getOffset(t)) :: acc) t'
+
+                | '~' :: '=' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.AttributeContainsWord(getOffset(t)) :: acc) t'
+
                 | '>' :: t ->
                     let seqtoken = (acc |> List.toSeq |> Seq.skip(1) |> Seq.toList)
                     match acc.Head with
                         | Token.AllChildren(o) -> tokenize' (Token.DirectChildren(getOffset(t)) :: seqtoken) t
                         | _ -> tokenize' (Token.DirectChildren(getOffset(t)) :: acc) t
-
                 | '<' :: t ->
                     let seqtoken = (acc |> List.toSeq |> Seq.skip(1) |> Seq.toList)
                     match acc.Head with
                         | Token.AllChildren(o) -> tokenize' (Token.Ancestor(getOffset(t)) :: seqtoken) t
                         | _ -> tokenize' (Token.Ancestor(getOffset(t)) :: acc) t
-
                 | c :: t when Char.IsLetterOrDigit(c) -> 
                     let str = c.ToString()
                     let s, t' = readString str t
                     tokenize' (Token.TagName(getOffset(t), s) :: acc) t'
                 | [] -> List.rev acc // A la fin, on inverse la liste, car la call stack nous sort les tokens à l'envers
-
                 | c :: t when Char.IsLetterOrDigit(c) <> true ->
                     let offset = getOffset t
                     failwith (sprintf "Invalid css selector syntax (char '%c' at offset %d)" c offset)
-            
                 | _ ->
                     failwith "Invalid css selector syntax"
             tokenize' [] source
