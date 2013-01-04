@@ -181,5 +181,24 @@ namespace ScrapySharp.Tests
 
             Assert.AreEqual(1, doc.CssSelect("input[name~='man']").Count());
         }
+
+        [Test]
+        public void When_using_attributeNotEqual_selector()
+        {
+            // http://api.jquery.com/attribute-not-equal-selector/
+
+            var source = @"<html>
+<body>
+  <input name=""man-news"" />
+
+  <input name=""milk man"" />
+  <input name=""letterman2"" />
+  <input name=""newmilk"" />
+</body>
+</html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(3, doc.CssSelect("input[name!=man-news]").Count());
+        }
     }
 }
