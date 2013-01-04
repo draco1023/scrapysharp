@@ -24,7 +24,6 @@ namespace ScrapySharp.Html.Forms
 
         public WebForm(HElement html)
         {
-            //FormFields = HElementFormParser.ParseFormFields(html);
             var nodeParser = new HElementNodeParser(html);
             FormFields = ParseFormFields(nodeParser);
         }
