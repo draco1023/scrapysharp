@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using HtmlAgilityPack;
 using ScrapySharp.Extensions;
+using ScrapySharp.Html.Dom;
 
 namespace ScrapySharp.Html.Forms
 {
@@ -14,7 +15,7 @@ namespace ScrapySharp.Html.Forms
         {
             this.node = node;
 
-            Attributes = new NameValueCollection();
+            Attributes = new HAttibutesCollection();
 
             foreach (var attribute in node.Attributes)
                 Attributes.Add(attribute.Name, attribute.Value);
@@ -30,7 +31,7 @@ namespace ScrapySharp.Html.Forms
             return node.GetAttributeValue(name, string.Empty);
         }
 
-        public NameValueCollection Attributes { get; private set; }
+        public HAttibutesCollection Attributes { get; private set; }
         
         public string InnerText
         {

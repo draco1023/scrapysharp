@@ -49,7 +49,7 @@ namespace ScrapySharp.Html.Parsing
                 var element = new TagDeclaration
                 {
                     Words = new List<Word> {w},
-                    Attributes = new NameValueCollection()
+                    Attributes = new HAttibutesCollection()
                 };
 
                 w = ReadWord();
@@ -207,9 +207,8 @@ namespace ScrapySharp.Html.Parsing
 
         public Word GetNextWord(int count = 1)
         {
-            if ((position + count - 1) >= words.Count)
-                return null;
-            return words[(position + count - 1)];
+            var nextPosition = (position + count - 1);
+            return nextPosition >= words.Count ? null : words[nextPosition];
         }
 
         public Word GetPreviousChar()
