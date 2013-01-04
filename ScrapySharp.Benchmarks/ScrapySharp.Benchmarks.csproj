@@ -77,37 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HDocumentBenchMark.cs" />
-    <Compile Include="IBenchMark.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Html\InvalidPage1.htm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Html\Page1.htm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Html\ValidPage1.htm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ScrapySharp\ScrapySharp.csproj">
-      <Project>{19858AEA-E842-4633-AF1B-110ED4FE3770}</Project>
-      <Name>ScrapySharp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <ItemGroup>
     <Compile Include="AgilityPackBenchMark.cs" />
     <Compile Include="HDocumentBenchMark.cs" />
     <Compile Include="IBenchMark.cs" />
@@ -127,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ScrapySharp\ScrapySharp.csproj">
-      <Project>{19858aea-e842-4633-af1b-110ed4fe3770}</Project>
+      <Project>{19858AEA-E842-4633-AF1B-110ED4FE3770}</Project>
       <Name>ScrapySharp</Name>
     </ProjectReference>
   </ItemGroup>
