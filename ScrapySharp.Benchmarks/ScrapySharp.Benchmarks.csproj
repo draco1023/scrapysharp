@@ -77,7 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AgilityPackBenchMark.cs" />
     <Compile Include="HDocumentBenchMark.cs" />
     <Compile Include="IBenchMark.cs" />
     <Compile Include="Program.cs" />

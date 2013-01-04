@@ -18,17 +18,60 @@ namespace ScrapySharp.Html.Forms
 
         public WebForm(HtmlNode html)
         {
-            FormFields = AgilityFormParser.ParseFormFields(html);
-        }
-
-        public WebForm(HDocument html)
-        {
-            FormFields = HDocumentFormParser.ParseFormFields(html);
+            var nodeParser = new AgilityNodeParser(html);
+            FormFields = ParseFormFields(nodeParser);
         }
 
         public WebForm(HElement html)
         {
-            FormFields = HElementFormParser.ParseFormFields(html);
+            //FormFields = HElementFormParser.ParseFormFields(html);
+            var nodeParser = new HElementNodeParser(html);
+            FormFields = ParseFormFields(nodeParser);
+        }
+
+        internal static List<FormField> ParseFormFields<T>(IHtmlNodeParser<T> node)
+        {
+            var inputs = from input in node.CssSelect("input")
+                             let value = input.GetAttributeValue("value")
+                             let type = input.GetAttributeValue("type")
+                         where type != "checkbox" && type != "radio"
+                         select new FormField
+                         {
+                             Name = input.GetAttributeValue("name"),
+                             Value = string.IsNullOrEmpty(value) ? input.InnerText : value
+                         };
+
+            var checkboxes = from input in node.CssSelect("input[type=checkbox]")
+                         let value = input.GetAttributeValue("value")
+                             where input.Attributes.AllKeys.Contains("checked")
+                         select new FormField
+                         {
+                             Name = input.GetAttributeValue("name"),
+                             Value = string.IsNullOrEmpty(value) ? input.InnerText : value
+                         };
+
+            var radios = from input in node.CssSelect("input[type=radio]")
+                         let value = input.GetAttributeValue("value")
+                             where input.Attributes.AllKeys.Contains("checked")
+                         select new FormField
+                         {
+                             Name = input.GetAttributeValue("name"),
+                             Value = string.IsNullOrEmpty(value) ? input.InnerText : value
+                         };
+
+            var selects = from @select in node.CssSelect("select")
+                          let name = @select.GetAttributeValue("name")
+                          let option =
+                              @select.CssSelect("option").FirstOrDefault(o => o.Attributes["selected"] != null) ??
+                              @select.CssSelect("option").FirstOrDefault()
+                          let value = option.GetAttributeValue("value")
+                          select new FormField
+                          {
+                              Name = name,
+                              Value = string.IsNullOrEmpty(value) ? option.InnerText : value
+                          };
+
+            return inputs.Concat(selects).Concat(checkboxes).Concat(radios).ToList();
         }
 
         public List<FormField> FormFields { get; set; }
