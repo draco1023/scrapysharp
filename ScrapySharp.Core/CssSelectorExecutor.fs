@@ -115,6 +115,14 @@
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
 
+                | Token.OpenAttribute(o) :: Token.AttributeName(o1, name) :: Token.AttributeNotEqual(o2) :: Token.AttributeValue(o3, value) :: Token.CloseAttribute(o4) :: t ->
+                    let selectedNodes = acc |> getTargets 
+                                        |> Seq.filter (fun x -> (navigator.GetAttributeValue x name String.Empty) <> value)
+                                        |> Seq.toList
+                    level <- FilterLevel.Root
+                    selectElements' selectedNodes t
+                    
+
                 | Token.AllChildren(o) :: t -> 
                     level <- if matchAncestors then FilterLevel.Ancestors else FilterLevel.Descendants
                     selectElements' acc t

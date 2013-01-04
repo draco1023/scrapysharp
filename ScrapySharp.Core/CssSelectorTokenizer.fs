@@ -85,6 +85,10 @@
                     let s, t' = readString "" t
                     tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.AttributeContainsWord(getOffset(t)) :: acc) t'
 
+                | '!' :: '=' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.AttributeValue(getOffset(t)+1, s) :: Token.AttributeNotEqual(getOffset(t)) :: acc) t'
+
                 | '>' :: t ->
                     let seqtoken = (acc |> List.toSeq |> Seq.skip(1) |> Seq.toList)
                     match acc.Head with

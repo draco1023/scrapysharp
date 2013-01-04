@@ -25,6 +25,7 @@
         | AttributeContainsPrefix of int
         | AttributeContains of int
         | AttributeContainsWord of int
+        | AttributeNotEqual of int
 
 
     type TokenContainer(token:Token, offset:int) =
