@@ -86,16 +86,16 @@
             let name, t' = readName "" chars
             let value, t2' = readAttributeValue t'
             if String.IsNullOrEmpty name then
-                None, t'
+                None, t2'
             else
-                Some(new Attribute(name, value)), t'
+                Some(new Attribute(name, value)), t2'
 
         let rec readAttributes (acc:list<Attribute>) = function
             | c :: t -> 
-                let attr, t' = readAttribute (c :: t)
+                let attr, right = readAttribute (c :: t)
                 match attr with
-                    | Some(a) -> acc |> Seq.append [|a|] |> Seq.toList, t'
-                    | None -> acc, t'
+                    | Some(a) -> acc |> Seq.append [|a|] |> Seq.toList, c :: right
+                    | None -> acc, c :: right
             | [] -> acc, []
             | _ -> failwith "reading algorithm error"
 
@@ -106,10 +106,21 @@
 
         member public x.ReadTag() = 
             let html = source |> Seq.skip(position) |> Seq.toList
+
+            let rec checkIfSelfClosed = function
+                | c :: t when Char.IsWhiteSpace(c) -> checkIfSelfClosed t
+                | '/' :: '>' :: t -> true, t
+                | c :: t -> false, t
+                | [] -> true, []
+                | _ -> failwith "Invalid attribute syntax"
+
             let tag = match html.Head with
                     | '<' -> 
-                        let name, t' = readName "" (html |> Seq.skip(1) |> Seq.toList)
-                        let attributes, t2 = readAttributes List<Attribute>.Empty t'
+                        let name, t1 = readName "" (html |> Seq.skip(1) |> Seq.toList)
+                        let attributes, t2 = readAttributes List<Attribute>.Empty t1
+//                        position <- source.Length - t2.Length
+                        let isSelfClosed, t3 = checkIfSelfClosed t2
+                        position <- source.Length - t3.Length
 
                         new Tag(name, "", attributes)
                     | c -> 

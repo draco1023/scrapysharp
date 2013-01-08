@@ -42,8 +42,8 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(1, tag5.Attributes.Length);
             Assert.AreEqual("man-news", tag5.Attributes.First(a => a.Name == "name").Value);
 
-
-
+            var tag6 = fastHtmlParser.ReadTag();
+            Assert.AreEqual("\r\n  ", tag6.InnerText);
         }
 
         [Test]
