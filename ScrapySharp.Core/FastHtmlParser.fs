@@ -20,6 +20,7 @@
         let mutable position = 0
 
         let decisiveChars = [|'=';'"';''';'<';'>';'/'|]
+        let contains source item = source |> Seq.exists(fun i -> i = item)
 
         let rec readString (acc:string) = function
             | c :: '<' :: n :: t when Char.IsLetter(n)  ->
@@ -35,7 +36,8 @@
             | c :: t when Char.IsWhiteSpace(c) ->
                 position <- position + acc.Length + 1
                 acc, t
-            | c :: t when (decisiveChars |> Seq.exists(fun i -> i = c)) ->
+//            | c :: t when (decisiveChars |> Seq.exists(fun i -> i = c)) ->
+            | c :: t when contains decisiveChars c ->
                 position <- position + acc.Length + 1
                 acc, c :: t
             | c :: t -> readName (acc + (c.ToString())) t
@@ -45,6 +47,7 @@
             | _ -> failwith "reading algorithm error"
         
         let mutable inQuotes = false
+        let mutable endChar:char = new Char()
         
         let readAttributeValue (chars:list<char>) =
             let rec readQuotedString acc = function
@@ -54,23 +57,30 @@
                         acc, t
                     else
                         inQuotes <- true
-                        readString acc t
-            
-                | '\\' :: '\'' :: t when inQuotes ->
-                    readString (acc + ('\''.ToString())) t
+                        readQuotedString acc t
+                | '\\' :: '\'' :: t when inQuotes -> readQuotedString (acc + ('\''.ToString())) t
+                | p :: c :: t when c = endChar && p <> '\\' -> (acc + (p.ToString())), t
+                | c :: t -> readQuotedString (acc + (c.ToString())) t
+                | [] -> acc, []
+                | _ -> failwith "Invalid attribute syntax"
 
-                | c :: t when inQuotes ->
-                    readString (acc + (c.ToString())) t
-                | c :: t -> acc, c :: t
-                | [] -> 
-                    acc, []
-                | _ ->
-                    failwith "Invalid css selector syntax"
+            let rec checkIfAttributeHasValue = function
+                | c :: t when Char.IsWhiteSpace(c) -> checkIfAttributeHasValue t
+                | '=' :: t -> true, t
+                | c :: t when contains (decisiveChars |> Seq.where (fun i -> i <> '=')) c -> false, t
+                | [] -> false, []
+                | _ -> failwith "Invalid attribute syntax"
 
-//            let checkIfAttributeHasValue acc = function
-                
-
-            readQuotedString "" chars
+            let hasValue, right = checkIfAttributeHasValue chars
+            if hasValue then
+                if right.Head = '"' || right.Head = ''' then
+                    endChar <- right.Head
+                    readQuotedString "" (right |> Seq.skip(1) |> Seq.toList)
+                else
+                    endChar <- new Char()
+                    readQuotedString "" right
+            else
+                "", right
 
         let readAttribute (chars:list<char>) = 
             let name, t' = readName "" chars
