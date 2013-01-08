@@ -141,9 +141,15 @@ namespace ScrapySharp.Html.Parsing
             get { return linePosition; }
         }
 
-
         public bool IsLetterOrDigit(char c)
         {
+            if (c >= 'a' && c <= 'z')
+                return true;
+            if (c >= 'A' && c <= 'Z')
+                return true;
+            if (c >= '0' && c <= '9')
+                return true;
+
             return char.IsLetterOrDigit(c) || c == '-' || c == '_'
                 || c == ':' || c == ';' || c == '+';
         }
