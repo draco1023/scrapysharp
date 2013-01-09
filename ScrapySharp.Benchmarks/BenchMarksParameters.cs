@@ -2,6 +2,6 @@ namespace ScrapySharp.Benchmarks
 {
     internal class BenchMarksParameters
     {
-        public const int Iterations = 100;
+        public const int Iterations = 500;
     }
 }
