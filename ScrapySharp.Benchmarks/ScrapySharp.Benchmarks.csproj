@@ -53,8 +53,13 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\ScrapySharp\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="ScrapySharp.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ScrapySharp.Core\bin\Debug\ScrapySharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,6 +72,7 @@
   <ItemGroup>
     <Compile Include="AgilityPackBenchMark.cs" />
     <Compile Include="BenchMarksParameters.cs" />
+    <Compile Include="FastHtmlParserBenchMark.cs" />
     <Compile Include="HDocumentBenchMark.cs" />
     <Compile Include="IBenchMark.cs" />
     <Compile Include="Program.cs" />
