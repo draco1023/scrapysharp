@@ -12,16 +12,16 @@ namespace ScrapySharp.Benchmarks
 
             //agilityPackBenchMark.Run();
             //Console.WriteLine("AgilityPackBenchMark => Elapsed time: {0} ms", agilityPackBenchMark.TimeElapsed.TotalMilliseconds);
-            
-            //GC.Collect();
-
-            //hDocumentBenchMark.Run();
-            //Console.WriteLine("HDocumentBenchMark => Elapsed time: {0} ms", hDocumentBenchMark.TimeElapsed.TotalMilliseconds);
 
             //GC.Collect();
 
-            fastHtmlParserBenchMark.Run();
-            Console.WriteLine("FastHtmlParserBenchMark => Elapsed time: {0} ms", fastHtmlParserBenchMark.TimeElapsed.TotalMilliseconds);
+            hDocumentBenchMark.Run();
+            Console.WriteLine("HDocumentBenchMark => Elapsed time: {0} ms", hDocumentBenchMark.TimeElapsed.TotalMilliseconds);
+
+            GC.Collect();
+
+            //fastHtmlParserBenchMark.Run();
+            //Console.WriteLine("FastHtmlParserBenchMark => Elapsed time: {0} ms", fastHtmlParserBenchMark.TimeElapsed.TotalMilliseconds);
 
             //GC.Collect();
             

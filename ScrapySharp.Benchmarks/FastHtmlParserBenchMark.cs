@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace ScrapySharp.Benchmarks
             for (int i = 0; i < BenchMarksParameters.Iterations; i++)
             {
                 var fastHtmlParser = new FastHtmlParser(source);
-                var tags = fastHtmlParser.ReadTags().ToList();
+                List<Tag> tags = fastHtmlParser.ReadTags();
                 var spans = tags.SelectMany(t => t.Children).Where(t => t.Name == "span").ToArray();
 
                 //var nodes = html.CssSelect("span.login-box").ToArray();

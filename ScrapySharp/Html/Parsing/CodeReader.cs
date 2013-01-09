@@ -8,11 +8,14 @@ namespace ScrapySharp.Html.Parsing
     {
         private readonly string sourceCode;
         private readonly StringBuilder buffer;
-        private int position;
+        //private int position;
+        private int currentPosition;
         private CodeReadingContext context;
 
         private int lineNumber = 1;
         private int linePosition = 1;
+        private readonly int sourceCodeLength = 0;
+        public bool end = false;
 
         public CodeReader(string sourceCode)
         {
@@ -23,21 +26,35 @@ namespace ScrapySharp.Html.Parsing
 
             buffer = new StringBuilder();
             context = CodeReadingContext.None;
+            sourceCodeLength = this.sourceCode.Length;
+        }
+
+        //public int Position
+        //{
+        //    get { return currentPosition; }
+        //    set
+        //    {
+        //        currentPosition = value;
+        //        end = currentPosition >= sourceCode.Length;
+        //    }
+        //}
+
+        public void SetPosition(int value)
+        {
+            currentPosition = value;
+            end = currentPosition >= sourceCodeLength;
         }
 
         public int MaxWordCount
         {
-            get { return sourceCode.Length; }
+            get { return sourceCodeLength; }
         }
 
         public Word ReadWord()
         {
             buffer.Remove(0, buffer.Length);
             var c = ReadChar();
-
-            //while (char.IsWhiteSpace(c))
-            //    c = ReadChar();
-
+            
             if (char.IsWhiteSpace(c))
                 return new Word(c.ToString(CultureInfo.InvariantCulture), lineNumber, linePosition, false);
 
@@ -56,14 +73,13 @@ namespace ScrapySharp.Html.Parsing
                 c = ReadChar();
                 if (c == Tokens.Quote)
                 {
-                    position--;
+                    //Position--;
+                    currentPosition--;
+                    end = false;
                     break;
                 }
 
                 buffer.Append(c);
-
-                //if (c.IsToken() && GetNextChar().IsToken())
-                //    break;
             }
 
             return new Word(buffer.ToString(), lineNumber, linePosition, false);
@@ -73,7 +89,7 @@ namespace ScrapySharp.Html.Parsing
         {
             var c = ReadChar();
             
-            while (!End && context == CodeReadingContext.InQuotes)
+            while (!end && context == CodeReadingContext.InQuotes)
             {
                 if (c == quoteChar)
                     break;
@@ -98,23 +114,24 @@ namespace ScrapySharp.Html.Parsing
 
         public char GetNextChar()
         {
-            if (position >= sourceCode.Length)
+            if (end)
                 return (char)0;
-            return sourceCode[position];
+            return sourceCode[currentPosition];
         }
 
         public char GetPreviousChar()
         {
-            if (position <= 1)
+            if (currentPosition <= 1)
                 return (char)0;
-            return sourceCode[position - 2];
+            return sourceCode[currentPosition - 2];
         }
 
         public char ReadChar()
         {
-            if (End)
+            if (end)
                 return (char)0;
-            var c = sourceCode[position++];
+            var c = sourceCode[currentPosition];
+            SetPosition(currentPosition+1);
             linePosition++;
 
             if (c == '\n')
@@ -125,11 +142,11 @@ namespace ScrapySharp.Html.Parsing
 
             return c;
         }
-
-        public bool End
-        {
-            get { return position >= sourceCode.Length; }
-        }
+        
+        //public bool End
+        //{
+        //    get { return position >= sourceCode.Length; }
+        //}
 
         public int LineNumber
         {
