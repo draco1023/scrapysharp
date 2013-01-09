@@ -39,11 +39,16 @@
             | [] -> []
             | _ -> failwith "skipSpaces algorithm error"
 
+        let rec skipEndTagContent = function
+            | '>' :: t -> t
+            | c :: t -> skipEndTagContent t
+            | [] -> []
+            | _ -> failwith "reading algorithm error"
+
         let rec readName (acc:string) = function
             | c :: t when Char.IsWhiteSpace(c) ->
                 position <- position + acc.Length + 1
                 acc, t
-//            | c :: t when (decisiveChars |> Seq.exists(fun i -> i = c)) ->
             | c :: t when contains decisiveChars c ->
                 position <- position + acc.Length + 1
                 acc, c :: t
@@ -119,8 +124,12 @@
                 | _ -> failwith "Invalid attribute syntax"
 
         let rec parseTags acc = function
+                    | '<' :: '/' :: html ->
+                        let name, t1 = readName "" html
+                        let right = html |> skipEndTagContent
+                        acc, right
                     | '<' :: html -> 
-                        let name, t1 = readName "" (html |> Seq.toList)
+                        let name, t1 = readName "" html
                         let attributes, t2 = readAttributes List<Attribute>.Empty t1
                         let isSelfClosed, t3 = checkIfSelfClosed t2
                         position <- source.Length - t3.Length
@@ -128,10 +137,10 @@
                                             new Tag(name, "", attributes, List<Tag>.Empty) :: acc, t3
                                        else
                                             let children, right = parseTags acc t3
-                                            new Tag(name, "", attributes, children) :: acc, right
+                                            new Tag(name, "", attributes, children |> List.rev) :: acc, right
                         let nextSiblings, t5 = parseTags acc t4
                         position <- source.Length - t5.Length
-                        tags |> List.append(nextSiblings) |> List.append(acc) , t5
+                        acc |> List.append(tags) |> List.append(nextSiblings) , t5
                     | c :: html -> 
                         let text, t1 = readString "" (c :: html)
                         let nextSiblings, right = parseTags acc t1
@@ -146,21 +155,7 @@
 
         member public x.ReadTags() = 
             let html = source |> Seq.skip(position) |> Seq.toList
-            
             let tags, right = parseTags List<Tag>.Empty html
-
-//            let tag = match html.Head with
-//                    | '<' -> 
-//                        let name, t1 = readName "" (html |> Seq.skip(1) |> Seq.toList)
-//                        let attributes, t2 = readAttributes List<Attribute>.Empty t1
-//                        let isSelfClosed, t3 = checkIfSelfClosed t2
-//                        position <- source.Length - t3.Length
-//
-//                        new Tag(name, "", attributes)
-//                    | c -> 
-//                        let text, t' = readString "" html
-//                        new Tag("", text, List<Attribute>.Empty)
-//                    | _ -> failwith "parsing algorithm error"
             new System.Collections.Generic.List<Tag>(tags)
 
 
