@@ -8,7 +8,6 @@ namespace ScrapySharp.Html.Parsing
     {
         private readonly string sourceCode;
         private readonly StringBuilder buffer;
-        //private int position;
         private int currentPosition;
         private CodeReadingContext context;
 
@@ -29,16 +28,6 @@ namespace ScrapySharp.Html.Parsing
             sourceCodeLength = this.sourceCode.Length;
         }
 
-        //public int Position
-        //{
-        //    get { return currentPosition; }
-        //    set
-        //    {
-        //        currentPosition = value;
-        //        end = currentPosition >= sourceCode.Length;
-        //    }
-        //}
-
         public void SetPosition(int value)
         {
             currentPosition = value;
@@ -53,6 +42,7 @@ namespace ScrapySharp.Html.Parsing
         public Word ReadWord()
         {
             buffer.Remove(0, buffer.Length);
+
             var c = ReadChar();
             
             if (char.IsWhiteSpace(c))
@@ -73,7 +63,6 @@ namespace ScrapySharp.Html.Parsing
                 c = ReadChar();
                 if (c == Tokens.Quote)
                 {
-                    //Position--;
                     currentPosition--;
                     end = false;
                     break;
@@ -143,11 +132,6 @@ namespace ScrapySharp.Html.Parsing
             return c;
         }
         
-        //public bool End
-        //{
-        //    get { return position >= sourceCode.Length; }
-        //}
-
         public int LineNumber
         {
             get { return lineNumber; }

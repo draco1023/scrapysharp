@@ -9,6 +9,7 @@ namespace ScrapySharp.Html.Parsing
         private readonly int linePositionEnd;
         private readonly bool isQuoted;
         private readonly bool isWhiteSpace;
+        private readonly char letter;
 
         public Word(string value, int lineNumber, int linePositionEnd, bool isQuoted)
         {
@@ -17,29 +18,11 @@ namespace ScrapySharp.Html.Parsing
             this.linePositionEnd = linePositionEnd;
             this.isQuoted = isQuoted;
 
-            //isWhiteSpace = !string.IsNullOrEmpty(value) && IsWhiteSpaceString(value);
             isWhiteSpace = string.IsNullOrEmpty(value.Trim());
+            
+            if (value.Length > 0)
+                letter = value[0];
         }
-
-        private bool IsWhiteSpaceString(string s)
-        {
-            var trim = s.Trim();
-            return string.IsNullOrEmpty(trim);
-
-            //for (int i = 0; i < s.Length; i++)
-            //{
-            //    var c = s[i];
-
-            //    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
-            //        continue;
-
-            //    if (!char.IsWhiteSpace(c))
-            //        return false;
-            //}
-
-            //return true;
-        }
-
 
         public string Value
         {
@@ -92,10 +75,12 @@ namespace ScrapySharp.Html.Parsing
 
         public static implicit operator char(Word word)
         {
-            if (string.IsNullOrEmpty(word.Value))
-                return default(char);
+            return word.letter;
 
-            return word.Value[0];
+            //if (string.IsNullOrEmpty(word.Value))
+            //    return default(char);
+
+            //return word.Value[0];
         }
 
     }
