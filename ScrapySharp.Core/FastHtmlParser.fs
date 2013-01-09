@@ -99,13 +99,14 @@
                 Some(new Attribute(name, value)), t2
 
         let rec readAttributes (acc:list<Attribute>) = function
+            | '/' :: '>' :: t -> acc, '/' :: '>' :: t
+            | '>' :: t -> acc, '>' :: t
             | c :: t -> 
                 let attr, right = readAttribute (c :: t)
                 match attr with
                     | Some(a) -> 
                         let matched = a :: acc
                         readAttributes matched right
-//                        acc |> Seq.append [|a|] |> Seq.toList, right
                     | None -> acc, c :: right
             | [] -> acc, []
             | _ -> failwith "reading algorithm error"
@@ -123,23 +124,18 @@
                         let attributes, t2 = readAttributes List<Attribute>.Empty t1
                         let isSelfClosed, t3 = checkIfSelfClosed t2
                         position <- source.Length - t3.Length
-
                         let tags, t4 = if isSelfClosed then
                                             new Tag(name, "", attributes, List<Tag>.Empty) :: acc, t3
                                        else
                                             let children, right = parseTags acc t3
                                             new Tag(name, "", attributes, children) :: acc, right
                         let nextSiblings, t5 = parseTags acc t4
-
                         position <- source.Length - t5.Length
-
                         tags |> List.append(nextSiblings) |> List.append(acc) , t5
                     | c :: html -> 
                         let text, t1 = readString "" (c :: html)
                         let nextSiblings, right = parseTags acc t1
-
                         new Tag("", text, List<Attribute>.Empty, List<Tag>.Empty) :: nextSiblings, right
-//                        new Tag("", text, List<Attribute>.Empty) :: acc, t'
                     | [] -> acc, []
                     | _ -> failwith "parsing algorithm error"
 
