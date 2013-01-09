@@ -18,7 +18,7 @@ namespace ScrapySharp.Html.Parsing
 
             SkipSpaces = false;
 
-            while (!reader.End)
+            while (!reader.end)
             {
                 var w = reader.ReadWord();
                 words.Add(w);

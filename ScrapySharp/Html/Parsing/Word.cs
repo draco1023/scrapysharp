@@ -17,19 +17,27 @@ namespace ScrapySharp.Html.Parsing
             this.linePositionEnd = linePositionEnd;
             this.isQuoted = isQuoted;
 
-            //isWhiteSpace = !string.IsNullOrEmpty(value) && value.All(char.IsWhiteSpace);
-            isWhiteSpace = !string.IsNullOrEmpty(value) && IsWhiteSpaceString(value);
+            //isWhiteSpace = !string.IsNullOrEmpty(value) && IsWhiteSpaceString(value);
+            isWhiteSpace = string.IsNullOrEmpty(value.Trim());
         }
 
         private bool IsWhiteSpaceString(string s)
         {
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (!char.IsWhiteSpace(s[i]))
-                    return false;
-            }
+            var trim = s.Trim();
+            return string.IsNullOrEmpty(trim);
 
-            return true;
+            //for (int i = 0; i < s.Length; i++)
+            //{
+            //    var c = s[i];
+
+            //    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            //        continue;
+
+            //    if (!char.IsWhiteSpace(c))
+            //        return false;
+            //}
+
+            //return true;
         }
 
 
