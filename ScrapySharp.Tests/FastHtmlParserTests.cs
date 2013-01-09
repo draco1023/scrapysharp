@@ -17,7 +17,7 @@ namespace ScrapySharp.Tests
   <input name=""letterman2"" />
   <input name=""newmilk"" />
 
-  <input type=""checkbox"" checked=""checked"" />
+  <input type=""checkbox"" checked />
   <input type=""checkbox"" />
   <input type=""checkbox"" checked=""checked"" />
   <input type=""file"" />
