@@ -67,7 +67,7 @@
             let rec checkIfAttributeHasValue = function
                 | c :: t when Char.IsWhiteSpace(c) -> checkIfAttributeHasValue t
                 | '=' :: t -> true, t
-                | c :: t when contains (decisiveChars |> Seq.where (fun i -> i <> '=')) c -> false, t
+                | c :: t when contains (decisiveChars |> Seq.filter (fun i -> i <> '=')) c -> false, t
                 | [] -> false, []
                 | _ -> failwith "Invalid attribute syntax"
 
@@ -94,7 +94,7 @@
             | c :: t -> 
                 let attr, right = readAttribute (c :: t)
                 match attr with
-                    | Some(a) -> acc |> Seq.append [|a|] |> Seq.toList, c :: right
+                    | Some(a) -> acc |> Seq.append [|a|] |> Seq.toList, right
                     | None -> acc, c :: right
             | [] -> acc, []
             | _ -> failwith "reading algorithm error"
