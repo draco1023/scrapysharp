@@ -16,34 +16,38 @@
         member t.Attributes = attributes
         member t.Children = children
 
-    type StringPart = string * int * (int *int)
+    type Position(column:int, line:int) =
+        struct
+            member t.Column = column
+            member t.Line = line
+        end
+
+    type StringPart = string * int * Position
     
     type FastHtmlParser(source: string) =
-        let stringPart s = (s, 0, (0, 0))
+        let stringPart s = (s, 0, Position(0, 0))
 
-        let line ((_,_,(l,_)): StringPart) = l
-        let col ((_,_,(_,c)):StringPart) = c
-
-        
+        let line ((_,_,p): StringPart) = p.Line
+        let col ((_,_,p):StringPart) = p.Column
 
         let head ((s,i, _): StringPart) =
             s.[i]
 
-        let next ((s,i, (line, col)): StringPart) =
+        let next ((s,i, p):StringPart) =
             let c = s.[i]
             if c = '\n' then
-                (s, i+1, (line+1, 0))
+                (s, i+1, Position(p.Line+1, 0))
             else
-                (s, i+1, (line, col+1))
+                (s, i+1, Position(p.Line, p.Column+1))
 
-        let rec nextn n s =
+        let rec nextn n (s:StringPart) =
             if n = 0 then
                 s
             else 
                 nextn (n-1) (next s)
 
-        let rec nextnfast n (s,i,(line, col)) =
-            (s, i+n, (line, col + n))
+        let rec nextnfast n ((s,i,p):StringPart) =
+            (s, i+n, Position(p.Line, p.Column + n))
 
         let isEnd ((s,i, _): StringPart) =
             i >= s.Length
