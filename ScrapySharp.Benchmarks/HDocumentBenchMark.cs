@@ -14,12 +14,13 @@ namespace ScrapySharp.Benchmarks
         public void Run()
         {
             stopwatch.Reset();
-            stopwatch.Start();
+            
             var source = File.ReadAllText("Html/Page1.htm");
             int matched = 0;
 
             for (int i = 0; i < BenchMarksParameters.Iterations; i++)
             {
+                stopwatch.Start();
                 var html = HDocument.Parse(source);
 
                 var nodes = html.CssSelect("span.login-box").ToArray();
@@ -31,7 +32,8 @@ namespace ScrapySharp.Benchmarks
                 nodes = html.CssSelect("script[type=text/javascript]").ToArray();
                 matched += nodes.Length;
 
-                GC.Collect(3, GCCollectionMode.Forced);
+                stopwatch.Stop();
+                GC.Collect();
             }
 
             Console.WriteLine("Matched: {0}", matched);

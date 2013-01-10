@@ -14,18 +14,20 @@ namespace ScrapySharp.Benchmarks
         public void Run()
         {
             stopwatch.Reset();
-            stopwatch.Start();
             var source = File.ReadAllText("Html/Page1.htm");
             int matched = 0;
 
             for (int i = 0; i < BenchMarksParameters.Iterations; i++)
             {
+                stopwatch.Start();
+
                 var fastHtmlParser = new FastHtmlParser(source);
                 List<Tag> tags = fastHtmlParser.ReadTags();
                 var spans = tags.SelectMany(t => t.Children).Where(t => t.Name == "span").ToArray();
                 matched += spans.Length;
+                stopwatch.Stop();
 
-                GC.Collect(3, GCCollectionMode.Forced);
+                GC.Collect();
             }
 
             Console.WriteLine("Matched: {0}", matched);
