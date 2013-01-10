@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace ScrapySharp.Html.Parsing
 {
     public class Word
