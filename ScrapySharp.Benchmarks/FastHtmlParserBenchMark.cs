@@ -16,24 +16,19 @@ namespace ScrapySharp.Benchmarks
             stopwatch.Reset();
             stopwatch.Start();
             var source = File.ReadAllText("Html/Page1.htm");
+            int matched = 0;
 
             for (int i = 0; i < BenchMarksParameters.Iterations; i++)
             {
                 var fastHtmlParser = new FastHtmlParser(source);
                 List<Tag> tags = fastHtmlParser.ReadTags();
                 var spans = tags.SelectMany(t => t.Children).Where(t => t.Name == "span").ToArray();
+                matched += spans.Length;
 
-                //var nodes = html.CssSelect("span.login-box").ToArray();
-                ////Console.WriteLine("Matched: {0}", nodes.Length);
-
-                //nodes = html.CssSelect("span#pass-box").ToArray();
-                ////Console.WriteLine("Matched: {0}", nodes.Length);
-
-                //nodes = html.CssSelect("script[type=text/javascript]").ToArray();
-                //Console.WriteLine("Matched: {0}", nodes.Length);
-
-                //html.Descendants("span").ToArray();
+                GC.Collect(3, GCCollectionMode.Forced);
             }
+
+            Console.WriteLine("Matched: {0}", matched);
 
             stopwatch.Stop();
         }
