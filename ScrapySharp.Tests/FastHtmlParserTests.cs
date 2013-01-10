@@ -53,39 +53,5 @@ namespace ScrapySharp.Tests
             //var tag6 = fastHtmlParser.ReadTag();
             //Assert.AreEqual("\r\n\r\n  ", tag6.InnerText);
         }
-
-        [Test]
-        public void When_readString()
-        {
-            var source = @"petit test: 1 < 2 <html><body>
-  <input name=""man-news"" />
-
-  <input name=""milk man"" />
-  <input name=""letterman2"" />
-  <input name=""newmilk"" />
-
-  <input type=""checkbox"" checked />
-  <input type=""checkbox"" />
-  <input type=""checkbox"" checked=""checked"" />
-  <input type=""file"" />
-  <input type=""hidden"" />
-</body>
-</html>";
-
-            var fastHtmlParser = new FastHtmlParser(source);
-            
-            var element1 = fastHtmlParser.ReadElement();
-            Assert.AreEqual("petit test: 1 < 2 ", element1);
-
-            var element2 = fastHtmlParser.ReadElement();
-            Assert.AreEqual("<html>", element2);
-
-            var element3 = fastHtmlParser.ReadElement();
-            Assert.AreEqual("<body>\r\n  ", element3);
-
-            var element4 = fastHtmlParser.ReadElement();
-            Assert.AreEqual("<input name=\"man-news\" />\r\n\r\n  ", element4);
-
-        }
     }
 }
