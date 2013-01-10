@@ -10,6 +10,11 @@ namespace ScrapySharp.Benchmarks
             var hDocumentBenchMark = new HDocumentBenchMark();
             var fastHtmlParserBenchMark = new FastHtmlParserBenchMark();
 
+            fastHtmlParserBenchMark.Run();
+            Console.WriteLine("FastHtmlParserBenchMark => Elapsed time: {0} ms", fastHtmlParserBenchMark.TimeElapsed.TotalMilliseconds);
+
+            //GC.Collect();
+
             agilityPackBenchMark.Run();
             Console.WriteLine("AgilityPackBenchMark => Elapsed time: {0} ms", agilityPackBenchMark.TimeElapsed.TotalMilliseconds);
 
@@ -20,10 +25,6 @@ namespace ScrapySharp.Benchmarks
 
             //GC.Collect();
 
-            fastHtmlParserBenchMark.Run();
-            Console.WriteLine("FastHtmlParserBenchMark => Elapsed time: {0} ms", fastHtmlParserBenchMark.TimeElapsed.TotalMilliseconds);
-
-            //GC.Collect();
             
 
             Console.WriteLine("Press any key ...");
