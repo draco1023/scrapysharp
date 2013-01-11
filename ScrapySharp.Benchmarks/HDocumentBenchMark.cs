@@ -23,14 +23,18 @@ namespace ScrapySharp.Benchmarks
                 stopwatch.Start();
                 var html = HDocument.Parse(source);
 
-                var nodes = html.CssSelect("span.login-box").ToArray();
-                matched += nodes.Length;
+                //var nodes = html.CssSelect("span.login-box").ToArray();
+                //matched += nodes.Length;
 
-                nodes = html.CssSelect("span#pass-box").ToArray();
-                matched += nodes.Length;
+                //nodes = html.CssSelect("span#pass-box").ToArray();
+                //matched += nodes.Length;
 
-                nodes = html.CssSelect("script[type=text/javascript]").ToArray();
-                matched += nodes.Length;
+                //nodes = html.CssSelect("script[type=text/javascript]").ToArray();
+                //matched += nodes.Length;
+
+                matched += html.Descendants("span").Count();
+                matched += html.Descendants("div").Count();
+                matched += html.Descendants("script").Count();
 
                 stopwatch.Stop();
                 GC.Collect();

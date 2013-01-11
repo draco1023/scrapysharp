@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using ScrapySharp.Extensions;
 using ScrapySharp.Html.Dom;
 using System.Linq;
@@ -11,29 +10,24 @@ namespace ScrapySharp.Html.Parsing
     {
         private readonly List<Word> words;
         private int position;
+        public bool End;
+        public bool SkipSpaces;
 
         public HtmlDeclarationReader(CodeReader reader)
         {
             words = new List<Word>();
-
-            SkipSpaces = false;
-
+            
             while (!reader.end)
             {
                 var w = reader.ReadWord();
                 words.Add(w);
             }
         }
-
-        public bool End
-        {
-            get { return position >= words.Count - 1; }
-        }
-
+        
         public TagDeclaration ReadTagDeclaration()
         {
-            var w = ReadWord();
-            if (w == null)
+            Word w = ReadWord();
+            if (w == default(Word))
                 return null;
 
             if (w.IsToken() && (w == Tokens.TagBegin || w == Tokens.CloseTagDeclarator) && !GetNextWord().IsWhiteSpace)
@@ -208,31 +202,38 @@ namespace ScrapySharp.Html.Parsing
         public Word GetNextWord(int count = 1)
         {
             var nextPosition = (position + count - 1);
-            return nextPosition >= words.Count ? null : words[nextPosition];
+            return nextPosition >= words.Count ? default(Word) : words[nextPosition];
         }
 
         public Word GetPreviousChar()
         {
             if (position <= 1)
-                return null;
+                return default(Word);
             return words[position - 2];
         }
 
         public Word ReadWord()
         {
+            Word w;
             if (SkipSpaces)
             {
                 while (!End)
                 {
-                    var w = words[position++];
+                    w = words[position];
+                    position++;
+                    End = position >= words.Count - 1;
                     if (!w.IsWhiteSpace)
                         return w;
                 }
             }
 
-            return End ? null : words[position++];
+            if (End)
+                return default(Word);
+            
+            w = words[position];
+            position++;
+            End = position >= words.Count - 1;
+            return w;
         }
-
-        public bool SkipSpaces { get; set; }
     }
 }

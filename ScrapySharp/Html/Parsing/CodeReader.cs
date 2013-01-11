@@ -101,8 +101,7 @@ namespace ScrapySharp.Html.Parsing
 
             return new Word(buffer.ToString(), lineNumber, linePosition, true);
         }
-
-
+        
         public char GetNextChar()
         {
             if (end)
@@ -146,14 +145,7 @@ namespace ScrapySharp.Html.Parsing
 
         public bool IsLetterOrDigit(char c)
         {
-            if (c >= 'a' && c <= 'z')
-                return true;
-            if (c >= 'A' && c <= 'Z')
-                return true;
-            if (c >= '0' && c <= '9')
-                return true;
-
-            return char.IsLetterOrDigit(c) || c == '-' || c == '_'
+            return char.IsDigit(c) || char.IsLetter(c) || c == '-' || c == '_'
                 || c == ':' || c == ';' || c == '+';
         }
     }
