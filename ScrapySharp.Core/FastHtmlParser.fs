@@ -133,9 +133,7 @@
             match s with 
                 | WS t -> acc+1, t
                 | NC(c, t) when contains decisiveChars c -> acc, s 
-                | NC(c, t) -> 
-                    readName (acc + 1) t
-
+                | NC(c, t) -> readName (acc + 1) t
                 | End -> acc, s
                 | _ -> failwith "reading algorithm error"
                
@@ -182,26 +180,21 @@
             let n, t1 =  trimmed |> readName 0
             let name = content (trimmed, n)
             let st, t2 = readAttributeValue t1
-            if String.IsNullOrEmpty name then
-                None, t2
-            else
-                match st with
-                    | Some(a) -> 
-                        let v = content (a, t2-a-1)
-                        Some(new Attribute(name, v)), t2
-                    | None -> Some(new Attribute(name, name)), t2
+            match st with
+                | Some(a) -> 
+                    let v = content (a, t2-a-1)
+                    new Attribute(name, v), t2
+                | None -> new Attribute(name, name), t2
 
         let rec readAttributes (acc:list<Attribute>) (s: StringChar) = 
             match s with
                 | NS "/>" t -> acc, s
                 | NEC '>' t -> acc, s
+                | WS(t) -> readAttributes acc (s |> skipSpaces)
                 | NC(_, t) -> 
                     let attr, right = readAttribute s
-                    match attr with
-                        | Some(a) -> 
-                            let matched = a :: acc
-                            readAttributes matched right
-                        | None -> acc, s
+                    let matched = attr :: acc
+                    readAttributes matched right
                 | End -> acc, s
                 | _ -> failwith "reading algorithm error"
 
