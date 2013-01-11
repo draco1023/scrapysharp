@@ -8,10 +8,12 @@
 
     type StringChar = int
     
-    [<Struct>]
-    type StringPart(s:int, len:int) =
-        member this.Start = s
-        member this.Length = len
+//    type StringPart = int * int
+    
+//    [<Struct>]
+//    type StringPart(s:int, len:int) =
+//        member this.Start = s
+//        member this.Length = len
 
     type Attribute(name:string, value:string) = 
         member t.Name = name
@@ -32,7 +34,10 @@
     type FastHtmlParser(source: string) =
         let stringChar s = 0
 
-        let content (s:StringPart) = source.Substring(s.Start, s.Length)
+//        let emptyPart = StringPart(0, 0)
+
+//        let content (s:StringPart) = source.Substring(s.Start, s.Length)
+        let content ((p,l)) = source.Substring(p, l)
 
         let head (s:StringChar) = source.[s]
             
@@ -101,12 +106,12 @@
         let mutable inQuotes = false
         let mutable endChar = new Char()
 
-        let rec readString (acc:string) (s: StringChar) = 
+        let rec readString (acc:int) (s: StringChar) = 
             match s with
                 | NS "</" t -> acc, s
                 | NC3(c, '<', n,  t)  when Char.IsLetter(n)  ->
-                    (acc + (c.ToString())), next s
-                | NC(c, t) -> readString (acc + (c.ToString())) t
+                    acc+1, next s
+                | NC(c, t) -> readString (acc + 1) t
                 | End -> acc, s
                 | _ -> failwith "reading algorithm error"
         
@@ -124,22 +129,17 @@
                 | End -> s
                 | _ -> failwith "reading algorithm error"
 
-        let rec readName (acc:string) (s: StringChar) = 
+        let rec readName (acc:int) (s: StringChar) = 
             match s with 
-                | WS t -> acc, t
+                | WS t -> acc+1, t
                 | NC(c, t) when contains decisiveChars c -> acc, s 
                 | NC(c, t) -> 
-                    readName (acc + (c.ToString())) t
-                    //readName (String.Format("{0}{1}", acc, c)) t
-//                    let builder = (new StringBuilder(acc.Length + 1))
-//                    builder.Append(acc)
-//                    builder.Append(c)
-//                    readName (builder.ToString()) t
+                    readName (acc + 1) t
 
                 | End -> acc, s
                 | _ -> failwith "reading algorithm error"
                
-        let rec readQuotedString (acc:string) (s: StringChar) = 
+        let rec readQuotedString (acc:int) (s: StringChar) = 
             match s with
                 | NEC ''' t -> 
                     if inQuotes then
@@ -148,9 +148,9 @@
                     else
                         inQuotes <- true
                         readQuotedString acc t
-                | NS "\\'" t when inQuotes -> readQuotedString (acc + ('\''.ToString())) t
-                | NC2 (p, c, t) when c = endChar && p <> '\\' -> (acc + (p.ToString())), t
-                | NC(c, t) -> readQuotedString (acc + (c.ToString())) t
+                | NS "\\'" t when inQuotes -> readQuotedString (acc + 2) t
+                | NC2 (p, c, t) when c = endChar && p <> '\\' -> (acc + 2), t
+                | NC(c, t) -> readQuotedString (acc + 1) t
                 | End -> acc, s
                 | _ -> failwith "Invalid attribute syntax"
 
@@ -168,20 +168,28 @@
             if hasValue then
                 if head right = '"' || head right = ''' then
                     endChar <- head right
-                    readQuotedString "" (next right)
+                    let p,l = readQuotedString 0 (next right)
+                    Some(l-p),l
                 else
                     endChar <- new Char()
-                    readQuotedString "" right
+                    let p,l = readQuotedString 0 right
+                    Some(l-p),l
             else
-                "", right
+                None, right
 
         let readAttribute (s: StringChar) = 
-            let name, t1 = s |> skipSpaces |> readName ""
-            let value, t2 = readAttributeValue t1
+            let trimmed = s |> skipSpaces
+            let n, t1 =  trimmed |> readName 0
+            let name = content (trimmed, n)
+            let st, t2 = readAttributeValue t1
             if String.IsNullOrEmpty name then
                 None, t2
             else
-                Some(new Attribute(name, value)), t2
+                match st with
+                    | Some(a) -> 
+                        let v = content (a, t2-a-1)
+                        Some(new Attribute(name, v)), t2
+                    | None -> Some(new Attribute(name, name)), t2
 
         let rec readAttributes (acc:list<Attribute>) (s: StringChar) = 
             match s with
@@ -208,11 +216,12 @@
         let rec parseTags acc (s: StringChar) =
             match s with
                 | NS "</" html ->
-                    let name, t1 = readName "" html
+                    let name, t1 = readName 0 html
                     let right = html |> skipEndTagContent
                     acc, right
                 | NEC '<' html -> 
-                    let name, t1 = readName "" html
+                    let n, t1 = readName 0 html
+                    let name = content (html,n)
                     let attributes, t2 = readAttributes List<Attribute>.Empty t1
                     let isSelfClosed, t3 = checkIfSelfClosed t2
                     let tags, t4 = if isSelfClosed then
@@ -220,16 +229,15 @@
                                     else
                                         let children, right = parseTags acc t3
                                         new Tag(name, "", attributes, children |> List.rev) :: acc, right
-
                     if isEnd t4 then
                         tags, t4
                     else
                         let nextSiblings, t5 = parseTags acc t4
                         acc |> List.append(tags) |> List.append(nextSiblings), t5
                 | NC(_, html) -> 
-                    let text, t1 = readString "" s
+                    let text, t1 = readString 0 s
                     let nextSiblings, right = parseTags acc t1
-                    new Tag("", text, List<Attribute>.Empty, List<Tag>.Empty) :: nextSiblings, right
+                    new Tag("", content (s, text), List<Attribute>.Empty, List<Tag>.Empty) :: nextSiblings, right
                 | End -> acc, s
                 | _ -> failwith "parsing algorithm error"
 
