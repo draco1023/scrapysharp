@@ -106,15 +106,26 @@
         let mutable inQuotes = false
         let mutable endChar = new Char()
 
-        let rec readString (acc:int) (s: StringChar) = 
-            match s with
-                | NS "</" t -> acc, s
-                | NC3(c, '<', n,  t)  when Char.IsLetter(n)  ->
-                    acc+1, next s
-                | NC(c, t) -> readString (acc + 1) t
-                | End -> acc, s
-                | _ -> failwith "reading algorithm error"
-        
+        let readString (acc:int) (s: StringChar) = 
+            let mutable i = s
+            let mutable acc2 = acc
+            let mutable doloop = not(isEnd i)
+            let mutable ret = acc2,i
+
+            while doloop do
+                if String.Compare("</", 0, source, i, "</".Length, StringComparison.InvariantCulture) = 0 then
+                    ret <- acc2, i
+                    doloop <- false
+                elif i < source.Length-3 && source.[i+1] = '<' && Char.IsLetter(source.[i+2]) then
+                    ret <- acc2+1, next i
+                    doloop <- false
+                else
+                    acc2 <- acc2+1
+                    ret <- acc2,i
+                    doloop <- not(isEnd i)
+                i <- i+1
+            ret
+
         let skipSpaces (s: StringChar) = 
             match s with
                 | WS t -> t
