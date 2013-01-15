@@ -75,8 +75,12 @@ namespace ScrapySharp.Html.Parsing
                     w = ReadWord();
                     element.Words.Add(w);
                     if (IsTagDeclarationEnd(w))
+                    {
+                        if (!attributeName.IsToken())
+                            element.Attributes.Add(attributeName, attributeName);
                         break;
-                    
+                    }
+
                     if (w.Value == Tokens.Assign)
                     {
                         w = ReadWord();
