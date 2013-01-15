@@ -105,6 +105,10 @@
                     let s, t' = readString "" t
                     tokenize' (Token.Checkbox(getOffset(t)+1) :: acc) t'
 
+                |  TokenStr ":selected" t  ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.Selected(getOffset(t)+1) :: acc) t'
+
                 | TokenStr ":checked" t ->
                     let s, t' = readString "" t
                     tokenize' (Token.Checked(getOffset(t)+1) :: acc) t'

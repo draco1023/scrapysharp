@@ -30,6 +30,7 @@
         | Checked of int
         | Disabled of int
         | Enabled of int
+        | Selected of int
 
 
     type TokenContainer(token:Token, offset:int) =

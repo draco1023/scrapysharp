@@ -9,18 +9,16 @@ namespace ScrapySharp.Tests
     [TestFixture]
     public class When_parses_using_CssSelector_with_HDocument
     {
-        private HDocument html;
-
-        public When_parses_using_CssSelector_with_HDocument()
+        public HDocument GetHtmlage1()
         {
             var source = File.ReadAllText("Html/Page1.htm");
-            html = HDocument.Parse(source);
+            return HDocument.Parse(source);
         }
 
         [Test]
         public void When_css_class_contains_no_alpha_numerics()
         {
-            var spans = html.CssSelect("span.login-box").ToArray();
+            var spans = GetHtmlage1().CssSelect("span.login-box").ToArray();
 
             Assert.AreEqual(1, spans.Length);
         }
@@ -28,7 +26,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_id_contains_no_alpha_numerics()
         {
-            var spans = html.CssSelect("span#pass-box").ToArray();
+            var spans = GetHtmlage1().CssSelect("span#pass-box").ToArray();
 
             Assert.AreEqual(1, spans.Length);
         }
@@ -36,7 +34,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_simple_tagName()
         {
-            var divs = html.CssSelect("div").ToArray();
+            var divs = GetHtmlage1().CssSelect("div").ToArray();
 
             Assert.AreEqual(29, divs.Length);
         }
@@ -44,6 +42,8 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_tagName_with_css_class()
         {
+            var html = GetHtmlage1();
+
             Assert.AreEqual(3, html.CssSelect("div.content").Count());
 
             Assert.AreEqual(1, html.CssSelect("div.widget.monthlist").Count());
@@ -52,6 +52,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_tagName_with_css_class_using_inheritance()
         {
+            var html = GetHtmlage1();
             Assert.AreEqual(1, html.CssSelect("div.left-corner div.node").Count());
 
             var nodes = html.CssSelect("span#testSpan span").ToArray();
@@ -66,6 +67,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_id()
         {
+            var html = GetHtmlage1();
             Assert.AreEqual(1, html.CssSelect("#postPaging").Count());
 
             Assert.AreEqual(1, html.CssSelect("div#postPaging").Count());
@@ -76,18 +78,21 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_tagName_with_css_class_using_direct_inheritance()
         {
+            var html = GetHtmlage1();
             Assert.AreEqual(1, html.CssSelect("div.content > p.para").Count());
         }
 
         [Test]
         public void When_uses_tagName_with_id_class_using_direct_inheritance()
         {
+            var html = GetHtmlage1();
             Assert.AreEqual(1, html.CssSelect("ul#pagelist > li#listItem1").Count());
         }
 
         [Test]
         public void When_uses_ancestor()
         {
+            var html = GetHtmlage1();
             var ancestors = html.CssSelect("p.para").CssSelectAncestors("div div.menu").ToArray();
             Assert.AreEqual(1, ancestors.Count());
         }
@@ -95,6 +100,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_direct_ancestor()
         {
+            var html = GetHtmlage1();
             var ancestors1 = html.CssSelect("p.para").CssSelectAncestors("div.content > div.menu").ToArray();
             Assert.AreEqual(0, ancestors1.Count());
 
@@ -105,6 +111,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_attribute_selector()
         {
+            var html = GetHtmlage1();
             Assert.AreEqual(1, html.CssSelect("input[type=button]").Count());
 
             Assert.AreEqual(2, html.CssSelect("input[type=text]").Count());
@@ -117,6 +124,7 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_uses_attribute_selector_with_css_class()
         {
+            var html = GetHtmlage1();
             Assert.AreEqual(1, html.CssSelect("input[type=text].login").Count());
         }
 
@@ -278,6 +286,24 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(2, doc.CssSelect(":disabled").Count());
 
             Assert.AreEqual(7, doc.CssSelect("input:enabled").Count());
+        }
+
+        [Test]
+        public void When_using_selected_selector()
+        {
+            var source = @"<html>
+<body>
+  <select name=""group"" onChange=""form.submit()"">
+	<option value='1'>Nissan</option>
+	<option value=""2"" selected >Volvo</option>
+	<option value='3'>BMW</option>
+  </select>
+</body>
+</html>";
+            var doc = HDocument.Parse(source);
+
+            Assert.AreEqual(1, doc.CssSelect(":selected").Count());
+            Assert.AreEqual(1, doc.CssSelect("select option:selected").Count());
         }
     }
 }
