@@ -169,6 +169,19 @@ namespace ScrapySharp.Extensions
         }
 
         /// <summary>
+        /// Gets the nodes followed by value.
+        /// </summary>
+        /// <param name="nodes">The nodes.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="comparison">The comparison.</param>
+        /// <returns></returns>
+        public static IEnumerable<HtmlNode> GetNodesFollowedByValue(this IEnumerable<HtmlNode> nodes, string name, string value, NodeValueComparison comparison = NodeValueComparison.Equals)
+        {
+            return nodes.SelectMany(node => node.GetNodesFollowedByValue(name, value, comparison));
+        }
+
+        /// <summary>
         /// Gets the next table line value.
         /// </summary>
         /// <param name="node">The node.</param>
@@ -199,9 +212,7 @@ namespace ScrapySharp.Extensions
         public static string CleanInnerHtmlAscii(this string expression)
         {
             var cleaned = expression.Replace("=C3=B4", "ô");
-
             var regex = new Regex("(([=][0-9A-F]{0,2})+)|([ ]+)");
-
             cleaned = regex.Replace(cleaned, " ");
 
             return cleaned;
