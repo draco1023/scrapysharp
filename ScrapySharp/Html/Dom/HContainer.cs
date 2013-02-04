@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Web;
 
 namespace ScrapySharp.Html.Dom
 {
@@ -54,7 +55,7 @@ namespace ScrapySharp.Html.Dom
                     foreach (var child in Children)
                         builder.Append(child.InnerText);
 
-                return builder.ToString();
+                return HttpUtility.HtmlDecode(builder.ToString());
             }
             set { innerText = value; }
         }
