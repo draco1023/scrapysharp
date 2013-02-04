@@ -80,7 +80,8 @@ namespace ScrapySharp.Html.Parsing
                             Name = declaration.Name,
                             Attributes = declaration.Attributes,
                             InnerText = declaration.InnerText,
-                            Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags, parent).ToList() : new List<HElement>()
+                            Children = declarations.Count > childrenTags.Count ? BuildDom(childrenTags, parent).ToList() : new List<HElement>(),
+                            ParentNode = parent
                         };
                     }
                 }
@@ -90,7 +91,8 @@ namespace ScrapySharp.Html.Parsing
                     {
                         InnerText = declaration.InnerText,
                         Name = declaration.Name,
-                        Attributes = declaration.Attributes
+                        Attributes = declaration.Attributes,
+                        ParentNode = parent
                     };
             }
         }
