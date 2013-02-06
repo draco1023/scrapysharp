@@ -82,6 +82,9 @@ namespace ScrapySharp.Html.Forms
 
             for (int i = 0; i < fields.Length; i++)
             {
+                if (string.IsNullOrWhiteSpace(fields[i].Name))
+                    continue;
+
                 if (i > 0)
                     builder.Append('&');
                 builder.AppendFormat("{0}={1}", HttpUtility.UrlEncode(fields[i].Name), HttpUtility.UrlEncode(fields[i].Value));
