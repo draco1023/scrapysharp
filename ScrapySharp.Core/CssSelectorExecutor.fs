@@ -52,7 +52,7 @@
                 match source with
                 | Token.TagName(o, name) :: t -> 
                     let children = acc |> getTargets |> Seq.toList
-                    let selectedNodes = children |> Seq.filter(fun x -> navigator.GetName(x) = name) |> Seq.toList
+                    let selectedNodes = children |> Seq.filter(fun x -> navigator.GetName(x).Equals(name, StringComparison.InvariantCultureIgnoreCase)) |> Seq.toList
                     level <- FilterLevel.Root
                     selectElements' selectedNodes t
                 
