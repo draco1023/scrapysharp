@@ -5,11 +5,6 @@ using System.Web;
 
 namespace ScrapySharp.Html.Dom
 {
-    public interface IHSubContainer
-    {
-        
-    }
-
     public abstract class HContainer
     {
         private string name;
@@ -60,5 +55,23 @@ namespace ScrapySharp.Html.Dom
             set { innerText = value; }
         }
 
+        public string InnerHtml
+        {
+            get
+            {
+                var builder = new StringBuilder();
+                foreach (var child in Children)
+                {
+                    builder.Append(child.GetOuterHtml());
+                }
+
+                return builder.ToString();
+            }
+            set
+            {
+                Children.Clear();
+                Children.AddRange(HDocument.Parse(value).Children);
+            }
+        }
     }
 }

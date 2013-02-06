@@ -69,6 +69,7 @@
     <Compile Include="Html\Dom\HDocument.cs" />
     <Compile Include="Html\Dom\HElement.cs" />
     <Compile Include="Html\Dom\HtmlLinqExtensions.cs" />
+    <Compile Include="Html\Dom\IHSubContainer.cs" />
     <Compile Include="Html\Forms\AgilityNodeParser.cs" />
     <Compile Include="Html\Forms\FormField.cs" />
     <Compile Include="Html\Forms\HElementFormParser.cs" />
