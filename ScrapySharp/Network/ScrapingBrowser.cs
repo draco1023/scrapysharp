@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Cache;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -19,7 +20,7 @@ namespace ScrapySharp.Network
         public ScrapingBrowser()
         {
             InitCookieContainer();
-            UserAgent = FakeUserAgents.Chrome;
+            UserAgent = FakeUserAgents.Chrome24;
             AllowAutoRedirect = true;
             Language = CultureInfo.CreateSpecificCulture("EN-US");
             UseDefaultCookiesParser = true;
@@ -53,6 +54,7 @@ namespace ScrapySharp.Network
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
             request.Headers["Accept-Language"] = Language.Name;
+            request.CachePolicy = CachePolicy;
 
             if (Timeout > TimeSpan.Zero)
                 request.Timeout = (int) Timeout.TotalMilliseconds;
@@ -62,6 +64,8 @@ namespace ScrapySharp.Network
 
             return request;
         }
+
+        public RequestCachePolicy CachePolicy { get; set; }
 
         private string GetResponse(Uri url, HttpWebRequest request)
         {
@@ -231,5 +235,7 @@ namespace ScrapySharp.Network
 
             return collection[name];
         }
+
+
     }
 }
