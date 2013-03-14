@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -27,6 +28,7 @@ namespace ScrapySharp.Network
             IgnoreCookies = false;
             ProtocolVersion = HttpVersion.Version10;
             KeepAlive = false;
+            Proxy = WebRequest.DefaultWebProxy;
         }
 
         public void ClearCookies()
@@ -41,8 +43,7 @@ namespace ScrapySharp.Network
 
         public string DownloadString(Uri url)
         {
-            HttpWebRequest request = CreateRequest(url, HttpVerb.Get);
-            
+            var request = CreateRequest(url, HttpVerb.Get);
             return GetResponse(url, request);
         }
 
@@ -64,6 +65,8 @@ namespace ScrapySharp.Network
 
             return request;
         }
+
+        public IWebProxy Proxy { get; set; }
 
         public RequestCachePolicy CachePolicy { get; set; }
 
