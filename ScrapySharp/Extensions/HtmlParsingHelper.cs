@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Web;
 using HtmlAgilityPack;
+using ScrapySharp.Html.Dom;
 
 namespace ScrapySharp.Extensions
 {
@@ -72,7 +73,7 @@ namespace ScrapySharp.Extensions
 
             return document.DocumentNode;
         }
-
+        
         /// <summary>
         /// Convert WebResponse content to HTML node.
         /// </summary>
@@ -93,6 +94,35 @@ namespace ScrapySharp.Extensions
             document.LoadHtml(html);
 
             return document.DocumentNode;
+        }
+        
+        /// <summary>
+        /// Convert string value to HDocument.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        public static HDocument ToHDocument(this string content)
+        {
+            return HDocument.Parse(content);
+        }
+
+        /// <summary>
+        /// Convert WebResponse content to HDocument.
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <returns></returns>
+        public static HDocument ToHDocument(this WebResponse response)
+        {
+            string html;
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+                html = string.Empty;
+            else
+                using (var reader = new StreamReader(responseStream))
+                    html = reader.ReadToEnd();
+
+            return html.ToHDocument();
         }
 
         /// <summary>
