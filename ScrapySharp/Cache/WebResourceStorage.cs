@@ -27,7 +27,7 @@ namespace ScrapySharp.Cache
             var cacheItem = new CacheItem(webResource.AbsoluteUrl.ToString(), webResource);
             var policy = new CacheItemPolicy
                 {
-                    AbsoluteExpiration = new DateTimeOffset(DateTime.UtcNow.AddHours(1))
+                    AbsoluteExpiration = new DateTimeOffset(DateTime.UtcNow.AddHours(2))
                 };
             cache.AddOrGetExisting(cacheItem, policy);
         }
