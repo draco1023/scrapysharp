@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
-using System.Net.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -14,23 +13,11 @@ using ScrapySharp.Extensions;
 
 namespace ScrapySharp.Network
 {
-    public class WebPage
-    {
-        
-    }
-
-    public class WebResource
-    {
-        private MemoryStream content;
-
-    }
-
     public class ScrapingBrowser
     {
         private CookieContainer cookieContainer;
         private Uri referer;
 
-        private static readonly Regex splitCookiesRegex = new Regex("(?<name>[^=]+)=(?<val>[^;]+)[^,]+,?", RegexOptions.Compiled);
         private static readonly Regex parseMetaRefreshRegex = new Regex(@"((?<seconds>[0-9]+);)?\s*URL=(?<url>(.+))", RegexOptions.Compiled);
 
         public ScrapingBrowser()
@@ -54,6 +41,34 @@ namespace ScrapySharp.Network
         private void InitCookieContainer()
         {
             cookieContainer = new CookieContainer();
+        }
+
+        public WebResource DownloadWebResource(Uri url)
+        {
+            var response = ExecuteRequest(url, HttpVerb.Get, new NameValueCollection());
+            var memoryStream = new MemoryStream();
+            var responseStream = response.GetResponseStream();
+
+            if (responseStream != null)
+                responseStream.CopyTo(memoryStream);
+
+            return new WebResource(memoryStream, response.Headers["Last-Modified"], url, !IsCached(response.Headers["Cache-Control"]));
+        }
+
+        private bool IsCached(string header)
+        {
+            if (string.IsNullOrEmpty(header))
+                return false;
+
+            var noCacheHeaders = new []
+                {
+                    "no-cache",
+                    "no-store",
+                    "max-age=0",
+                    "pragma: no-cache",
+                };
+
+            return !noCacheHeaders.Contains(header.ToLowerInvariant());
         }
 
         public string DownloadString(Uri url)
@@ -87,20 +102,19 @@ namespace ScrapySharp.Network
 
         public bool AllowMetaRedirect { get; set; }
 
-        private string GetResponse(Uri url, HttpWebRequest request, int iteration)
+        private WebPage GetResponse(Uri url, HttpWebRequest request, int iteration)
         {
             var content = string.Empty;
             var response = GetWebResponse(url, request);
-
-            //response.Headers["Cache-Control"];
-
             var responseStream = response.GetResponseStream();
+            
             if (responseStream == null)
-                return content;
+                return new WebPage(this, url, content);
+
             using (var reader = new StreamReader(responseStream))
-            {
                 content = reader.ReadToEnd();
-            }
+
+            var webPage = new WebPage(this, url, content);
 
             if (AllowMetaRedirect && !string.IsNullOrEmpty(response.ContentType) && response.ContentType.Contains("html") && iteration < 10)
             {
@@ -108,25 +122,25 @@ namespace ScrapySharp.Network
                 var meta = html.CssSelect("meta")
                     .FirstOrDefault(p => p.Attributes != null && p.Attributes.HasKeyIgnoreCase("HTTP-EQUIV")
                                          && p.Attributes.GetIgnoreCase("HTTP-EQUIV").Equals("refresh", StringComparison.InvariantCultureIgnoreCase));
-                        
+                
                 if (meta != null)
                 {
                     var attr= meta.Attributes.GetIgnoreCase("content");
                     var match = parseMetaRefreshRegex.Match(attr);
                     if (!match.Success)
-                        return content;
+                        return webPage;
                     
                     var seconds = 0;
                     if (match.Groups["seconds"].Success)
                         seconds = int.Parse(match.Groups["seconds"].Value);
                     if (!match.Groups["url"].Success)
-                        return content;
+                        return webPage;
 
                     var redirect = Unquote(match.Groups["url"].Value);
                     
                     Uri redirectUrl;
                     if (!Uri.TryCreate(redirect, UriKind.RelativeOrAbsolute, out redirectUrl))
-                        return content;
+                        return webPage;
 
                     if (!redirectUrl.IsAbsoluteUri)
                     {
@@ -134,7 +148,13 @@ namespace ScrapySharp.Network
                         if (!url.IsDefaultPort)
                             baseUrl += ":" + url.Port;
 
-                        redirectUrl = baseUrl.CombineUrl(redirect);
+                        if (redirect.StartsWith("/"))
+                            redirectUrl = baseUrl.CombineUrl(redirect);
+                        else
+                        {
+                            var path = string.Join("/", url.Segments.Take(url.Segments.Length - 1).Skip(1));
+                            redirectUrl = baseUrl.CombineUrl(path).Combine(redirect);
+                        }
                     }
 
                     Thread.Sleep(TimeSpan.FromSeconds(seconds));
@@ -143,7 +163,7 @@ namespace ScrapySharp.Network
                 }
             }
 
-            return content;
+            return webPage;
         }
 
         private string Unquote(string value)
@@ -159,7 +179,7 @@ namespace ScrapySharp.Network
             return value;
         }
 
-        private string DownloadRedirect(Uri url, int iteration)
+        private WebPage DownloadRedirect(Uri url, int iteration)
         {
             var request = CreateRequest(url, HttpVerb.Get);
             return GetResponse(url, request, iteration);
