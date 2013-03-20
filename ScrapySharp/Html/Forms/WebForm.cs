@@ -11,21 +11,48 @@ namespace ScrapySharp.Html.Forms
 {
     public class WebForm
     {
+        private HttpVerb method;
+        private string action;
+
         public WebForm()
         {
             FormFields = new List<FormField>();
+            method = HttpVerb.Post;
+            action = string.Empty;
         }
 
         public WebForm(HtmlNode html)
         {
             var nodeParser = new AgilityNodeParser(html);
-            FormFields = ParseFormFields(nodeParser);
+            Initialize(nodeParser);
         }
 
         public WebForm(HElement html)
         {
             var nodeParser = new HElementNodeParser(html);
+            Initialize(nodeParser);
+        }
+
+        private void Initialize<T>(IHtmlNodeParser<T> nodeParser)
+        {
             FormFields = ParseFormFields(nodeParser);
+            ParseAction(nodeParser);
+            ParseMethod(nodeParser);
+        }
+
+        private void ParseMethod<T>(IHtmlNodeParser<T> nodeParser)
+        {
+            var value = nodeParser.GetAttributeValue("method");
+
+            if (!string.IsNullOrEmpty(value) && value.Equals("get"))
+                method = HttpVerb.Get;
+            else
+                method = HttpVerb.Post;
+        }
+
+        private void ParseAction<T>(IHtmlNodeParser<T> nodeParser)
+        {
+            action = nodeParser.GetAttributeValue("action");
         }
 
         internal static List<FormField> ParseFormFields<T>(IHtmlNodeParser<T> node)
@@ -110,9 +137,26 @@ namespace ScrapySharp.Html.Forms
             }
         }
 
-        public void Submit(ScrapingBrowser browser, Uri url, HttpVerb verb = HttpVerb.Post)
+        public void Submit(ScrapingBrowser browser, Uri url, HttpVerb verb)
         {
             browser.NavigateTo(url, verb, SerializeFormFields());
+        }
+
+        public void Submit(ScrapingBrowser browser, Uri url)
+        {
+            browser.NavigateTo(url, method, SerializeFormFields());
+        }
+
+        public HttpVerb Method
+        {
+            get { return method; }
+            set { method = value; }
+        }
+
+        public string Action
+        {
+            get { return action; }
+            set { action = value; }
         }
     }
 }
