@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
+using ScrapySharp.Cache;
 using ScrapySharp.Extensions;
 using System.Linq;
 
@@ -70,22 +71,28 @@ namespace ScrapySharp.Network
             {
                 Uri result;
                 Uri.TryCreate(resourceUrl, UriKind.RelativeOrAbsolute, out result);
-                WebResource resource;
+                Uri url;
                 
-                if (result.IsAbsoluteUri)
-                    resource = browser.DownloadWebResource(new Uri(resourceUrl));
-                else
+                if (!result.IsAbsoluteUri)
                 {
                     if (resourceUrl.StartsWith("/"))
-                        resource = browser.DownloadWebResource(baseUrl.CombineUrl(resourceUrl));
+                        url = baseUrl.CombineUrl(resourceUrl);
                     else
                     {
                         var path = string.Join("/", absoluteUrl.Segments.Take(absoluteUrl.Segments.Length - 1).Skip(1));
-                        resource = browser.DownloadWebResource(baseUrl.CombineUrl(path).Combine(resourceUrl));
+                        url = baseUrl.CombineUrl(path).Combine(resourceUrl);
                     }
                 }
+                else
+                    url = new Uri(resourceUrl);
 
+                if (WebResourceStorage.Current.Exists(url.ToString()))
+                    continue;
+
+                WebResource resource = browser.DownloadWebResource(url);
                 resources.Add(resource);
+                if (!resource.ForceDownload)
+                    WebResourceStorage.Current.Save(resource);
             }
         }
 
