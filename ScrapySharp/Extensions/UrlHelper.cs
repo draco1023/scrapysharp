@@ -7,6 +7,14 @@ namespace ScrapySharp.Extensions
         public static Uri Combine(this Uri uri, string path)
         {
             var url = uri.ToString();
+            return CombineUrl(url, path);
+        }
+
+        public static Uri CombineUrl(this string url, string path)
+        {
+            if (!url.EndsWith("/"))
+                url += '/';
+
             string combined;
             if (url.EndsWith("/") && path.StartsWith("/"))
                 combined = url + path.Substring(1);
