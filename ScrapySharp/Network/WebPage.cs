@@ -91,7 +91,7 @@ namespace ScrapySharp.Network
 
                 WebResource resource = browser.DownloadWebResource(url);
                 resources.Add(resource);
-                if (!resource.ForceDownload)
+                if (!resource.ForceDownload || !string.IsNullOrEmpty(resource.LastModified))
                     WebResourceStorage.Current.Save(resource);
             }
         }
