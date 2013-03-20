@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ScrapingException.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\HDocumentCssQueryExtensions.cs" />
     <Compile Include="Extensions\CssQueryExtensions.cs" />
     <Compile Include="Extensions\HElementNavigationProvider.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Html\Parsing\HtmlDomBuilder.cs" />
     <Compile Include="Html\Parsing\Tokens.cs" />
     <Compile Include="Html\Parsing\Word.cs" />
+    <Compile Include="Network\CookiesParser.cs" />
     <Compile Include="Network\FakeUserAgent.cs" />
     <Compile Include="Network\FakeUserAgents.cs" />
     <Compile Include="Network\HttpVerb.cs" />

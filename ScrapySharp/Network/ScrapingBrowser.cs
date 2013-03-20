@@ -2,21 +2,36 @@
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Net.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
+using ScrapySharp.Extensions;
 
 namespace ScrapySharp.Network
 {
+    public class WebPage
+    {
+        
+    }
+
+    public class WebResource
+    {
+        private MemoryStream content;
+
+    }
+
     public class ScrapingBrowser
     {
         private CookieContainer cookieContainer;
         private Uri referer;
 
         private static readonly Regex splitCookiesRegex = new Regex("(?<name>[^=]+)=(?<val>[^;]+)[^,]+,?", RegexOptions.Compiled);
+        private static readonly Regex parseMetaRefreshRegex = new Regex(@"((?<seconds>[0-9]+);)?\s*URL=(?<url>(.+))", RegexOptions.Compiled);
 
         public ScrapingBrowser()
         {
@@ -44,7 +59,7 @@ namespace ScrapySharp.Network
         public string DownloadString(Uri url)
         {
             var request = CreateRequest(url, HttpVerb.Get);
-            return GetResponse(url, request);
+            return GetResponse(url, request, 0);
         }
 
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
@@ -70,15 +85,84 @@ namespace ScrapySharp.Network
 
         public RequestCachePolicy CachePolicy { get; set; }
 
-        private string GetResponse(Uri url, HttpWebRequest request)
+        public bool AllowMetaRedirect { get; set; }
+
+        private string GetResponse(Uri url, HttpWebRequest request, int iteration)
         {
+            var content = string.Empty;
             var response = GetWebResponse(url, request);
+
+            //response.Headers["Cache-Control"];
 
             var responseStream = response.GetResponseStream();
             if (responseStream == null)
-                return string.Empty;
+                return content;
             using (var reader = new StreamReader(responseStream))
-                return reader.ReadToEnd();
+            {
+                content = reader.ReadToEnd();
+            }
+
+            if (AllowMetaRedirect && !string.IsNullOrEmpty(response.ContentType) && response.ContentType.Contains("html") && iteration < 10)
+            {
+                var html = content.ToHtmlNode();
+                var meta = html.CssSelect("meta")
+                    .FirstOrDefault(p => p.Attributes != null && p.Attributes.HasKeyIgnoreCase("HTTP-EQUIV")
+                                         && p.Attributes.GetIgnoreCase("HTTP-EQUIV").Equals("refresh", StringComparison.InvariantCultureIgnoreCase));
+                        
+                if (meta != null)
+                {
+                    var attr= meta.Attributes.GetIgnoreCase("content");
+                    var match = parseMetaRefreshRegex.Match(attr);
+                    if (!match.Success)
+                        return content;
+                    
+                    var seconds = 0;
+                    if (match.Groups["seconds"].Success)
+                        seconds = int.Parse(match.Groups["seconds"].Value);
+                    if (!match.Groups["url"].Success)
+                        return content;
+
+                    var redirect = Unquote(match.Groups["url"].Value);
+                    
+                    Uri redirectUrl;
+                    if (!Uri.TryCreate(redirect, UriKind.RelativeOrAbsolute, out redirectUrl))
+                        return content;
+
+                    if (!redirectUrl.IsAbsoluteUri)
+                    {
+                        var baseUrl = string.Format("{0}://{1}", url.Scheme, url.Host);
+                        if (!url.IsDefaultPort)
+                            baseUrl += ":" + url.Port;
+
+                        redirectUrl = baseUrl.CombineUrl(redirect);
+                    }
+
+                    Thread.Sleep(TimeSpan.FromSeconds(seconds));
+
+                    return DownloadRedirect(redirectUrl, iteration + 1);
+                }
+            }
+
+            return content;
+        }
+
+        private string Unquote(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+            if (value.StartsWith("'") || value.StartsWith("\""))
+                value = value.Substring(1);
+
+            if (value.EndsWith("'") || value.EndsWith("\"") && value.Length > 1)
+                value = value.Substring(0, value.Length - 1);
+
+            return value;
+        }
+
+        private string DownloadRedirect(Uri url, int iteration)
+        {
+            var request = CreateRequest(url, HttpVerb.Get);
+            return GetResponse(url, request, iteration);
         }
 
         private WebResponse GetWebResponse(Uri url, HttpWebRequest request)
@@ -99,7 +183,7 @@ namespace ScrapySharp.Network
                     if (UseDefaultCookiesParser)
                         cookieContainer.SetCookies(cookieUrl, cookiesExpression);
                     else
-                        SetCookies(cookieUrl, cookiesExpression);
+                        SetCookies(url, cookiesExpression);
                 }
             }
             return response;
@@ -107,22 +191,20 @@ namespace ScrapySharp.Network
 
         public void SetCookies(Uri cookieUrl, string cookiesExpression)
         {
-            var match = splitCookiesRegex.Match(cookiesExpression);
-            
-            while (match.Success)
+            var parser = new CookiesParser(cookieUrl.Host);
+            var cookies = parser.ParseCookies(cookiesExpression);
+            var previousCookies = cookieContainer.GetCookies(cookieUrl);
+
+            foreach (var cookie in cookies)
             {
-                if (match.Groups["name"].Success && match.Groups["val"].Success)
-                {
-                    try
-                    {
-                        cookieContainer.Add(new Cookie((match.Groups["name"].Value), (match.Groups["val"].Value), "/", cookieUrl.Host));
-                    }
-                    catch (CookieException) { }
-                }
-                match = match.NextMatch();
+                var c = previousCookies[cookie.Name];
+                if (c != null)
+                    c.Value = cookie.Value;
+                else
+                    cookieContainer.Add(cookie);
             }
         }
-
+        
         public WebResponse ExecuteRequest(Uri url, HttpVerb verb, NameValueCollection data)
         {
             return ExecuteRequest(url, verb, GetHttpPostVars(data));
@@ -177,7 +259,7 @@ namespace ScrapySharp.Network
                 }
             }
 
-            return GetResponse(url, request);
+            return GetResponse(url, request, 0);
         }
 
         public string NavigateTo(Uri url, HttpVerb verb, NameValueCollection data)
@@ -238,7 +320,5 @@ namespace ScrapySharp.Network
 
             return collection[name];
         }
-
-
     }
 }
