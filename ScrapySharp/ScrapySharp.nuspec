@@ -33,6 +33,7 @@
             <frameworkAssembly assemblyName="System.Web" targetFramework=".NETFramework4.0" />
             <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.0" />
             <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework4.0" />
+            <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework=".NETFramework4.0" />
         </frameworkAssemblies>
     </metadata>
     <!--<files>
