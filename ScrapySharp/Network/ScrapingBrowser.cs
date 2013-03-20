@@ -258,6 +258,11 @@ namespace ScrapySharp.Network
 
         public string NavigateTo(Uri url, HttpVerb verb, string data)
         {
+            return NavigateToPage(url, verb, data);
+        }
+
+        public WebPage NavigateToPage(Uri url, HttpVerb verb, string data)
+        {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
                               : (verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri);
@@ -280,6 +285,11 @@ namespace ScrapySharp.Network
             }
 
             return GetResponse(url, request, 0);
+        }
+
+        public WebPage NavigateToPage(Uri url, HttpVerb verb, NameValueCollection data)
+        {
+            return NavigateToPage(url, verb, GetHttpPostVars(data));
         }
 
         public string NavigateTo(Uri url, HttpVerb verb, NameValueCollection data)
