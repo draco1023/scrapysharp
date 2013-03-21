@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using HtmlAgilityPack;
 using ScrapySharp.Cache;
 using ScrapySharp.Extensions;
@@ -77,7 +78,8 @@ namespace ScrapySharp.Network
                 
                 if (!result.IsAbsoluteUri)
                 {
-                    if (resourceUrl.StartsWith("/"))
+                    if (resourceUrl.StartsWith("/") || resourceUrl.StartsWith("./") || resourceUrl.StartsWith("../"))
+                        //TODO: / is a base path
                         url = baseUrl.CombineUrl(resourceUrl);
                     else
                     {
@@ -91,10 +93,17 @@ namespace ScrapySharp.Network
                 if (WebResourceStorage.Current.Exists(url.ToString()))
                     continue;
 
-                WebResource resource = browser.DownloadWebResource(url);
-                resources.Add(resource);
-                if (!resource.ForceDownload || !string.IsNullOrEmpty(resource.LastModified))
-                    WebResourceStorage.Current.Save(resource);
+                try
+                {
+                    WebResource resource = browser.DownloadWebResource(url);
+                    resources.Add(resource);
+                    if (!resource.ForceDownload || !string.IsNullOrEmpty(resource.LastModified))
+                        WebResourceStorage.Current.Save(resource);
+                }
+                catch
+                {
+                    
+                }
             }
         }
 
