@@ -4,12 +4,23 @@ using System.Linq;
 using System.Net;
 using NUnit.Framework;
 using ScrapySharp.Network;
+using ScrapySharp.Extensions;
 
 namespace ScrapySharp.Tests
 {
     [TestFixture]
     public class When_use_browser
     {
+        [Test]
+        public void When_combine_url()
+        {
+            var baseUrl = "http://toto.dada.com/izi/";
+
+            var relative1 = "../general/images/izi/logo.gif";
+
+            var abs1 = baseUrl.CombineUrl(relative1);
+        }
+
         [Test]
         [Category("Integration")]
         public void When_parses_cookies()
