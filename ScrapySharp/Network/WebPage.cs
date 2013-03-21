@@ -23,7 +23,7 @@ namespace ScrapySharp.Network
                 {"link", "href"},
             };
 
-        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, string content)
+        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, string content, bool autoDownloadPagesResources)
         {
             this.browser = browser;
             this.absoluteUrl = absoluteUrl;
@@ -32,9 +32,11 @@ namespace ScrapySharp.Network
 
             html = content.ToHtmlNode();
 
-            LoadBaseUrl();
-
-            DownloadResources();
+            if (autoDownloadPagesResources)
+            {
+                LoadBaseUrl();
+                DownloadResources();
+            }
         }
 
         private void LoadBaseUrl()

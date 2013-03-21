@@ -101,6 +101,8 @@ namespace ScrapySharp.Network
         public RequestCachePolicy CachePolicy { get; set; }
 
         public bool AllowMetaRedirect { get; set; }
+        
+        public bool AutoDownloadPagesResources { get; set; }
 
         private WebPage GetResponse(Uri url, HttpWebRequest request, int iteration)
         {
@@ -109,12 +111,12 @@ namespace ScrapySharp.Network
             var responseStream = response.GetResponseStream();
             
             if (responseStream == null)
-                return new WebPage(this, url, content);
+                return new WebPage(this, url, content, AutoDownloadPagesResources);
 
             using (var reader = new StreamReader(responseStream))
                 content = reader.ReadToEnd();
 
-            var webPage = new WebPage(this, url, content);
+            var webPage = new WebPage(this, url, content, AutoDownloadPagesResources);
 
             if (AllowMetaRedirect && !string.IsNullOrEmpty(response.ContentType) && response.ContentType.Contains("html") && iteration < 10)
             {
