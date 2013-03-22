@@ -12,13 +12,20 @@ namespace ScrapySharp.Tests
     public class When_use_browser
     {
         [Test]
-        public void When_combine_url()
+        public void When_combine_urls()
         {
             var baseUrl = "http://toto.dada.com/izi/";
-
             var relative1 = "../general/images/izi/logo.gif";
+            var abs1 = baseUrl.CombineUrl(relative1).ToString();
 
-            var abs1 = baseUrl.CombineUrl(relative1);
+            Assert.AreEqual("http://toto.dada.com/general/images/izi/logo.gif", abs1);
+
+
+            var relative2 = "/images/izi/logo.gif";
+            var abs2 = baseUrl.CombineUrl(relative2).ToString();
+
+            Assert.AreEqual("http://toto.dada.com/images/izi/logo.gif", abs2);
+
         }
 
         [Test]
