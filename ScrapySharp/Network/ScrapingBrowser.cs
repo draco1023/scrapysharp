@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
@@ -31,6 +32,7 @@ namespace ScrapySharp.Network
             ProtocolVersion = HttpVersion.Version10;
             KeepAlive = false;
             Proxy = WebRequest.DefaultWebProxy;
+            Headers = new Dictionary<string, string>();
         }
 
         public void ClearCookies()
@@ -71,11 +73,22 @@ namespace ScrapySharp.Network
             return !noCacheHeaders.Contains(header.ToLowerInvariant());
         }
 
+        public string AjaxDownloadString(Uri url)
+        {
+            var request = CreateRequest(url, HttpVerb.Get);
+            request.Headers["X-Prototype-Version"] = "1.6.1";
+            request.Headers["X-Requested-With"] = "XMLHttpRequest";
+
+            return GetResponse(url, request, 0);
+        }
+
         public string DownloadString(Uri url)
         {
             var request = CreateRequest(url, HttpVerb.Get);
             return GetResponse(url, request, 0);
         }
+
+        public Dictionary<string, string> Headers { get; private set; }
 
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
         {
@@ -84,7 +97,16 @@ namespace ScrapySharp.Network
             request.Method = ToMethod(verb);
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
+
             request.Headers["Accept-Language"] = Language.Name;
+
+            if (Headers != null)
+            {
+                foreach (var header in Headers)
+                    request.Headers[header.Key] = header.Value;
+                Headers.Clear();
+            }
+
             request.CachePolicy = CachePolicy;
 
             if (Timeout > TimeSpan.Zero)
