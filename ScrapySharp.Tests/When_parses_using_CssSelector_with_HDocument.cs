@@ -305,5 +305,15 @@ namespace ScrapySharp.Tests
             Assert.AreEqual(1, doc.CssSelect(":selected").Count());
             Assert.AreEqual(1, doc.CssSelect("select option:selected").Count());
         }
+        
+        [Test]
+        public void When_using_attributes_selector()
+        {
+            var html = @"<html><body><hr /><hr id='bla123'/><hr id='1nothing'/><hr id='2nothing'/></body></html>".ToHDocument();
+
+            var hrIds = html.CssSelectValue<string>("body > hr@id").ToArray();
+
+            Assert.AreEqual("bla123", hrIds[0]);
+        }
     }
 }

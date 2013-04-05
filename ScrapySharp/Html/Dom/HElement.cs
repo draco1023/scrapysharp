@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Linq;
+using ScrapySharp.Extensions;
 
 namespace ScrapySharp.Html.Dom
 {

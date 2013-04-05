@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Cache\WebResourceEntity.cs" />
     <Compile Include="Exceptions\ScrapingException.cs" />
+    <Compile Include="Extensions\CastHelper.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\HDocumentCssQueryExtensions.cs" />
     <Compile Include="Extensions\CssQueryExtensions.cs" />
@@ -61,6 +62,9 @@
     <Compile Include="Extensions\HtmlCreationHelper.cs" />
     <Compile Include="Extensions\HtmlParsingHelper.cs" />
     <Compile Include="Extensions\HtmlValue.cs" />
+    <Compile Include="Extensions\HValue.cs" />
+    <Compile Include="Extensions\HValueCssQueryExtensions.cs" />
+    <Compile Include="Extensions\HValueNavigationProvider.cs" />
     <Compile Include="Extensions\NodeValueComparer.cs" />
     <Compile Include="Extensions\NodeValueComparison.cs" />
     <Compile Include="Extensions\TokenHelper.cs" />

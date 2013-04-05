@@ -49,7 +49,7 @@ namespace ScrapySharp.Tests
             var source = File.ReadAllText("Html/InvalidPage3.htm");
             var document = HDocument.Parse(source);
 
-            var body = document.CssSelect("body").Single();
+            var body = (HElement) document.CssSelect("body").Single();
             var children = body.Children.ToArray();
 
             Assert.AreEqual(1, children.OfType<HComment>().Count());

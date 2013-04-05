@@ -19,8 +19,7 @@ namespace ScrapySharp.Html.Forms
 
             var selects = from @select in html.CssSelect("select")
                           let name = @select.GetAttributeValue("name", string.Empty)
-                          let option =
-                              @select.CssSelect("option").FirstOrDefault(o => o.Attributes["selected"] != null) ??
+                          let option = @select.CssSelect("option").FirstOrDefault(o => o.Attributes["selected"] != null) ??
                               @select.CssSelect("option").FirstOrDefault()
                           let value = option.GetAttributeValue("value", string.Empty)
                           select new FormField

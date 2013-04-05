@@ -166,6 +166,7 @@ namespace ScrapySharp.Tests
             var tds2 = trs1[1].CssSelect("td").ToArray();
             Assert.AreEqual(3, tds2.Length);
         }
+
     }
 }
 

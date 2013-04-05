@@ -31,6 +31,7 @@
         | Disabled of int
         | Enabled of int
         | Selected of int
+        | SelectAttribute of int * string
 
 
     type TokenContainer(token:Token, offset:int) =

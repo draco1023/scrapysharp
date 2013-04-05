@@ -15,7 +15,7 @@
         abstract member GetAttributeValue : 't -> string -> string -> string
         abstract member GetId : 't -> string
         abstract member Attributes : 't -> System.Collections.Specialized.NameValueCollection
-
+        abstract member SelectAttributeValue : System.Collections.Generic.List<'t> -> string -> System.Collections.Generic.List<string>
 
     type AgilityNavigationProvider() = 
         interface INavigationProvider<HtmlAgilityPack.HtmlNode> with
@@ -42,3 +42,6 @@
                 for attr in node.Attributes do
                     attrs.Add(attr.Name, attr.Value)
                 attrs
+            member this.SelectAttributeValue nodes name =
+                let results = nodes |> Seq.map (fun node -> node.GetAttributeValue(name, ""))
+                new System.Collections.Generic.List<string>(results)

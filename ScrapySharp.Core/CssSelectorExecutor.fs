@@ -168,6 +168,18 @@
                     level <- FilterLevel.Ancestors
                     selectElements' acc t
 
+                | Token.SelectAttribute(o, n) :: _ :: t ->
+                    level <- FilterLevel.Root
+                    failwith "select attribute operator must be last instruction"
+
+                | Token.SelectAttribute(o, n) :: [] ->
+                    level <- FilterLevel.Root
+//                    acc |> Seq.map (fun x -> (navigator.GetAttributeValue x n String.Empty) :> 'n)
+//                  let results = acc |> Seq.map (fun x -> (navigator.SelectAttributeValue x n String.Empty))
+                    let nodes = new System.Collections.Generic.List<'n>(acc)
+                    let results = navigator.SelectAttributeValue nodes n
+                    results
+
                 | [] -> acc
                 | _ :: t -> failwith "Invalid token"
 
