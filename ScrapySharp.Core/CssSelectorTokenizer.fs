@@ -131,6 +131,11 @@
                     match acc.Head with
                         | Token.AllChildren(o) -> tokenize' (Token.Ancestor(getOffset(t)) :: seqtoken) t
                         | _ -> tokenize' (Token.Ancestor(getOffset(t)) :: acc) t
+
+                | '@' :: t ->
+                    let s, t' = readString "" t
+                    tokenize' (Token.SelectAttribute(getOffset(t)+1, s) :: acc) t'
+
                 | c :: t when Char.IsLetterOrDigit(c) -> 
                     let str = c.ToString()
                     let s, t' = readString str t

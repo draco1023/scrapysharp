@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ScrapySharp.Core;
 using ScrapySharp.Html.Dom;
 
@@ -9,6 +7,8 @@ namespace ScrapySharp.Extensions
 {
     public static class HDocumentCssQueryExtensions
     {
+        
+
         public static IEnumerable<HElement> CssSelect(this HDocument doc, string expression)
         {
             return doc.Children.CssSelect(expression);
@@ -16,7 +16,7 @@ namespace ScrapySharp.Extensions
 
         public static IEnumerable<HElement> CssSelect(this IEnumerable<HElement> nodes, string expression)
         {
-            return nodes.SelectMany(node => CssSelect((HElement)node, expression));
+            return nodes.SelectMany(node => CssSelect(node, expression));
         }
 
         public static IEnumerable<HElement> CssSelectAncestors(this IEnumerable<HElement> nodes, string expression)
@@ -27,26 +27,26 @@ namespace ScrapySharp.Extensions
         public static IEnumerable<HElement> CssSelectAncestors(this HElement node, string expression)
         {
             if (string.IsNullOrEmpty(expression))
-                return new HElement[] { };
+                return new HElement[0];
 
             var tokenizer = new CssSelectorTokenizer();
             var tokens = tokenizer.Tokenize(expression);
-            var executor = new CssSelectorExecutor<HElement>(new List<HElement> { node }, tokens.ToList(), new HElementNavigationProvider());
+            var executor = new CssSelectorExecutor<HValue>(new List<HValue> { node }, tokens.ToList(), new HValueNavigationProvider());
             executor.MatchAncestors = true;
 
-            return executor.GetElements();
+            return executor.GetElements().AsHElements();
         }
 
         public static IEnumerable<HElement> CssSelect(this HElement node, string expression)
         {
             if (string.IsNullOrEmpty(expression))
-                return new HElement[] { };
+                return new HElement[0];
 
             var tokenizer = new CssSelectorTokenizer();
             var tokens = tokenizer.Tokenize(expression);
-            var executor = new CssSelectorExecutor<HElement>(new List<HElement> { node }, tokens.ToList(), new HElementNavigationProvider());
+            var executor = new CssSelectorExecutor<HValue>(new List<HValue> { node }, tokens.ToList(), new HValueNavigationProvider());
 
-            return executor.GetElements();
+            return executor.GetElements().AsHElements();
         }
     }
 }
