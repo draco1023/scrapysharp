@@ -32,5 +32,18 @@ namespace ScrapySharp.Tests
             //Because HtmlAgilityPack fails the form parsing !
             Assert.AreNotEqual(5, webForm.FormFields.Count);
         }
+
+        [Test]
+        public void When_parsing_partial_view()
+        {
+            var source = File.ReadAllText("Html/Form1.htm");
+            var html = HDocument.Parse(source);
+
+            var form = html.CssSelect("form").SingleOrDefault();
+
+            Assert.IsNotNull(form);
+
+
+        }
     }
 }

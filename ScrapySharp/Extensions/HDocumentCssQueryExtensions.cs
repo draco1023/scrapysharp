@@ -11,12 +11,17 @@ namespace ScrapySharp.Extensions
     {
         public static IEnumerable<HElement> CssSelect(this HDocument doc, string expression)
         {
-            return doc.Children.CssSelect(expression);
+            var hElement = new HElement
+                {
+                    Children = doc.Children
+                };
+
+            return hElement.CssSelect(expression);
         }
 
         public static IEnumerable<HElement> CssSelect(this IEnumerable<HElement> nodes, string expression)
         {
-            return nodes.SelectMany(node => CssSelect((HElement)node, expression));
+            return nodes.SelectMany(node => CssSelect(node, expression));
         }
 
         public static IEnumerable<HElement> CssSelectAncestors(this IEnumerable<HElement> nodes, string expression)
