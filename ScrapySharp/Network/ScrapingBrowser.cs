@@ -33,7 +33,10 @@ namespace ScrapySharp.Network
             KeepAlive = false;
             Proxy = WebRequest.DefaultWebProxy;
             Headers = new Dictionary<string, string>();
+            Charset = Encoding.UTF8;
         }
+
+        public Encoding Charset { get; set; }
 
         public void ClearCookies()
         {
@@ -215,6 +218,7 @@ namespace ScrapySharp.Network
             request.AllowAutoRedirect = AllowAutoRedirect;
             var response = request.GetResponse();
             var headers = response.Headers;
+            request.TransferEncoding = Charset.ToString();
 
             if (!IgnoreCookies)
             {
