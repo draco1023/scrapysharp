@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{563747
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp.JavaScript", "..\ScrapySharp.JavaScript\ScrapySharp.JavaScript.csproj", "{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ScrapySharp.vsmdi
@@ -77,6 +79,16 @@ Global
 		{CE27016B-2755-4B44-8A0E-574914B9256F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CE27016B-2755-4B44-8A0E-574914B9256F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CE27016B-2755-4B44-8A0E-574914B9256F}.Release|x86.ActiveCfg = Release|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{45D6D1E3-1AC9-4A6E-BEC6-86C908881E9B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

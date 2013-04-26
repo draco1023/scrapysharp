@@ -23,3 +23,4 @@ glob:BIN
 glob:Bin
 syntax: glob
 *.docstates
+ScrapySharp/packages/*
