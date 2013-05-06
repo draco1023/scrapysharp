@@ -115,8 +115,15 @@ namespace ScrapySharp.Network
             request.KeepAlive = KeepAlive;
             request.ProtocolVersion = ProtocolVersion;
 
+            if (!string.IsNullOrWhiteSpace(TransferEncoding))
+                request.TransferEncoding = TransferEncoding;
+
+            request.SendChunked = SendChunked;
+
             return request;
         }
+
+        public bool SendChunked { get; set; }
 
         public IWebProxy Proxy { get; set; }
 
@@ -217,10 +224,7 @@ namespace ScrapySharp.Network
             request.AllowAutoRedirect = AllowAutoRedirect;
             var response = request.GetResponse();
             var headers = response.Headers;
-
-            if (!string.IsNullOrWhiteSpace(TransferEncoding))
-                request.TransferEncoding = TransferEncoding;
-
+            
             if (!IgnoreCookies)
             {
                 var cookiesExpression = headers["Set-Cookie"];
