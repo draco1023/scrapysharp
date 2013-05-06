@@ -33,10 +33,7 @@ namespace ScrapySharp.Network
             KeepAlive = false;
             Proxy = WebRequest.DefaultWebProxy;
             Headers = new Dictionary<string, string>();
-            Charset = Encoding.UTF8;
         }
-
-        public Encoding Charset { get; set; }
 
         public void ClearCookies()
         {
