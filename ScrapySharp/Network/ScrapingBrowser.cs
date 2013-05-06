@@ -212,13 +212,17 @@ namespace ScrapySharp.Network
             return GetResponse(url, request, iteration);
         }
 
+        public string TransferEncoding { get; set; }
+
         private WebResponse GetWebResponse(Uri url, HttpWebRequest request)
         {
             referer = url;
             request.AllowAutoRedirect = AllowAutoRedirect;
             var response = request.GetResponse();
             var headers = response.Headers;
-            request.TransferEncoding = Charset.ToString();
+
+            if (!string.IsNullOrWhiteSpace(TransferEncoding))
+                request.TransferEncoding = TransferEncoding;
 
             if (!IgnoreCookies)
             {
