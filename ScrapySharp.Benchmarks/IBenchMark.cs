@@ -4,7 +4,7 @@ namespace ScrapySharp.Benchmarks
 {
     public interface IBenchMark
     {
-        void Run();
+        void Run(string source);
 
         TimeSpan TimeElapsed { get; }
     }

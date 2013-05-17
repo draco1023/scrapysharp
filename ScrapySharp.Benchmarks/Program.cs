@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ScrapySharp.Benchmarks
 {
@@ -9,36 +10,19 @@ namespace ScrapySharp.Benchmarks
             var agilityPackBenchMark = new AgilityPackBenchMark();
             var hDocumentBenchMark = new HDocumentBenchMark();
 
-            agilityPackBenchMark.Run();
-            Console.WriteLine("AgilityPackBenchMark => Elapsed time: {0} ms", agilityPackBenchMark.TimeElapsed.TotalMilliseconds);
+            var source = File.ReadAllText("Html/Page1.htm");
+
+            for (int i = 0; i < 50; i++)
+            {
+                agilityPackBenchMark.Run(source);
+                Console.WriteLine("AgilityPackBenchMark => Elapsed time: {0} ms", agilityPackBenchMark.TimeElapsed.TotalMilliseconds);
+                GC.Collect();
+
+                hDocumentBenchMark.Run(source);
+                Console.WriteLine("HDocumentBenchMark => Elapsed time: {0} ms", hDocumentBenchMark.TimeElapsed.TotalMilliseconds);
+                GC.Collect();
+            }
             
-            GC.Collect();
-
-            hDocumentBenchMark.Run();
-            Console.WriteLine("HDocumentBenchMark => Elapsed time: {0} ms", hDocumentBenchMark.TimeElapsed.TotalMilliseconds);
-
-            GC.Collect();
-            
-            agilityPackBenchMark.Run();
-            Console.WriteLine("AgilityPackBenchMark => Elapsed time: {0} ms", agilityPackBenchMark.TimeElapsed.TotalMilliseconds);
-
-            GC.Collect();
-
-            hDocumentBenchMark.Run();
-            Console.WriteLine("HDocumentBenchMark => Elapsed time: {0} ms", hDocumentBenchMark.TimeElapsed.TotalMilliseconds);
-
-            GC.Collect();
-
-            agilityPackBenchMark.Run();
-            Console.WriteLine("AgilityPackBenchMark => Elapsed time: {0} ms", agilityPackBenchMark.TimeElapsed.TotalMilliseconds);
-
-            GC.Collect();
-
-            hDocumentBenchMark.Run();
-            Console.WriteLine("HDocumentBenchMark => Elapsed time: {0} ms", hDocumentBenchMark.TimeElapsed.TotalMilliseconds);
-
-            GC.Collect();
-
             Console.WriteLine("Press any key ...");
             Console.ReadKey(true);
         }
