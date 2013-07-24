@@ -97,6 +97,7 @@ namespace ScrapySharp.Network
             request.Method = ToMethod(verb);
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
+            request.Proxy = Proxy;
 
             request.Headers["Accept-Language"] = Language.Name;
 
