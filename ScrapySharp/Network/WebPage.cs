@@ -5,6 +5,8 @@ using HtmlAgilityPack;
 using ScrapySharp.Cache;
 using ScrapySharp.Extensions;
 using System.Linq;
+using ScrapySharp.Html;
+using ScrapySharp.Html.Forms;
 
 namespace ScrapySharp.Network
 {
@@ -38,6 +40,32 @@ namespace ScrapySharp.Network
                 LoadBaseUrl();
                 DownloadResources();
             }
+        }
+
+        public IEnumerable<HtmlNode> Find(string tag, By by)
+        {
+            return @by.CreateElementFinder(html, tag).FindElements();
+        }
+
+        public IEnumerable<HyperLink> FindLinks(By by)
+        {
+            return Find("a", by).Select(a => new HyperLink(this, a));
+        }
+
+        public PageWebForm FindForm(string name)
+        {
+            var node = (from n in Html.Descendants("form")
+                        let formName = n.GetAttributeValue("name", string.Empty)
+                        where formName == name
+                        select n).FirstOrDefault();
+
+            return node == null ? null : new PageWebForm(node, browser);
+        }
+
+        public PageWebForm FindFormById(string id)
+        {
+            var node = Html.Descendants("form").FirstOrDefault(f => f.Id == id);
+            return node == null ? null : new PageWebForm(node, browser);
         }
 
         private void LoadBaseUrl()
