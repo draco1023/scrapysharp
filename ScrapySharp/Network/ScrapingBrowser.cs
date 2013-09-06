@@ -294,8 +294,8 @@ namespace ScrapySharp.Network
         {
             return NavigateToPage(url, verb, data);
         }
-
-        public WebPage NavigateToPage(Uri url, HttpVerb verb, string data)
+        
+        public WebPage NavigateToPage(Uri url, HttpVerb verb = HttpVerb.Get, string data = "")
         {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
@@ -377,6 +377,11 @@ namespace ScrapySharp.Network
         public Version ProtocolVersion { get; set; }
 
         public bool KeepAlive { get; set; }
+
+        public Uri Referer
+        {
+            get { return referer; }
+        }
 
         public Cookie GetCookie(Uri url, string name)
         {

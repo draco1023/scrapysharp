@@ -15,6 +15,9 @@ namespace ScrapySharp.Extensions
 
         public static Uri CombineUrl(this string url, string path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                return new Uri(url);
+
             if (path.StartsWith("/"))
             {
                 var match = basePathRegex.Match(url);
