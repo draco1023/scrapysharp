@@ -31,6 +31,25 @@ namespace ScrapySharp.JavaScript.Dom
             get { return htmlDocument.DocumentNode; }
         }
 
+        [SMProperty(Name = "title")]
+        public string Title
+        {
+            get
+            {
+                var title = HtmlDocument.Descendants("title").FirstOrDefault();
+                if (title == null)
+                    return string.Empty;
+                return title.InnerText;
+            }
+            set
+            {
+                var title = HtmlDocument.Descendants("title").FirstOrDefault();
+                if (title == null)
+                    return;
+                title.InnerHtml = value;
+            }
+        }
+
         [SMProperty(Name = "body")]
         public DomElement Body
         {
