@@ -3,24 +3,31 @@
 <title>||Travail sur les éléments||</title>
 </head>
 
-<script type="text/javascript">
-    var mon_div = null;
-    var nouveauDiv = null;
+    <script type="text/javascript">
+        var mon_div = null;
+        var nouveauDiv = null;
 
-    function ajouteElement() {
-        // crée un nouvel élément div
-        // et lui donne un peu de contenu
-        nouveauDiv = document.createElement("div");
-        nouveauDiv.innerHTML = "<h1>Salutations !</h1>";
+        function ajouteElement() {
+            // crée un nouvel élément div
+            // et lui donne un peu de contenu
+            nouveauDiv = document.createElement("div");
+            nouveauDiv.innerHTML = "<h1>Salutations !</h1>";
 
-        // ajoute l'élément qui vient d'être créé et son contenu au DOM
-        mon_div = document.getElementById("org_div1");
-        document.body.insertBefore(nouveauDiv, mon_div);
-    }
+            // ajoute l'élément qui vient d'être créé et son contenu au DOM
+            mon_div = document.getElementById("org_div1");
+            document.body.insertBefore(nouveauDiv, mon_div);
+            
+        }
 
-</script>
+    </script>
+    
+    <script>
+        document.getElementById('clock').innerText = new Date();
+    </script>
 
-<body onload="ajouteElement()">
-<div id='org_div1'> Le texte ci-dessus a été créé dynamiquement.</div>
-</body>
+    <body onload="ajouteElement()">
+        <div id='org_div1'> Le texte ci-dessus a été créé dynamiquement.</div>
+        
+        <div id="clock"></div>
+    </body>
 </html>
