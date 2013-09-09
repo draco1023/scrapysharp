@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using HtmlAgilityPack;
 using NUnit.Framework;
 using ScrapySharp.Html;
 using ScrapySharp.Html.Dom;
@@ -16,16 +17,17 @@ namespace ScrapySharp.Tests
         [Test]
         public void When_browsing_using_helpers()
         {
-            var browser = new ScrapingBrowser();
-            var homePage = browser.NavigateToPage(new Uri("http://www.bing.com/"));
+            ScrapingBrowser browser = new ScrapingBrowser();
+            WebPage homePage = browser.NavigateToPage(new Uri("http://www.bing.com/"));
 
-            var form = homePage.FindFormById("sb_form");
-            form["q"] = "test";
+            PageWebForm form = homePage.FindFormById("sb_form");
+            form["q"] = "scrapysharp";
+            form.Method = HttpVerb.Get;
             WebPage resultsPage = form.Submit();
 
-            var links = resultsPage.Html.CssSelect("div.sb_tlst h3 a").ToArray();
+            HtmlNode[] resultsLinks = resultsPage.Html.CssSelect("div.sb_tlst h3 a").ToArray();
 
-            var webPage = resultsPage.FindLinks(By.Text("rooms")).Single().Click();
+            WebPage blogPage = resultsPage.FindLinks(By.Text("romcyber blog | Just another WordPress site")).Single().Click();
         }
 
         [Test]
