@@ -11,11 +11,12 @@ namespace ScrapySharp.Benchmarks
     {
         private readonly Stopwatch stopwatch = new Stopwatch();
         
-        public void Run()
+        public void Run(string source)
         {
+            stopwatch.Reset();
+            //var source = File.ReadAllText("Html/Page1.htm");
             stopwatch.Start();
 
-            var source = File.ReadAllText("Html/Page1.htm");
             var htmlDocument = new HtmlDocument();
             
             for (int i = 0; i < BenchMarksParameters.Iterations; i++)

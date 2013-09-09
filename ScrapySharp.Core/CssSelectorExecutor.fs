@@ -26,7 +26,7 @@
                 matchAncestors
             and set(value) = 
                 matchAncestors <- value
-                level <- if matchAncestors then FilterLevel.Parents else FilterLevel.Root
+                level <- if matchAncestors then FilterLevel.Ancestors else FilterLevel.Root
 
         member public x.GetElements() =
             let elements = x.selectElements()

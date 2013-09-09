@@ -166,6 +166,22 @@ namespace ScrapySharp.Tests
             var tds2 = trs1[1].CssSelect("td").ToArray();
             Assert.AreEqual(3, tds2.Length);
         }
+
+        [Test]
+        public void When_select_ancestors()
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(@"<html><body><table>"
+                         + "<tr><td>Case 1</td><td><label for=c1>Case 2</label></td><td>Case 3</td></tr>"
+                         + "<tr><td>Case 4</td><td>Case 5</td><td>Case 6</td></tr>"
+                         + "</table></body></html>");
+            var html = doc.DocumentNode;
+
+            var labels = html.CssSelect("label[for=c1]").ToArray();
+            var trs = labels.CssSelectAncestors("tr").ToArray();
+
+            Assert.AreEqual(1, trs.Length);
+        }
     }
 }
 
