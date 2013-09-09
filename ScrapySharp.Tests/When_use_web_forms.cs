@@ -18,6 +18,10 @@ namespace ScrapySharp.Tests
         public void When_browsing_using_helpers()
         {
             ScrapingBrowser browser = new ScrapingBrowser();
+
+            //set UseDefaultCookiesParser as false if a website returns invalid cookies format
+            //browser.UseDefaultCookiesParser = false;
+
             WebPage homePage = browser.NavigateToPage(new Uri("http://www.bing.com/"));
 
             PageWebForm form = homePage.FindFormById("sb_form");
