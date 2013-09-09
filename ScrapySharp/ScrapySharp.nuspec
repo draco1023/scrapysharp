@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>ScrapySharp</id>
-        <version>$version$</version>
+        <version>2.2</version>
         <title>ScrapySharp</title>
         <authors>Romain Flechner</authors>
         <owners>Romain Flechner</owners>
@@ -13,11 +13,7 @@
 - a web client able to simulate a web browser.
 - an HtmlAgilityPack extension to select elements using css selector (like JQuery)</description>
         <summary>Scraping framework written in C#.</summary>
-        <releaseNotes>- Use a new CssSelector parser written in F#
-- Works with new version of HtmlAgilityPack
-- Fix some cookies parsing error
-- Add FSharp.Core.dll in copied dlls
-- Fix a bug when we use descendant selector for direct children nodes</releaseNotes>
+        <releaseNotes>- Add some helpers to improve web browsing</releaseNotes>
         <copyright>Romain Flechner</copyright>
         <language>en-US</language>
         <tags>Scraping html css linq agility</tags>
@@ -36,7 +32,7 @@
             <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework=".NETFramework4.0" />
         </frameworkAssemblies>
     </metadata>
-    <!--<files>
+    <files>
         <file src="bin\release\FSharp.Core.dll" target="lib\net40" />
         <file src="bin\release\FSharp.Core.xml" target="lib\net40" />
         <file src="bin\release\HtmlAgilityPack.dll" target="lib\net40" />
@@ -47,9 +43,9 @@
         <file src="bin\release\ScrapySharp.Core.xml" target="lib\net40" />
         <file src="bin\release\ScrapySharp.dll" target="lib\net40" />
         <file src="bin\release\ScrapySharp.pdb" target="lib\net40" />
-    </files>-->
+    </files>
 
-  <files>
+  <!--<files>
     <file src="FSharp.Core.dll" target="lib\net40" />
     <file src="FSharp.Core.xml" target="lib\net40" />
     <file src="HtmlAgilityPack.dll" target="lib\net40" />
@@ -60,5 +56,5 @@
     <file src="ScrapySharp.Core.xml" target="lib\net40" />
     <file src="ScrapySharp.dll" target="lib\net40" />
     <file src="ScrapySharp.pdb" target="lib\net40" />
-  </files>
+  </files>-->
 </package>

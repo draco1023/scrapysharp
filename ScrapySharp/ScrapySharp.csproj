@@ -78,7 +78,9 @@
     <Compile Include="Html\Forms\FormField.cs" />
     <Compile Include="Html\Forms\HElementFormParser.cs" />
     <Compile Include="Html\Forms\HElementNodeParser.cs" />
+    <Compile Include="Html\Forms\HyperLink.cs" />
     <Compile Include="Html\Forms\IHtmlNodeParser.cs" />
+    <Compile Include="Html\Forms\PageWebForm.cs" />
     <Compile Include="Html\Forms\WebForm.cs" />
     <Compile Include="Html\Parsing\CodeReader.cs" />
     <Compile Include="Html\Parsing\CodeReadingContext.cs" />
@@ -87,7 +89,10 @@
     <Compile Include="Html\Parsing\HtmlDomBuilder.cs" />
     <Compile Include="Html\Parsing\Tokens.cs" />
     <Compile Include="Html\Parsing\Word.cs" />
+    <Compile Include="Html\By.cs" />
     <Compile Include="Network\CookiesParser.cs" />
+    <Compile Include="Html\ElementFinder.cs" />
+    <Compile Include="Html\ElementSearchKind.cs" />
     <Compile Include="Network\FakeUserAgent.cs" />
     <Compile Include="Network\FakeUserAgents.cs" />
     <Compile Include="Network\HttpVerb.cs" />

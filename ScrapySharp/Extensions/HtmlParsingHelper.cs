@@ -13,6 +13,9 @@ namespace ScrapySharp.Extensions
 {
     public static class HtmlParsingHelper
     {
+        private static Regex spacesRegex = new Regex("[ ]+", RegexOptions.Compiled);
+        private static Regex asciiRegex = new Regex("(([=][0-9A-F]{0,2})+)|([ ]+)", RegexOptions.Compiled);
+
         /// <summary>
         /// Convert a string to a date.
         /// </summary>
@@ -242,11 +245,11 @@ namespace ScrapySharp.Extensions
         public static string CleanInnerHtmlAscii(this string expression)
         {
             var cleaned = expression.Replace("=C3=B4", "ô");
-            var regex = new Regex("(([=][0-9A-F]{0,2})+)|([ ]+)");
-            cleaned = regex.Replace(cleaned, " ");
+            cleaned = asciiRegex.Replace(cleaned, " ");
 
             return cleaned;
         }
+
 
         /// <summary>
         /// Cleans the inner text from excessive spaces characters.
@@ -260,9 +263,7 @@ namespace ScrapySharp.Extensions
 
             cleaned = HttpUtility.HtmlDecode(cleaned);
             
-            var regex = new Regex("[ ]+");
-
-            return regex.Replace(cleaned, " ").Trim();
+            return spacesRegex.Replace(cleaned, " ").Trim();
         }
 
     }

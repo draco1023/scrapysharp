@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
@@ -31,6 +32,7 @@ namespace ScrapySharp.Network
             ProtocolVersion = HttpVersion.Version10;
             KeepAlive = false;
             Proxy = WebRequest.DefaultWebProxy;
+            Headers = new Dictionary<string, string>();
         }
 
         public void ClearCookies()
@@ -71,11 +73,22 @@ namespace ScrapySharp.Network
             return !noCacheHeaders.Contains(header.ToLowerInvariant());
         }
 
+        public string AjaxDownloadString(Uri url)
+        {
+            var request = CreateRequest(url, HttpVerb.Get);
+            request.Headers["X-Prototype-Version"] = "1.6.1";
+            request.Headers["X-Requested-With"] = "XMLHttpRequest";
+
+            return GetResponse(url, request, 0);
+        }
+
         public string DownloadString(Uri url)
         {
             var request = CreateRequest(url, HttpVerb.Get);
             return GetResponse(url, request, 0);
         }
+
+        public Dictionary<string, string> Headers { get; private set; }
 
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
         {
@@ -84,7 +97,17 @@ namespace ScrapySharp.Network
             request.Method = ToMethod(verb);
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
+            request.Proxy = Proxy;
+
             request.Headers["Accept-Language"] = Language.Name;
+
+            if (Headers != null)
+            {
+                foreach (var header in Headers)
+                    request.Headers[header.Key] = header.Value;
+                Headers.Clear();
+            }
+
             request.CachePolicy = CachePolicy;
 
             if (Timeout > TimeSpan.Zero)
@@ -93,8 +116,15 @@ namespace ScrapySharp.Network
             request.KeepAlive = KeepAlive;
             request.ProtocolVersion = ProtocolVersion;
 
+            if (!string.IsNullOrWhiteSpace(TransferEncoding))
+                request.TransferEncoding = TransferEncoding;
+
+            request.SendChunked = SendChunked;
+
             return request;
         }
+
+        public bool SendChunked { get; set; }
 
         public IWebProxy Proxy { get; set; }
 
@@ -187,13 +217,15 @@ namespace ScrapySharp.Network
             return GetResponse(url, request, iteration);
         }
 
+        public string TransferEncoding { get; set; }
+
         private WebResponse GetWebResponse(Uri url, HttpWebRequest request)
         {
             referer = url;
             request.AllowAutoRedirect = AllowAutoRedirect;
             var response = request.GetResponse();
             var headers = response.Headers;
-
+            
             if (!IgnoreCookies)
             {
                 var cookiesExpression = headers["Set-Cookie"];
@@ -262,8 +294,8 @@ namespace ScrapySharp.Network
         {
             return NavigateToPage(url, verb, data);
         }
-
-        public WebPage NavigateToPage(Uri url, HttpVerb verb, string data)
+        
+        public WebPage NavigateToPage(Uri url, HttpVerb verb = HttpVerb.Get, string data = "")
         {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
@@ -345,6 +377,11 @@ namespace ScrapySharp.Network
         public Version ProtocolVersion { get; set; }
 
         public bool KeepAlive { get; set; }
+
+        public Uri Referer
+        {
+            get { return referer; }
+        }
 
         public Cookie GetCookie(Uri url, string name)
         {
