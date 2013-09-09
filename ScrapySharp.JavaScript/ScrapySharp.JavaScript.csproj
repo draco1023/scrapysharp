@@ -70,6 +70,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EmbeddedScripts\JavaScript2.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="EmbeddedScripts\jquery-1.9.1.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

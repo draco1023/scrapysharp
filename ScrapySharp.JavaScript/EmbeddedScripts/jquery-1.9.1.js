@@ -1,4 +1,7 @@
-﻿/*!
+﻿
+alert("start jquery");
+
+/*!
  * jQuery JavaScript Library v1.9.1
  * http://jquery.com/
  *
@@ -9579,6 +9582,8 @@
     // Expose jQuery to the global object
     window.jQuery = window.$ = jQuery;
 
+    alert("init jquery");
+
     // Expose jQuery as an AMD module, but only for AMD loaders that
     // understand the issues with loading multiple versions of jQuery
     // in a page that all might call define(). The loader will indicate
@@ -9596,3 +9601,5 @@
     }
 
 })(window);
+
+alert("end jquery");

@@ -22,7 +22,7 @@ namespace ScrapySharp.JavaScript
             Runtime.OnScriptError += (script, report) =>
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(report.Message);
+                Console.WriteLine("line {0}: {1}\n {2}", report.LineNumber, report.LineSource, report.Message);
                 Console.ResetColor();
             };
 
@@ -39,21 +39,23 @@ namespace ScrapySharp.JavaScript
 
             //smScript.CallFunction("__LoadHtml", File.ReadAllText("EmbeddedScripts/Html1.html"));
 
-            //var jquerySource = File.ReadAllText("EmbeddedScripts/jquery-1.9.1.min.js");
-            //smScript.Eval(jquerySource);
+            //smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.js"));
+            smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.min.js"));
+            
 
-
-            var source = File.ReadAllText("EmbeddedScripts/JavaScript1.js");
-            smScript.Eval(source);
-
+            //var source = File.ReadAllText("EmbeddedScripts/JavaScript1.js");
+            //smScript.Eval(source);
 
             document.ExecuteScripts(smScript);
 
+            smScript.Eval(File.ReadAllText("EmbeddedScripts/JavaScript2.js"));
+
             File.WriteAllText("out.html", document.GetOuterHtml());
 
+
             smScript.GarbageCollect();
-
-
+            //smScript.Dispose();
+            
             Console.WriteLine("Press any key ...");
             Console.ReadKey(true);
         }
