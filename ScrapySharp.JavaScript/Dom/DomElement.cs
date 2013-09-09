@@ -433,5 +433,11 @@ namespace ScrapySharp.JavaScript.Dom
         {
             node.AppendChild(element.Node);
         }
+
+        [SMMethod(Name = "attachEvent")]
+        public void AttachEvent(string name)
+        {
+
+        }
     }
 }
