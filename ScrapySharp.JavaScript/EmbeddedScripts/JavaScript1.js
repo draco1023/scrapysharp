@@ -16,49 +16,48 @@ print("Chaîne traitée : " + chaine.replace(reg, "<SPAN style='background-color
 
 //print(document);
 
-//document.write("document works !");
+document.write("document works !");
 
 
 ////document.innerHTML = "html 1";
 //print(document.innerHTML);
 
 var e = window.createElement("div");
-
 var div = document.createElement("div");
 
-function parseHTML(data, context, keepScripts) {
-    if (!data || typeof data !== "string") {
-        return null;
-    }
-    if (typeof context === "boolean") {
-        keepScripts = context;
-        context = false;
-    }
-    context = context || document;
+//function parseHTML(data, context, keepScripts) {
+//    if (!data || typeof data !== "string") {
+//        return null;
+//    }
+//    if (typeof context === "boolean") {
+//        keepScripts = context;
+//        context = false;
+//    }
+//    context = context || document;
 
-    var parsed = rsingleTag.exec(data),
-        scripts = !keepScripts && [];
+//    var parsed = rsingleTag.exec(data),
+//        scripts = !keepScripts && [];
 
-    // Single tag
-    if (parsed) {
-        return [context.createElement(parsed[1])];
-    }
+//    // Single tag
+//    if (parsed) {
+//        return [context.createElement(parsed[1])];
+//    }
 
-    parsed = jQuery.buildFragment([data], context, scripts);
-    if (scripts) {
-        jQuery(scripts).remove();
-    }
-    return jQuery.merge([], parsed.childNodes);
-}
+//    parsed = jQuery.buildFragment([data], context, scripts);
+//    if (scripts) {
+//        jQuery(scripts).remove();
+//    }
+//    return jQuery.merge([], parsed.childNodes);
+//}
 
-window.jQuery = "dzdz";
-
-
-var window2 = {
-    title: "",
-    url: "http://www.google.fr"
-};
+//window.jQuery = "dzdz";
 
 
-window2.jQuery = "dzdz";
+//var window2 = {
+//    title: "",
+//    url: "http://www.google.fr"
+//};
+
+
+//window2.jQuery = "dzdz";
 

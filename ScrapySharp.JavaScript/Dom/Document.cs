@@ -2,86 +2,87 @@ using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
 using System.Linq;
+using smnetjs;
 
 namespace ScrapySharp.JavaScript.Dom
 {
-    public class Document
+    [SMEmbedded(Name = "Document", AccessibleName = "Document", AllowInheritedMembers = true, AllowScriptDispose = true)]
+    public class Document : DomElement
     {
-        [ThreadStatic]
-        private static Document current;
+        
+        protected readonly HtmlDocument htmlDocument;
 
-        public static Document Current
+        public Document() : base(null, null)
+        {
+            htmlDocument = new HtmlDocument();
+            document = this;
+            //node = new HtmlNode(HtmlNodeType.Element, HtmlDocument.OwnerDocument, 0);
+            node = htmlDocument.DocumentNode;
+        }
+
+        public Document(HtmlNode node, Document document) : base(node, document)
+        {
+            htmlDocument = document.htmlDocument;
+        }
+        
+        [SMIgnore]
+        public HtmlNode HtmlDocument
+        {
+            get { return htmlDocument.DocumentNode; }
+        }
+
+        [SMProperty(Name = "body")]
+        public DomElement Body
         {
             get
             {
-                if (current == null)
-                    current = new Document();
-                return current;
+                var node = htmlDocument.DocumentNode.Descendants("body").FirstOrDefault();
+                if (node == null)
+                    return null;
+                return new DomElement(node, this);
             }
         }
-
-        protected readonly HtmlDocument htmlDocument;
-
-        public Document()
-        {
-            htmlDocument = new HtmlDocument();
-        }
-
-        public HtmlDocument HtmlDocument
-        {
-            get { return htmlDocument; }
-        }
-
-        public string InnerHtml
-        {
-            get { return htmlDocument.DocumentNode.InnerHtml; }
-            set { htmlDocument.DocumentNode.InnerHtml = value; }
-        }
         
+        [SMMethod(Name = "write")]
         public void Write(string text)
         {
             Console.WriteLine(text);
         }
-
-        public void LoadHtml(string html)
-        {
-            InnerHtml = html;
-        }
-
-        public DomElement createElement(string tagName)
-        {
-            return new DomElement(htmlDocument.CreateElement(tagName));
-        }
-
-        public DomElement CreateDocumentFragment()
-        {
-            return new DomElement(HtmlNode.CreateNode(""));
-        }
-
-        public List<DomElement> GetElementsByName(string name)
-        {
-            return htmlDocument.DocumentNode.Descendants(name).Select(d => new DomElement(d)).ToList();
-        }
-
-        public List<DomElement> GetElementsByTagName(string name)
-        {
-            return htmlDocument.DocumentNode.Descendants(name).Select(d => new DomElement(d)).ToList();
-        }
-
-        public void AppendChild(DomElement element)
-        {
-            htmlDocument.DocumentNode.AppendChild(element.Node);
-        }
         
+        [SMProperty(Name = "documentElement")]
         public DomElement DocumentElement
         {
             get
             {
-                return new DomElement(htmlDocument.DocumentNode);
+                return new DomElement(htmlDocument.DocumentNode, this);
             }
             set
             {
                 htmlDocument.LoadHtml(value.Node.OuterHtml);
+            }
+        }
+
+        [SMMethod(Name = "LoadHtml")]
+        public void LoadHtml(string html)
+        {
+            htmlDocument.LoadHtml(html);
+            node = htmlDocument.DocumentNode;
+            //InnerHtml = html;
+        }
+
+        public void ExecuteScripts(SMScript smScript)
+        {
+            var scripts = DocumentElement.Node.Descendants("script").Where(s => s.GetAttributeValue("type", string.Empty).Contains("javascript")).Select(s => s.InnerText);
+
+            foreach (var script in scripts)
+            {
+                smScript.Eval(script);
+            }
+
+            var onloads = DocumentElement.Node.Descendants().Where(e => !string.IsNullOrEmpty(e.GetAttributeValue("onload", string.Empty))).Select(e => e.GetAttributeValue("onload", string.Empty)).ToArray();
+            foreach (var onload in onloads)
+            {
+                smScript.Eval(onload);
             }
         }
     }
