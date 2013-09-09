@@ -72,7 +72,11 @@ namespace ScrapySharp.JavaScript.Dom
 
         public void ExecuteScripts(SMScript smScript)
         {
-            var scripts = DocumentElement.Node.Descendants("script").Where(s => s.GetAttributeValue("type", string.Empty).Contains("javascript")).Select(s => s.InnerText);
+            var scripts = DocumentElement.Node.Descendants("script").Where(s =>
+                {
+                    var type = s.GetAttributeValue("type", string.Empty);
+                    return string.IsNullOrWhiteSpace(type) || type.Contains("javascript");
+                }).Select(s => s.InnerText);
 
             foreach (var script in scripts)
             {

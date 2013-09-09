@@ -16,16 +16,7 @@ namespace ScrapySharp.JavaScript.Dom
         {
             this.document = document;
             if (document != null)
-            {
-                if (node == null)
-                    this.node = new HtmlNode(HtmlNodeType.Element, document.HtmlDocument.OwnerDocument, 0);
-                else
-                    this.node = node;
-            }
-            else
-            {
-                
-            }
+                this.node = node ?? new HtmlNode(HtmlNodeType.Element, document.HtmlDocument.OwnerDocument, 0);
         }
 
         public string GetOuterHtml()
