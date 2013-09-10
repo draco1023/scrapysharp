@@ -9,22 +9,33 @@ namespace ScrapySharp.JavaScript
     [SMEmbedded(AllowInheritedMembers = false)]
     class DynamicJsObject : ISMDynamic
     {
-        string Name = "WHAT";
+        private readonly Dictionary<string, object> dynamicMembers = new Dictionary<string, object>();
 
         public object OnPropertyGetter(SMScript script, string name)
         {
+            if (!dynamicMembers.ContainsKey(name))
+                return null;
 
-            if (name == "name")
-                return Name;
+            var jsval = dynamicMembers[name];
 
-            return null;
+            if (jsval is ulong)
+            {
+                var fromJsVal = Interop.FromJSVal(script, (ulong) jsval);
+
+                return fromJsVal;
+            }
+            return jsval;
         }
 
         public void OnPropertySetter(SMScript script, string name, object value)
         {
+            //var eval = script.Eval<object>("return window." + name + ";");
 
-            if (name == "name")
-                Name = (string)value;
+            if (dynamicMembers.ContainsKey(name))
+                dynamicMembers[name] = value;
+            else
+                dynamicMembers.Add(name, value);
+
         }
 
         [DllImport("mozjs185-1.0.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -44,7 +55,7 @@ namespace ScrapySharp.JavaScript
     //        {
     //            members.Add(binder.Name, value);
     //        }
-
+            
     //        return true;
     //    }
 

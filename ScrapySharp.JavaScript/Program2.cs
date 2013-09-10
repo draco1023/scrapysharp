@@ -11,11 +11,10 @@ namespace ScrapySharp.JavaScript
     {
         public static SMRuntime Runtime = new SMRuntime();
 
-        public static void Main()
+        public static void Main2()
         {
-
-            //var url = new Uri("https://www.google.fr/?q=sa#q=sa");
-            var url = new Uri("http://fr.wikipedia.org/wiki/Soci%C3%A9t%C3%A9_anonyme");
+            var url = new Uri("https://www.google.fr/?q=sa#q=sa");
+            //var url = new Uri("http://fr.wikipedia.org/wiki/Soci%C3%A9t%C3%A9_anonyme");
 
             var document = Navigate(url);
 
@@ -42,9 +41,8 @@ namespace ScrapySharp.JavaScript
             smScript.SetOperationTimeout(30000U);
             Runtime.OnScriptError += (script, report) =>
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("{3} line {0}: {1}\n {2}", report.LineNumber, report.LineSource, report.Message,
-                                      report.Filename);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("{3} line {0}: {1}\n {2}", report.LineNumber, report.LineSource, report.Message, report.Filename);
                     Console.ResetColor();
                 };
 
@@ -70,7 +68,7 @@ namespace ScrapySharp.JavaScript
             return document;
         }
 
-        public static void Main1()
+        public static void Main()
         {
             Runtime.Embed(typeof(Script));
             Runtime.Embed(typeof(Document));
@@ -82,7 +80,7 @@ namespace ScrapySharp.JavaScript
             smScript.SetOperationTimeout(30000U);
             Runtime.OnScriptError += (script, report) =>
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("{3} line {0}: {1}\n {2}", report.LineNumber, report.LineSource, report.Message, report.Filename);
                 Console.ResetColor();
             };
@@ -94,29 +92,31 @@ namespace ScrapySharp.JavaScript
 
             var document = new Document();
             var window = new Window(document, smScript);
+            document.Location = "https://www.google.fr";
+            smScript.SetGlobalProperty("location", document.Location);
 
             smScript.CallFunction("__InitWindow", window);
 
-            //var jsObject = new DynamicJsObject();
-            //smScript.CallFunction("__InitBag", jsObject);
+            var jsObject = new DynamicJsObject();
+            smScript.CallFunction("__InitBag", jsObject);
 
 
-            document.LoadHtml(File.ReadAllText("EmbeddedScripts/Html1.html"));
+            //document.LoadHtml(File.ReadAllText("EmbeddedScripts/Html1.html"));
 
             //smScript.CallFunction("__LoadHtml", File.ReadAllText("EmbeddedScripts/Html1.html"));
 
-            smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.js"));
+            //smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.js"));
             //smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.min.js"));
             
 
             //var source = File.ReadAllText("EmbeddedScripts/JavaScript1.js");
             //smScript.Eval(source);
 
-            document.ExecuteScripts(smScript);
+            //document.ExecuteScripts(smScript);
 
             smScript.Eval(File.ReadAllText("EmbeddedScripts/JavaScript2.js"));
 
-            File.WriteAllText("out.html", document.GetOuterHtml());
+            //File.WriteAllText("out.html", document.GetOuterHtml());
 
 
             smScript.GarbageCollect();

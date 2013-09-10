@@ -21,6 +21,8 @@ namespace ScrapySharp.JavaScript.Dom
 
         public void OnPropertySetter(SMScript script, string name, object value)
         {
+            //var eval = script.Eval<object>("return window." + name + ";");
+
             if (dynamicMembers.ContainsKey(name))
                 dynamicMembers[name] = value;
             else
