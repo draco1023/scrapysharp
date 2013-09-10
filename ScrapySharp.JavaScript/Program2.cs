@@ -14,7 +14,6 @@ namespace ScrapySharp.JavaScript
             Runtime.Embed(typeof(Script));
             Runtime.Embed(typeof(Document));
             Runtime.Embed(typeof(Window));
-
             
             var smScript = Runtime.InitScript("eval", typeof(Program2));
             
@@ -22,7 +21,7 @@ namespace ScrapySharp.JavaScript
             Runtime.OnScriptError += (script, report) =>
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("line {0}: {1}\n {2}", report.LineNumber, report.LineSource, report.Message);
+                Console.WriteLine("{3} line {0}: {1}\n {2}", report.LineNumber, report.LineSource, report.Message, report.Filename);
                 Console.ResetColor();
             };
 
@@ -31,7 +30,7 @@ namespace ScrapySharp.JavaScript
             
             var initMocksSource = File.ReadAllText("EmbeddedScripts/InitMockings.js");
             smScript.Eval(initMocksSource);
-
+            
             smScript.CallFunction("__InitWindow", window);
 
 
@@ -39,8 +38,8 @@ namespace ScrapySharp.JavaScript
 
             //smScript.CallFunction("__LoadHtml", File.ReadAllText("EmbeddedScripts/Html1.html"));
 
-            //smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.js"));
-            smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.min.js"));
+            smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.js"));
+            //smScript.Eval(File.ReadAllText("EmbeddedScripts/jquery-1.9.1.min.js"));
             
 
             //var source = File.ReadAllText("EmbeddedScripts/JavaScript1.js");
