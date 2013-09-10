@@ -4,6 +4,12 @@ var window = new Window(document);
 
 window.document = document;
 
+var bag = null;
+
+function __InitBag(b) {
+    bag = b;
+    bag.dzdz = 'dz';
+}
 
 function __InitWindow(w) {
     window = w;

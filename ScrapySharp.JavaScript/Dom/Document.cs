@@ -86,7 +86,6 @@ namespace ScrapySharp.JavaScript.Dom
         {
             htmlDocument.LoadHtml(html);
             node = htmlDocument.DocumentNode;
-            //InnerHtml = html;
         }
 
         public void ExecuteScripts(SMScript smScript)
