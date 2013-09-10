@@ -9,6 +9,10 @@ var bag = null;
 function __InitBag(b) {
     bag = b;
     bag.dzdz = 'dz';
+    bag.toto = {
+        a: 'dede',
+        sa: 54
+    };
 }
 
 function __InitWindow(w) {
