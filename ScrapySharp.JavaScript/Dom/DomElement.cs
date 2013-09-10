@@ -386,10 +386,16 @@ namespace ScrapySharp.JavaScript.Dom
             return new DomElement(node.OwnerDocument.CreateElement(tagName), this.document);
         }
 
+        [SMMethod(Name = "createTextNode")]
+        public DomElement CreateTextNode(string text)
+        {
+            return new DomElement(node.OwnerDocument.CreateTextNode(text), this.document);
+        }
+
         [SMMethod(Name = "createDocumentFragment")]
         public DomElement CreateDocumentFragment()
         {
-            return new DomElement(HtmlNode.CreateNode(""), this.document);
+            return new DomElement(document.Node.OwnerDocument.CreateElement(""), document);
         }
 
         [SMMethod(Name = "getElementById")]
@@ -435,7 +441,7 @@ namespace ScrapySharp.JavaScript.Dom
         }
 
         [SMMethod(Name = "attachEvent")]
-        public void AttachEvent(string name)
+        public void AttachEvent(string name, SMFunction func)
         {
 
         }
