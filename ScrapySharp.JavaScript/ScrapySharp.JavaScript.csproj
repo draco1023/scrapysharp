@@ -63,6 +63,8 @@
     <Compile Include="Dom\DomElement.cs" />
     <Compile Include="Dom\Script.cs" />
     <Compile Include="Dom\Window.cs" />
+    <Compile Include="DynamicJsObject.cs" />
+    <Compile Include="GlobalObject.cs" />
     <Compile Include="Program2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -14,8 +14,9 @@ namespace ScrapySharp.JavaScript
             Runtime.Embed(typeof(Script));
             Runtime.Embed(typeof(Document));
             Runtime.Embed(typeof(Window));
-            
-            var smScript = Runtime.InitScript("eval", typeof(Program2));
+            Runtime.Embed(typeof(DynamicJsObject));
+
+            var smScript = Runtime.InitScript("eval", typeof(GlobalObject));
             
             smScript.SetOperationTimeout(30000U);
             Runtime.OnScriptError += (script, report) =>
@@ -25,13 +26,18 @@ namespace ScrapySharp.JavaScript
                 Console.ResetColor();
             };
 
-            var document = new Document();
-            var window = new Window(document);
             
             var initMocksSource = File.ReadAllText("EmbeddedScripts/InitMockings.js");
             smScript.Eval(initMocksSource);
-            
+
+
+            var document = new Document();
+            var window = new Window(document, smScript);
+
             smScript.CallFunction("__InitWindow", window);
+
+            //var jsObject = new DynamicJsObject();
+            //smScript.CallFunction("__InitBag", jsObject);
 
 
             document.LoadHtml(File.ReadAllText("EmbeddedScripts/Html1.html"));
@@ -59,16 +65,5 @@ namespace ScrapySharp.JavaScript
             Console.ReadKey(true);
         }
 
-        [SMMethod(Name = "print")]
-        public static void Print(string text)
-        {
-            Console.WriteLine(text);
-        }
-
-        [SMMethod(Name = "alert")]
-        public static void Alert(string text)
-        {
-            Console.WriteLine(text);
-        }
     }
 }

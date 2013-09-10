@@ -7,7 +7,7 @@
 //}
 
 
-//var div = window.jQuery("div");
+var div = window.jQuery("div");
 
 //for (var k in div) {
 //    alert(k);
@@ -25,6 +25,7 @@
 //alert(div.text());
 //div.html('dada');
 
-window.jQuery("h1").html('There is a dynamic title !');
+$("h1").html('There is a dynamic title !');
+
 
 

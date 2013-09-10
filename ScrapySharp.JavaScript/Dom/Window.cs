@@ -6,13 +6,35 @@ using smnetjs;
 namespace ScrapySharp.JavaScript.Dom
 {
     [SMEmbedded(Name = "Window", AccessibleName = "Window", AllowInheritedMembers = true, AllowScriptDispose = true)]
-    public class Window : DomElement
+    public class Window : DomElement, ISMDynamic
     {
+        private readonly SMScript smScript;
+        private readonly Dictionary<string, object> dynamicMembers = new Dictionary<string, object>();
+
+        public object OnPropertyGetter(SMScript script, string name)
+        {
+            if (!dynamicMembers.ContainsKey(name))
+                return null;
+
+            return dynamicMembers[name];
+        }
+
+        public void OnPropertySetter(SMScript script, string name, object value)
+        {
+            if (dynamicMembers.ContainsKey(name))
+                dynamicMembers[name] = value;
+            else
+                dynamicMembers.Add(name, value);
+
+            smScript.SetGlobalProperty(name, value);
+        }
+
         [SMProperty(Name = "document")]
         public Document Document { get; set; }
 
-        public Window(Document document) : base(document.HtmlDocument, document)
+        public Window(Document document, SMScript smScript) : base(document.HtmlDocument, document)
         {
+            this.smScript = smScript;
             Document = document;
         }
 
