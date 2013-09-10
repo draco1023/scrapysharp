@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using HtmlAgilityPack;
 using System.Linq;
 using smnetjs;
@@ -30,6 +31,9 @@ namespace ScrapySharp.JavaScript.Dom
         {
             get { return htmlDocument.DocumentNode; }
         }
+
+        [SMProperty(Name = "location")]
+        public string Location { get; set; }
 
         [SMProperty(Name = "title")]
         public string Title
@@ -106,6 +110,19 @@ namespace ScrapySharp.JavaScript.Dom
             {
                 smScript.Eval(onload);
             }
+        }
+
+        public void ExecuteScript(SMScript smScript, MemoryStream stream)
+        {
+            stream.Position = 0;
+
+            using (var reader = new StreamReader(stream))
+            {
+                var content = reader.ReadToEnd();
+                smScript.Eval(content);
+            }
+
+            stream.Position = 0;
         }
     }
 }

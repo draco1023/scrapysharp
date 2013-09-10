@@ -7,25 +7,20 @@
 //}
 
 
-var div = window.jQuery("div");
-
-//for (var k in div) {
-//    alert(k);
-//    
-//}
-
+//var div = window.jQuery("div");
 //div.each(function (i, item) {
-//    var element = window.$(item);
-//    alert(element.text());
+//    var element = $(item);
+//    //alert(element.text());
 //    var value = element.text() + ' changed by jquery';
-//    alert(value);
-//    element.html(value);
+//    //alert(value);
+//    element.text(value);
 //});
 
 //alert(div.text());
 //div.html('dada');
 
 $("h1").html('There is a dynamic title !');
+$("h1").hide();
 
 
 
