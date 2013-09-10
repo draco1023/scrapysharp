@@ -42,5 +42,7 @@ namespace ScrapySharp.Network
         {
             get { return forceDownload; }
         }
+
+        public bool IsScript { get; set; }
     }
 }

@@ -96,41 +96,49 @@ namespace ScrapySharp.Network
 
         private void DownloadResources()
         {
-            var resourceUrls = GetResourceUrls();
-
-            foreach (var resourceUrl in resourceUrls)
+            //var resourceUrls = GetResourceUrls();
+            foreach (var resourceTag in resourceTags)
             {
-                Uri result;
-                Uri.TryCreate(resourceUrl, UriKind.RelativeOrAbsolute, out result);
-                Uri url;
+                var resourceUrls = html.Descendants(resourceTag.Key)
+                    .Where(e => e.Attributes.Any(a => a.Name == resourceTag.Value))
+                    .Select(e => e.Attributes[resourceTag.Value].Value).ToArray();
                 
-                if (!result.IsAbsoluteUri)
+                foreach (var resourceUrl in resourceUrls)
                 {
-                    if (resourceUrl.StartsWith("/") || resourceUrl.StartsWith("./") || resourceUrl.StartsWith("../"))
-                        //TODO: / is a base path
-                        url = baseUrl.CombineUrl(resourceUrl);
-                    else
+                    Uri result;
+                    Uri.TryCreate(resourceUrl, UriKind.RelativeOrAbsolute, out result);
+                    Uri url;
+
+                    if (!result.IsAbsoluteUri)
                     {
-                        var path = string.Join("/", absoluteUrl.Segments.Take(absoluteUrl.Segments.Length - 1).Skip(1));
-                        url = baseUrl.CombineUrl(path).Combine(resourceUrl);
+                        if (resourceUrl.StartsWith("/") || resourceUrl.StartsWith("./") || resourceUrl.StartsWith("../"))
+                            //TODO: / is a base path
+                            url = baseUrl.CombineUrl(resourceUrl);
+                        else
+                        {
+                            var path = string.Join("/",
+                                                   absoluteUrl.Segments.Take(absoluteUrl.Segments.Length - 1).Skip(1));
+                            url = baseUrl.CombineUrl(path).Combine(resourceUrl);
+                        }
                     }
-                }
-                else
-                    url = new Uri(resourceUrl);
+                    else
+                        url = new Uri(resourceUrl);
 
-                if (WebResourceStorage.Current.Exists(url.ToString()))
-                    continue;
+                    if (WebResourceStorage.Current.Exists(url.ToString()))
+                        continue;
 
-                try
-                {
-                    WebResource resource = browser.DownloadWebResource(url);
-                    resources.Add(resource);
-                    if (!resource.ForceDownload || !string.IsNullOrEmpty(resource.LastModified))
-                        WebResourceStorage.Current.Save(resource);
-                }
-                catch
-                {
-                    
+                    try
+                    {
+                        WebResource resource = browser.DownloadWebResource(url);
+                        resource.IsScript = resourceTag.Equals("script");
+                        resources.Add(resource);
+                        if (!resource.ForceDownload || !string.IsNullOrEmpty(resource.LastModified))
+                            WebResourceStorage.Current.Save(resource);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
