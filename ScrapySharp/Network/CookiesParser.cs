@@ -8,7 +8,7 @@ namespace ScrapySharp.Network
     public class CookiesParser
     {
         private readonly string defaultDomain;
-        private static readonly Regex splitCookiesRegex = new Regex(@"\s*(?<name>[^=]+)=(?<val>[^;]+)[,;]+", RegexOptions.Compiled);
+        private static readonly Regex splitCookiesRegex = new Regex(@"\s*(?<name>[^=]+)=(?<val>[^;]+)?[,;]+", RegexOptions.Compiled);
 
         public CookiesParser(string defaultDomain)
         {
