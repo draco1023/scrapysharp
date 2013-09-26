@@ -17,7 +17,7 @@ namespace ScrapySharp.Tests
         public void When_using_raw_request_response()
         {
             var browser = new ScrapingBrowser();
-            var page1 = browser.NavigateToPage(new Uri("http://www.google.com"));
+            //var page1 = browser.NavigateToPage(new Uri("http://www.google.com"));
             var page2 = browser.NavigateToPage(new Uri("http://www.romcyber.com"), HttpVerb.Post, new NameValueCollection
                 {
                     {"test", "deefe"},
