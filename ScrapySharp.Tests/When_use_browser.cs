@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,20 @@ namespace ScrapySharp.Tests
     [TestFixture]
     public class When_use_browser
     {
+        [Test]
+        [Category("Integration")]
+        public void When_using_raw_request_response()
+        {
+            var browser = new ScrapingBrowser();
+            var page1 = browser.NavigateToPage(new Uri("http://www.google.com"));
+            var page2 = browser.NavigateToPage(new Uri("http://www.romcyber.com"), HttpVerb.Post, new NameValueCollection
+                {
+                    {"test", "deefe"},
+                    {"sdasa", "021"},
+                });
+
+        }
+
         [Test]
         public void When_combine_urls()
         {

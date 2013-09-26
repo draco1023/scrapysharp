@@ -95,6 +95,8 @@
     <Compile Include="Network\FakeUserAgent.cs" />
     <Compile Include="Network\FakeUserAgents.cs" />
     <Compile Include="Network\HttpVerb.cs" />
+    <Compile Include="Network\RawRequest.cs" />
+    <Compile Include="Network\RawResponse.cs" />
     <Compile Include="Network\ScrapingBrowser.cs" />
     <Compile Include="Network\WebPage.cs" />
     <Compile Include="Network\WebResource.cs" />
