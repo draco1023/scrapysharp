@@ -35,7 +35,7 @@ namespace ScrapySharp.Network
             this.absoluteUrl = absoluteUrl;
             this.rawRequest = rawRequest;
             this.rawResponse = rawResponse;
-            content = Encoding.ASCII.GetString(rawRequest.Body);
+            content = Encoding.ASCII.GetString(rawResponse.Body);
             resources = new List<WebResource>();
 
             LoadHtml();
