@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using HtmlAgilityPack;
 using ScrapySharp.Cache;
 using ScrapySharp.Extensions;
@@ -14,9 +15,11 @@ namespace ScrapySharp.Network
     {
         private readonly ScrapingBrowser browser;
         private readonly Uri absoluteUrl;
+        private readonly RawRequest rawRequest;
+        private readonly RawResponse rawResponse;
         private readonly string content;
         private readonly List<WebResource> resources;
-        private readonly HtmlNode html;
+        private HtmlNode html;
         private string baseUrl;
 
         private static readonly Dictionary<string, string> resourceTags = new Dictionary<string, string> 
@@ -26,20 +29,44 @@ namespace ScrapySharp.Network
                 {"link", "href"},
             };
 
-        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, string content, bool autoDownloadPagesResources)
+        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, bool autoDownloadPagesResources, RawRequest rawRequest, RawResponse rawResponse)
         {
             this.browser = browser;
             this.absoluteUrl = absoluteUrl;
-            this.content = content;
+            this.rawRequest = rawRequest;
+            this.rawResponse = rawResponse;
+            content = Encoding.ASCII.GetString(rawRequest.Body);
             resources = new List<WebResource>();
 
-            html = content.ToHtmlNode();
+            LoadHtml();
 
             if (autoDownloadPagesResources)
             {
                 LoadBaseUrl();
                 DownloadResources();
             }
+        }
+
+        private void LoadHtml()
+        {
+            try
+            {
+                html = content.ToHtmlNode();
+            }
+            catch
+            {
+                
+            }
+        }
+
+        public RawRequest RawRequest
+        {
+            get { return rawRequest; }
+        }
+
+        public RawResponse RawResponse
+        {
+            get { return rawResponse; }
         }
 
         public IEnumerable<HtmlNode> Find(string tag, By by)
