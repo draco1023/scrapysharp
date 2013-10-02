@@ -9,8 +9,9 @@ namespace ScrapySharp.Network
 {
     public class RawResponse
     {
-        internal RawResponse(Version httpVersion, HttpStatusCode statusCode, string statusDescription, NameValueCollection headers, byte[] body)
+        internal RawResponse(Version httpVersion, HttpStatusCode statusCode, string statusDescription, NameValueCollection headers, byte[] body, Encoding encoding)
         {
+            Encoding = encoding;
             HttpVersion = httpVersion;
             StatusCode = (int)statusCode;
             StatusDescription = statusDescription;
@@ -23,6 +24,7 @@ namespace ScrapySharp.Network
         public string StatusDescription { get; private set; }
         public List<KeyValuePair<string, string>> Headers { get; private set; }
         public byte[] Body { get; private set; }
+        public Encoding Encoding { get; private set; }
 
         public override string ToString()
         {

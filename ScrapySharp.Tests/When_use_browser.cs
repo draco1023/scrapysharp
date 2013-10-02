@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text;
 using NUnit.Framework;
 using ScrapySharp.Network;
 using ScrapySharp.Extensions;

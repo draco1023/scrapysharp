@@ -6,8 +6,9 @@ namespace ScrapySharp.Network
 {
     public class RawRequest
     {
-        internal RawRequest(string verb, Uri url, Version httpVersion, List<KeyValuePair<string, string>> headers, byte[] body)
+        internal RawRequest(string verb, Uri url, Version httpVersion, List<KeyValuePair<string, string>> headers, byte[] body, Encoding encoding)
         {
+            Encoding = encoding;
             Verb = verb;
             Url = url;
             HttpVersion = httpVersion;
@@ -20,6 +21,7 @@ namespace ScrapySharp.Network
         public Version HttpVersion { get; private set; }
         public List<KeyValuePair<string, string>> Headers { get; private set; }
         public byte[] Body { get; private set; }
+        public Encoding Encoding { get; private set; }
 
         public override string ToString()
         {
