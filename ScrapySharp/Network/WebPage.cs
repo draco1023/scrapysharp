@@ -28,14 +28,18 @@ namespace ScrapySharp.Network
                 {"script", "src"},
                 {"link", "href"},
             };
+        public Encoding Encoding { get; private set; }
 
-        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, bool autoDownloadPagesResources, RawRequest rawRequest, RawResponse rawResponse)
+        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, bool autoDownloadPagesResources, RawRequest rawRequest, RawResponse rawResponse, Encoding encoding = null)
         {
             this.browser = browser;
             this.absoluteUrl = absoluteUrl;
             this.rawRequest = rawRequest;
             this.rawResponse = rawResponse;
-            content = Encoding.ASCII.GetString(rawResponse.Body);
+
+            Encoding = encoding ?? Encoding.ASCII;
+
+            content = Encoding.GetString(rawResponse.Body);
             resources = new List<WebResource>();
 
             LoadHtml();
