@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using ScrapySharp.Cache;
 using ScrapySharp.Extensions;
@@ -131,23 +133,7 @@ namespace ScrapySharp.Network
 
             foreach (var resourceUrl in resourceUrls)
             {
-                Uri result;
-                Uri.TryCreate(resourceUrl, UriKind.RelativeOrAbsolute, out result);
-                Uri url;
-                
-                if (!result.IsAbsoluteUri)
-                {
-                    if (resourceUrl.StartsWith("/") || resourceUrl.StartsWith("./") || resourceUrl.StartsWith("../"))
-                        //TODO: / is a base path
-                        url = baseUrl.CombineUrl(resourceUrl);
-                    else
-                    {
-                        var path = string.Join("/", absoluteUrl.Segments.Take(absoluteUrl.Segments.Length - 1).Skip(1));
-                        url = baseUrl.CombineUrl(path).Combine(resourceUrl);
-                    }
-                }
-                else
-                    url = new Uri(resourceUrl);
+                var url = GetFullResourceUrl(resourceUrl, absoluteUrl);
 
                 if (WebResourceStorage.Current.Exists(url.ToString()))
                     continue;
@@ -164,6 +150,29 @@ namespace ScrapySharp.Network
                     
                 }
             }
+        }
+
+        private Uri GetFullResourceUrl(string resourceUrl, Uri root)
+        {
+            Uri result;
+            Uri.TryCreate(resourceUrl, UriKind.RelativeOrAbsolute, out result);
+            Uri url;
+
+            if (!result.IsAbsoluteUri)
+            {
+                if (resourceUrl.StartsWith("/") || resourceUrl.StartsWith("./") || resourceUrl.StartsWith("../"))
+                {
+                    url = baseUrl != null ? baseUrl.CombineUrl(resourceUrl) : root.Combine(resourceUrl);
+                }
+                else
+                {
+                    var path = string.Join("/", root.Segments.Take(root.Segments.Length - 1).Skip(1));
+                    url = baseUrl != null ? baseUrl.CombineUrl(path).Combine(resourceUrl) : root.Combine(resourceUrl);
+                }
+            }
+            else
+                url = new Uri(resourceUrl);
+            return url;
         }
 
         public List<string> GetResourceUrls()
@@ -208,6 +217,78 @@ namespace ScrapySharp.Network
         public string BaseUrl
         {
             get { return baseUrl; }
+        }
+
+        private static readonly Regex urlInCssRegex = new Regex(@"url \s* [(] \s* (?<url>[^)\r\n]+) \s* [)]", 
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+        public void SaveSnapshot(string path)
+        {
+            if (!browser.AutoDownloadPagesResources)
+                DownloadResources();
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            else
+                Directory.GetFiles(path).ToList().ForEach(File.Delete);
+            
+            foreach (var resource in Resources)
+            {
+                var guid = Guid.NewGuid();
+                resource.Content.Position = 0;
+                var fileName = guid.ToString("N");
+                
+                RewriteHtml(resource, fileName);
+
+                if (!string.IsNullOrEmpty(resource.ContentType) && resource.ContentType.EndsWith("css", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var textContent = resource.GetTextContent();
+                    textContent = RewriteCssUrls(path, textContent, resource.AbsoluteUrl.ToString());
+                    File.WriteAllText(Path.Combine(path, fileName), textContent);
+                }
+                else
+                    File.WriteAllBytes(Path.Combine(path, fileName), resource.Content.ToArray());
+            }
+
+            var outerHtml = RewriteCssUrls(path, Html.OuterHtml, AbsoluteUrl.ToString());
+            File.WriteAllText(Path.Combine(path, "page.html"), outerHtml);
+        }
+
+        private void RewriteHtml(WebResource resource, string fileName)
+        {
+            foreach (var resourceTag in resourceTags)
+            {
+                var nodes = html.Descendants(resourceTag.Key)
+                    .Where(
+                        e =>
+                        e.Attributes.Any(a => a.Name == resourceTag.Value) &&
+                        resource.AbsoluteUrl.ToString().EndsWith(e.Attributes[resourceTag.Value].Value))
+                    .ToArray();
+
+                foreach (var node in nodes)
+                {
+                    node.SetAttributeValue(resourceTag.Value, fileName);
+                }
+            }
+        }
+
+        private string RewriteCssUrls(string path, string textContent, string rootUrl)
+        {
+            var match = urlInCssRegex.Match(textContent);
+            while (match.Success)
+            {
+                var imageId = Guid.NewGuid().ToString("N");
+                var url = match.Groups["url"].Value;
+
+                var parts = rootUrl.Split('/');
+                var leftPart = string.Join("/", parts.Take(parts.Length - 1));
+
+                var image = browser.DownloadWebResource(GetFullResourceUrl(url, new Uri(leftPart)));
+                File.WriteAllBytes(Path.Combine(path, imageId), image.Content.ToArray());
+                textContent = textContent.Replace(url, imageId);
+                match = match.NextMatch();
+            }
+            return textContent;
         }
     }
 }
