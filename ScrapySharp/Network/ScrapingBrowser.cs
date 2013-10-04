@@ -34,6 +34,7 @@ namespace ScrapySharp.Network
             Proxy = WebRequest.DefaultWebProxy;
             Headers = new Dictionary<string, string>();
             Encoding = Encoding.ASCII;
+            AutoDetectCharsetEncoding = true;
         }
 
         public void ClearCookies()
@@ -92,6 +93,8 @@ namespace ScrapySharp.Network
         public Dictionary<string, string> Headers { get; private set; }
 
         public Encoding Encoding { get; set; }
+        
+        public bool AutoDetectCharsetEncoding { get; set; }
 
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
         {
@@ -150,7 +153,7 @@ namespace ScrapySharp.Network
             if (responseStream == null)
                 return new WebPage(this, url, AutoDownloadPagesResources,
                     new RawRequest(request.Method, request.RequestUri, request.ProtocolVersion, headers, requestBody, Encoding),
-                    new RawResponse(response.ProtocolVersion, response.StatusCode, response.StatusDescription, response.Headers, new byte[0], Encoding), Encoding);
+                    new RawResponse(response.ProtocolVersion, response.StatusCode, response.StatusDescription, response.Headers, new byte[0], Encoding), Encoding, AutoDetectCharsetEncoding);
 
             var body = new MemoryStream();
             responseStream.CopyTo(body);
@@ -167,7 +170,7 @@ namespace ScrapySharp.Network
 
             var rawRequest = new RawRequest(request.Method, request.RequestUri, request.ProtocolVersion, headers, requestBody, Encoding);
             var webPage = new WebPage(this, url, AutoDownloadPagesResources, rawRequest,
-                new RawResponse(response.ProtocolVersion, response.StatusCode, response.StatusDescription, response.Headers, body.ToArray(), Encoding), Encoding);
+                new RawResponse(response.ProtocolVersion, response.StatusCode, response.StatusDescription, response.Headers, body.ToArray(), Encoding), Encoding, AutoDetectCharsetEncoding);
 
             if (AllowMetaRedirect && !string.IsNullOrEmpty(response.ContentType) && response.ContentType.Contains("html") && iteration < 10)
             {
