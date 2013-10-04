@@ -18,6 +18,7 @@ namespace ScrapySharp.Tests
         public void When_using_raw_request_response()
         {
             var browser = new ScrapingBrowser();
+            //browser.Encoding = Encoding.UTF8;
             WebPage page = browser.NavigateToPage(new Uri("http://www.romcyber.com"), HttpVerb.Post, new NameValueCollection
                 {
                     {"test", "deefe"},

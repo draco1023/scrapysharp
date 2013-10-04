@@ -19,7 +19,8 @@ namespace ScrapySharp.Network
         private readonly Uri absoluteUrl;
         private readonly RawRequest rawRequest;
         private readonly RawResponse rawResponse;
-        private readonly string content;
+        private readonly bool autoDetectCharsetEncoding;
+        private string content;
         private readonly List<WebResource> resources;
         private HtmlNode html;
         private string baseUrl;
@@ -32,14 +33,15 @@ namespace ScrapySharp.Network
             };
         public Encoding Encoding { get; private set; }
 
-        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, bool autoDownloadPagesResources, RawRequest rawRequest, RawResponse rawResponse, Encoding encoding = null)
+        public WebPage(ScrapingBrowser browser, Uri absoluteUrl, bool autoDownloadPagesResources, RawRequest rawRequest, RawResponse rawResponse, 
+            Encoding encoding, bool autoDetectCharsetEncoding)
         {
             this.browser = browser;
             this.absoluteUrl = absoluteUrl;
             this.rawRequest = rawRequest;
             this.rawResponse = rawResponse;
-
-            Encoding = encoding ?? Encoding.ASCII;
+            this.autoDetectCharsetEncoding = autoDetectCharsetEncoding;
+            Encoding = encoding;
 
             content = Encoding.GetString(rawResponse.Body);
             resources = new List<WebResource>();
@@ -58,11 +60,27 @@ namespace ScrapySharp.Network
             try
             {
                 html = content.ToHtmlNode();
+                if (autoDetectCharsetEncoding)
+                {
+                    var charset = html.Descendants("meta").Select(meta => meta.GetAttributeValue("charset", string.Empty).Trim())
+                        .FirstOrDefault(v => !string.IsNullOrEmpty(v));
+                    if (!string.IsNullOrEmpty(charset))
+                    {
+                        Encoding = Encoding.GetEncoding(charset);
+                        content = Encoding.GetString(rawResponse.Body);
+                        html = content.ToHtmlNode();
+                    }
+                }
             }
             catch
             {
                 
             }
+        }
+
+        public bool AutoDetectCharsetEncoding
+        {
+            get { return autoDetectCharsetEncoding; }
         }
 
         public RawRequest RawRequest
