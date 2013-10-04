@@ -55,7 +55,7 @@ namespace ScrapySharp.Network
             if (responseStream != null)
                 responseStream.CopyTo(memoryStream);
 
-            return new WebResource(memoryStream, response.Headers["Last-Modified"], url, !IsCached(response.Headers["Cache-Control"]));
+            return new WebResource(memoryStream, response.Headers["Last-Modified"], url, !IsCached(response.Headers["Cache-Control"]), response.ContentType);
         }
 
         private bool IsCached(string header)
