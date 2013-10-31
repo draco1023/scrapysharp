@@ -301,8 +301,16 @@ namespace ScrapySharp.Network
                 var parts = rootUrl.Split('/');
                 var leftPart = string.Join("/", parts.Take(parts.Length - 1));
 
-                var image = browser.DownloadWebResource(GetFullResourceUrl(url, new Uri(leftPart)));
-                File.WriteAllBytes(Path.Combine(path, imageId), image.Content.ToArray());
+                try
+                {
+                    var image = browser.DownloadWebResource(GetFullResourceUrl(url, new Uri(leftPart)));
+                    File.WriteAllBytes(Path.Combine(path, imageId), image.Content.ToArray());
+                }
+                catch
+                {
+
+                }
+
                 textContent = textContent.Replace(url, imageId);
                 match = match.NextMatch();
             }
