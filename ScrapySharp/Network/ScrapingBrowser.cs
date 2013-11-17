@@ -96,6 +96,8 @@ namespace ScrapySharp.Network
         
         public bool AutoDetectCharsetEncoding { get; set; }
 
+        public DecompressionMethods DecompressionMethods { get; set; }
+
         private HttpWebRequest CreateRequest(Uri url, HttpVerb verb)
         {
             var request = (HttpWebRequest)WebRequest.Create(url.AbsoluteUri);
@@ -104,6 +106,7 @@ namespace ScrapySharp.Network
             request.CookieContainer = cookieContainer;
             request.UserAgent = UserAgent.UserAgent;
             request.Proxy = Proxy;
+            request.AutomaticDecompression = DecompressionMethods;
 
             request.Headers["Accept-Language"] = Language.Name;
 
