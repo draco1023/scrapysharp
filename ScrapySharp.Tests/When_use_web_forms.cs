@@ -14,7 +14,7 @@ namespace ScrapySharp.Tests
     [TestFixture]
     public class When_use_web_forms
     {
-        [Test]
+        [Test,Ignore]
         public void When_browsing_using_helpers()
         {
             ScrapingBrowser browser = new ScrapingBrowser();
