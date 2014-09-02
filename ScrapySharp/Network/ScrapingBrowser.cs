@@ -55,7 +55,8 @@ namespace ScrapySharp.Network
 
             if (responseStream != null)
                 responseStream.CopyTo(memoryStream);
-
+            
+            responseStream.Close();
             return new WebResource(memoryStream, response.Headers["Last-Modified"], url, !IsCached(response.Headers["Cache-Control"]), response.ContentType);
         }
 
@@ -160,6 +161,8 @@ namespace ScrapySharp.Network
 
             var body = new MemoryStream();
             responseStream.CopyTo(body);
+            responseStream.Close();
+
             body.Position = 0;
             
             //using (var reader = new StreamReader(responseStream))
