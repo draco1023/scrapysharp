@@ -64,6 +64,21 @@ namespace ScrapySharp.Network
                 {
                     var charset = html.Descendants("meta").Select(meta => meta.GetAttributeValue("charset", string.Empty).Trim())
                         .FirstOrDefault(v => !string.IsNullOrEmpty(v));
+                    if (charset == null)
+                    {
+                        // Parse content-type too.
+                        var contentType = html.Descendants("meta").FirstOrDefault(m => m.GetAttributeValue("http-equiv") == "content-type");
+                        if (contentType != null)
+                        {
+                            var contentTypeContent = contentType.GetAttributeValue("content");
+                            int posContentType = contentTypeContent.IndexOf("charset=", StringComparison.Ordinal);
+                            if (posContentType != -1)
+                            {
+                                charset = contentTypeContent.Substring(posContentType + "charset=".Length);
+                            }
+                        }
+                    }
+
                     if (!string.IsNullOrEmpty(charset))
                     {
                         Encoding = Encoding.GetEncoding(charset);
