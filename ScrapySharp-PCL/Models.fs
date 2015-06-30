@@ -3,7 +3,6 @@
     open System
     open System.IO
     open System.Net
-    open System.Runtime.Serialization.Formatters.Binary
     open System.Text
 
     type Token =
@@ -40,4 +39,3 @@
     type CharContainer(c:char, offset:int) =
         member t.Offset = offset
         member t.Char = c
-
