@@ -9,6 +9,7 @@ using System.Net.Cache;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using ScrapySharp.Extensions;
 
@@ -89,6 +90,11 @@ namespace ScrapySharp.Network
         {
             var request = CreateRequest(url, HttpVerb.Get);
             return GetResponse(url, request, 0, new byte[0]);
+        }
+
+        public async Task<string> DownloadStringAsync(Uri url)
+        {
+            throw new NotImplementedException();
         }
 
         public Dictionary<string, string> Headers { get; private set; }
