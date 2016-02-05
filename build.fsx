@@ -63,7 +63,8 @@ Target "NuGet" (fun _ ->
 "Clean"
     ==> "Packages"
     ==> "BuildRelease"
+    ==> "NuGet"
 
-RunTargetOrDefault "BuildRelease"
+RunTargetOrDefault "NuGet"
 
 
