@@ -16,8 +16,9 @@
         <copyright>Romain Flechner</copyright>
         <language>en-US</language>
         <tags>Scraping html css linq agility</tags>
-      @dependencies@
-      <frameworkAssemblies>
+        <releaseNotes>@releaseNotes@</releaseNotes>
+        @dependencies@
+        <frameworkAssemblies>
             <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
             <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework=".NETFramework4.0" />
             <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.0" />
