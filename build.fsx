@@ -34,7 +34,7 @@ let buildNuGet mustPublish versionSuffix =
     |> Array.map(fun f -> f.FullName)
     |> CopyFiles nugetsDir
 
-    let nugetAccessKey = ""
+    let nugetAccessKey = File.ReadAllText @"C:\keys\nuget-romcyber.txt"
     let nugetsVersions name = 
         NuGetVersion.nextVersion <|
             fun arg -> 
