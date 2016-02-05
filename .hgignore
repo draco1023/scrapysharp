@@ -26,3 +26,6 @@ syntax: glob
 ScrapySharp/packages/*
 packages/*
 *.nupkg
+build/*
+.fake/*
+NuGet/*
