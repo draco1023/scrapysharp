@@ -27,15 +27,13 @@ Target "BuildRelease"
         |> MSBuildRelease buildDir "Build"
         |> Log "BuildTests-Output: "
 
-Target "NuGet" (fun _ ->
-
+let buildNuGet mustPublish versionSuffix =
     buildDir
     |> directoryInfo
     |> filesInDir
     |> Array.map(fun f -> f.FullName)
     |> CopyFiles nugetsDir
 
-    let mustPublish = false
     let nugetAccessKey = ""
     let nugetsVersions name = 
         NuGetVersion.nextVersion <|
@@ -44,26 +42,53 @@ Target "NuGet" (fun _ ->
                     with 
                         PackageName=name
                         DefaultVersion="0.1.0"
-                        Increment=NuGetVersion.IncPatch
+                        Increment=NuGetVersion.IncMinor
                 }
+    let version = 
+        match versionSuffix, (nugetsVersions "ScrapySharp") with
+        | Some suffix, v -> v + suffix
+        | None, v -> v
+
     NuGet (fun p -> 
             { p with
                 Authors = ["Romain Flechner"]
                 Project = "ScrapySharp"
                 OutputPath = nugetsDir
                 AccessKey = nugetAccessKey
-                Version = nugetsVersions "ScrapySharp"
+                Version = version
                 Publish = mustPublish
                 Dependencies = getDependencies "ScrapySharp/packages.config"
                 Properties = [("Configuration","Release")]
+                ReleaseNotes = (__SOURCE_DIRECTORY__ @@ "ReleaseNotes.txt" |> File.ReadAllText)
             }) "ScrapySharp.nuspec"
+
+Target "NuGet" (fun _ ->
+    buildNuGet false None
 )
 
+Target "PublishNuGet" (fun _ ->
+    buildNuGet true None
+)
+
+Target "NuGetBeta" (fun _ ->
+    buildNuGet false (Some "-beta1")
+)
+
+Target "PublishNuGetBeta" (fun _ ->
+    buildNuGet true (Some "-beta1")
+)
 
 "Clean"
     ==> "Packages"
     ==> "BuildRelease"
     ==> "NuGet"
+    ==> "PublishNuGet"
+
+"Clean"
+    ==> "Packages"
+    ==> "BuildRelease"
+    ==> "NuGetBeta"
+    ==> "PublishNuGetBeta"
 
 RunTargetOrDefault "NuGet"
 
