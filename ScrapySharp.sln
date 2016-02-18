@@ -5,9 +5,10 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6755677C-979E-4D67-A21F-FAAF7598A993}"
 	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		ScrapySharp.vsmdi = ScrapySharp.vsmdi
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		ReleaseNotes.txt = ReleaseNotes.txt
+		ScrapySharp.nuspec = ScrapySharp.nuspec
 	EndProjectSection
 	GlobalSection(HgVSProperties) = preSolution
 		SolutionIsControlled = True
@@ -25,25 +26,43 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{563747
 		SolutionBindings = <Solution Location In Database>
 	EndGlobalSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp", "ScrapySharp.csproj", "{19858AEA-E842-4633-AF1B-110ED4FE3770}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp", "ScrapySharp\ScrapySharp.csproj", "{19858AEA-E842-4633-AF1B-110ED4FE3770}"
 	GlobalSection(HgVSProperties) = preSolution
 		SolutionIsControlled = True
 		SolutionBindings = <Solution Location In Database>
 	EndGlobalSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp.Tests", "..\ScrapySharp.Tests\ScrapySharp.Tests.csproj", "{99F509FE-B51C-48A8-8C79-DD32AD2FDF10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp.Tests", "ScrapySharp.Tests\ScrapySharp.Tests.csproj", "{99F509FE-B51C-48A8-8C79-DD32AD2FDF10}"
 	GlobalSection(HgVSProperties) = preSolution
 		SolutionIsControlled = True
 		SolutionBindings = <Solution Location In Database>
 	EndGlobalSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp.Benchmarks", "..\ScrapySharp.Benchmarks\ScrapySharp.Benchmarks.csproj", "{FEA6E2A4-8A38-4F3B-8859-01945221939E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharp.Benchmarks", "ScrapySharp.Benchmarks\ScrapySharp.Benchmarks.csproj", "{FEA6E2A4-8A38-4F3B-8859-01945221939E}"
 	GlobalSection(HgVSProperties) = preSolution
 		SolutionIsControlled = True
 		SolutionBindings = <Solution Location In Database>
 	EndGlobalSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ScrapySharp.Core", "..\ScrapySharp.Core\ScrapySharp.Core.fsproj", "{CE27016B-2755-4B44-8A0E-574914B9256F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ScrapySharp.Core", "ScrapySharp.Core\ScrapySharp.Core.fsproj", "{CE27016B-2755-4B44-8A0E-574914B9256F}"
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapySharpAsync", "ScrapySharpAsync\ScrapySharpAsync.csproj", "{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}"
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F0E92760-C697-4CC6-8767-8929C6C9898E}"
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D5D992B5-D7B1-4132-A8E1-078513363057}"
 	GlobalSection(HgVSProperties) = preSolution
 		SolutionIsControlled = True
 		SolutionBindings = <Solution Location In Database>
@@ -113,9 +132,32 @@ Global
 		{CE27016B-2755-4B44-8A0E-574914B9256F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CE27016B-2755-4B44-8A0E-574914B9256F}.Release|x64.ActiveCfg = Release|Any CPU
 		{CE27016B-2755-4B44-8A0E-574914B9256F}.Release|x86.ActiveCfg = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|x64.Build.0 = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Debug|x86.Build.0 = Debug|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|x64.ActiveCfg = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|x64.Build.0 = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|x86.ActiveCfg = Release|Any CPU
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19858AEA-E842-4633-AF1B-110ED4FE3770} = {F0E92760-C697-4CC6-8767-8929C6C9898E}
+		{99F509FE-B51C-48A8-8C79-DD32AD2FDF10} = {D5D992B5-D7B1-4132-A8E1-078513363057}
+		{FEA6E2A4-8A38-4F3B-8859-01945221939E} = {D5D992B5-D7B1-4132-A8E1-078513363057}
+		{CE27016B-2755-4B44-8A0E-574914B9256F} = {F0E92760-C697-4CC6-8767-8929C6C9898E}
+		{1BAE371B-63E1-4DF1-9DF1-1E0818A7899F} = {F0E92760-C697-4CC6-8767-8929C6C9898E}
 	EndGlobalSection
 	GlobalSection(HgVSProperties) = preSolution
 		SolutionIsControlled = True
