@@ -113,9 +113,23 @@ namespace ScrapySharp.Network
 
             if (Headers != null)
             {
-                foreach (var header in Headers)
-                    request.Headers[header.Key] = header.Value;
-                Headers.Clear();
+				foreach (var header in Headers)
+				{
+					if (header.Key.ToLower() == "accept")
+					{
+						request.Accept = header.Value;
+					}
+					else if (header.Key.ToLower() == "referer")
+					{
+						request.Referer = header.Value;
+					}
+					else
+					{
+						request.Headers[header.Key] = header.Value;
+					}
+				}
+
+				Headers.Clear();
             }
 
             request.CachePolicy = CachePolicy;
