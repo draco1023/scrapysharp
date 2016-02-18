@@ -9,6 +9,7 @@ using System.Net.Cache;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using ScrapySharp.Extensions;
 
@@ -78,19 +79,29 @@ namespace ScrapySharp.Network
 
         public string AjaxDownloadString(Uri url)
         {
+            return AjaxDownloadStringAsync(url).Result;
+        }
+
+        public async Task<string> AjaxDownloadStringAsync(Uri url)
+        {
             var request = CreateRequest(url, HttpVerb.Get);
             request.Headers["X-Prototype-Version"] = "1.6.1";
             request.Headers["X-Requested-With"] = "XMLHttpRequest";
 
-            return GetResponse(url, request, 0, new byte[0]);
+            return await GetResponseAsync(url, request, 0, new byte[0]);
         }
 
         public string DownloadString(Uri url)
         {
-            var request = CreateRequest(url, HttpVerb.Get);
-            return GetResponse(url, request, 0, new byte[0]);
+            return DownloadStringAsync(url).Result;
         }
 
+        public async Task<string> DownloadStringAsync(Uri url)
+        {
+            var request = CreateRequest(url, HttpVerb.Get);
+            return await GetResponseAsync(url, request, 0, new byte[0]);
+        }
+        
         public Dictionary<string, string> Headers { get; private set; }
 
         public Encoding Encoding { get; set; }
@@ -161,10 +172,9 @@ namespace ScrapySharp.Network
 
         public bool AutoDownloadPagesResources { get; set; }
 
-        private WebPage GetResponse(Uri url, HttpWebRequest request, int iteration, byte[] requestBody)
+        private async Task<WebPage> GetResponseAsync(Uri url, HttpWebRequest request, int iteration, byte[] requestBody)
         {
-            string content;
-            var response = GetWebResponse(url, request);
+            var response = await GetWebResponseAsync(url, request);
             var responseStream = response.GetResponseStream();
             var headers = request.Headers.AllKeys.Select(k => new KeyValuePair<string, string>(k, request.Headers[k])).ToList();
 
@@ -176,16 +186,8 @@ namespace ScrapySharp.Network
             var body = new MemoryStream();
             responseStream.CopyTo(body);
             responseStream.Close();
-
             body.Position = 0;
-
-            //using (var reader = new StreamReader(responseStream))
-            //{
-            //    content = reader.ReadToEnd();
-            //}
-
-            content = Encoding.GetString(body.ToArray());
-
+            var content = Encoding.GetString(body.ToArray());
             body.Position = 0;
 
             var rawRequest = new RawRequest(request.Method, request.RequestUri, request.ProtocolVersion, headers, requestBody, Encoding);
@@ -233,9 +235,9 @@ namespace ScrapySharp.Network
                         }
                     }
 
-                    Thread.Sleep(TimeSpan.FromSeconds(seconds));
+                    await Task.Delay(TimeSpan.FromSeconds(seconds));
 
-                    return DownloadRedirect(redirectUrl, iteration + 1);
+                    return await DownloadRedirect(redirectUrl, iteration + 1);
                 }
             }
 
@@ -255,19 +257,19 @@ namespace ScrapySharp.Network
             return value;
         }
 
-        private WebPage DownloadRedirect(Uri url, int iteration)
+        private async Task<WebPage> DownloadRedirect(Uri url, int iteration)
         {
             var request = CreateRequest(url, HttpVerb.Get);
-            return GetResponse(url, request, iteration, new byte[0]);
+            return await GetResponseAsync(url, request, iteration, new byte[0]);
         }
 
         public string TransferEncoding { get; set; }
 
-        private HttpWebResponse GetWebResponse(Uri url, HttpWebRequest request)
+        private async Task<HttpWebResponse> GetWebResponseAsync(Uri url, HttpWebRequest request)
         {
             referer = url;
             request.AllowAutoRedirect = AllowAutoRedirect;
-            var response = (HttpWebResponse)request.GetResponse();
+            var response = (HttpWebResponse) await request.GetResponseAsync();
             var headers = response.Headers;
 
             if (!IgnoreCookies)
@@ -307,8 +309,17 @@ namespace ScrapySharp.Network
         {
             return ExecuteRequest(url, verb, GetHttpPostVars(data));
         }
+        public async Task<WebResponse> ExecuteRequestAsync(Uri url, HttpVerb verb, NameValueCollection data)
+        {
+            return await ExecuteRequestAsync(url, verb, GetHttpPostVars(data));
+        }
 
         public WebResponse ExecuteRequest(Uri url, HttpVerb verb, string data)
+        {
+            return ExecuteRequestAsync(url, verb, data).Result;
+        }
+
+        public async Task<WebResponse> ExecuteRequestAsync(Uri url, HttpVerb verb, string data)
         {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
@@ -331,7 +342,7 @@ namespace ScrapySharp.Network
                 }
             }
 
-            return GetWebResponse(url, request);
+            return await GetWebResponseAsync(url, request);
         }
 
         public string NavigateTo(Uri url, HttpVerb verb, string data)
@@ -341,6 +352,11 @@ namespace ScrapySharp.Network
 
         public WebPage NavigateToPage(Uri url, HttpVerb verb = HttpVerb.Get, string data = "")
         {
+            return NavigateToPageAsync(url, verb, data).Result;
+        }
+
+        public async Task<WebPage> NavigateToPageAsync(Uri url, HttpVerb verb = HttpVerb.Get, string data = "")
+        {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
                               : (verb == HttpVerb.Get ? string.Format("{0}?{1}", url.AbsoluteUri, data) : url.AbsoluteUri);
@@ -362,7 +378,7 @@ namespace ScrapySharp.Network
                 }
             }
 
-            return GetResponse(url, request, 0, Encoding.GetBytes(data));
+            return await GetResponseAsync(url, request, 0, Encoding.GetBytes(data));
         }
 
         public WebPage NavigateToPage(Uri url, HttpVerb verb, NameValueCollection data)

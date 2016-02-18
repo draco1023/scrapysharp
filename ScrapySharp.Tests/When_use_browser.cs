@@ -26,7 +26,6 @@ namespace ScrapySharp.Tests
                 });
 
             page.SaveSnapshot("outdir");
-
         }
 
         [Test]
