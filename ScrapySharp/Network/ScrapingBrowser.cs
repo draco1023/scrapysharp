@@ -377,13 +377,23 @@ namespace ScrapySharp.Network
 
         private static string ToMethod(HttpVerb verb)
         {
-            switch (verb)
+			switch (verb)
             {
                 case HttpVerb.Get:
                     return "GET";
-                case HttpVerb.Post:
+				case HttpVerb.Head:
+					return "HEAD";
+				case HttpVerb.Post:
                     return "POST";
-                default:
+				case HttpVerb.Put:
+					return "PUT";
+				case HttpVerb.Delete:
+					return "DELETE";
+				case HttpVerb.Trace:
+					return "TRACE";
+				case HttpVerb.Options:
+					return "OPTIONS";
+				default:
                     throw new ArgumentOutOfRangeException("verb");
             }
         }

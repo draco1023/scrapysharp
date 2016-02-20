@@ -3,6 +3,11 @@
     public enum HttpVerb
     {
         Get,
-        Post
-    }
+		Head,
+		Post,
+		Put,
+		Delete,
+		Trace,
+		Options
+	}
 }
