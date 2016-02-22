@@ -24,3 +24,8 @@ glob:Bin
 syntax: glob
 *.docstates
 ScrapySharp/packages/*
+packages/*
+*.nupkg
+build/*
+.fake/*
+NuGet/*
