@@ -319,7 +319,7 @@ namespace ScrapySharp.Network
             return ExecuteRequestAsync(url, verb, data).Result;
         }
 
-        public async Task<WebResponse> ExecuteRequestAsync(Uri url, HttpVerb verb, string data)
+        public async Task<WebResponse> ExecuteRequestAsync(Uri url, HttpVerb verb, string data, string contentType = null)
         {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
@@ -328,7 +328,7 @@ namespace ScrapySharp.Network
             var request = CreateRequest(new Uri(path), verb);
 
             if (verb == HttpVerb.Post)
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = contentType ?? "application/x-www-form-urlencoded";
 
             request.CookieContainer = cookieContainer;
 
@@ -350,12 +350,12 @@ namespace ScrapySharp.Network
             return NavigateToPage(url, verb, data);
         }
 
-        public WebPage NavigateToPage(Uri url, HttpVerb verb = HttpVerb.Get, string data = "")
+        public WebPage NavigateToPage(Uri url, HttpVerb verb = HttpVerb.Get, string data = "", string contentType = null)
         {
-            return NavigateToPageAsync(url, verb, data).Result;
+            return NavigateToPageAsync(url, verb, data, contentType).Result;
         }
 
-        public async Task<WebPage> NavigateToPageAsync(Uri url, HttpVerb verb = HttpVerb.Get, string data = "")
+        public async Task<WebPage> NavigateToPageAsync(Uri url, HttpVerb verb = HttpVerb.Get, string data = "", string contentType = null)
         {
             var path = string.IsNullOrEmpty(data)
                               ? url.AbsoluteUri
@@ -364,7 +364,7 @@ namespace ScrapySharp.Network
             var request = CreateRequest(new Uri(path), verb);
 
             if (verb == HttpVerb.Post)
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = contentType ?? "application/x-www-form-urlencoded";
 
             request.CookieContainer = cookieContainer;
 
