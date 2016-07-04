@@ -1,4 +1,5 @@
-#I "packages/FAKE/tools/"
+//#I "packages/FAKE/tools/"
+#I @"D:\prog\FAKE\build"
 #r "FakeLib.dll"
 
 open Fake
@@ -39,6 +40,9 @@ let buildNuGet mustPublish versionSuffix =
         if File.Exists n
         then File.ReadAllText n
         else ""
+
+    let v = NuGetVersion.getLastNuGetVersion "https://www.nuget.org/api/v2" "ScrapySharp"
+
     let nugetsVersions name = 
         NuGetVersion.nextVersion <|
             fun arg -> 
@@ -46,7 +50,7 @@ let buildNuGet mustPublish versionSuffix =
                     with 
                         PackageName=name
                         DefaultVersion="0.1.0"
-                        Increment=NuGetVersion.IncMinor
+                        Increment=NuGetVersion.IncPatch
                 }
     let version = 
         match versionSuffix, (nugetsVersions "ScrapySharp") with
@@ -58,7 +62,7 @@ let buildNuGet mustPublish versionSuffix =
                 Authors = ["Romain Flechner"]
                 Project = "ScrapySharp"
                 OutputPath = nugetsDir
-                AccessKey = nugetAccessKey
+                AccessKey = "romcyber"
                 Version = version
                 Publish = mustPublish
                 Dependencies = getDependencies "ScrapySharp/packages.config"

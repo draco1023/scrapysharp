@@ -4,6 +4,7 @@ namespace ScrapySharp.Html
     {
         Text,
         Id,
-        Name
+        Name,
+        Class
     }
 }
