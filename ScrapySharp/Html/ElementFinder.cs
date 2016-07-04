@@ -37,6 +37,12 @@ namespace ScrapySharp.Html
                            let name = n.GetAttributeValue("name", string.Empty)
                            where string.IsNullOrEmpty(name) ? string.IsNullOrEmpty(query) : name.Equals(query, comparisonType)
                            select n;
+                case ElementSearchKind.Class:
+                    return from n in html.Descendants(tagName)
+                           let @class = n.GetAttributeValue("class", string.Empty)
+                           let names = @class.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries)
+                           where names.Contains(query)
+                           select n;
                 default:
                     return new List<HtmlNode>();
             }
