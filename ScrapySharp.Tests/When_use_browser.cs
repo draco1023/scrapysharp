@@ -19,10 +19,9 @@ namespace ScrapySharp.Tests
         {
             var browser = new ScrapingBrowser();
             //browser.Encoding = Encoding.UTF8;
-            WebPage page = browser.NavigateToPage(new Uri("http://www.romcyber.com"), HttpVerb.Post, new NameValueCollection
+            WebPage page = browser.NavigateToPage(new Uri("https://bitbucket.org/repo/all"), HttpVerb.Post, new NameValueCollection
                 {
-                    {"test", "deefe"},
-                    {"sdasa", "021"},
+                    {"name", "test"},
                 });
 
             page.SaveSnapshot("outdir");
